@@ -1,0 +1,161 @@
+---
+import Base from '../layouts/Base.astro';
+
+// TODO: wire this form to your provider (Formspree, a serverless endpoint, etc.).
+// Right now it is a static placeholder — no submission is sent.
+---
+<Base title="Become a sponsor - GenAI Community EU" description="Partner with GenAI Community: sponsor a chapter in your city or join our events — GenAI Summit EU and GenAI Workshop Fest.">
+  <section class="section">
+    <div class="wrap contact-grid">
+      <div class="contact-copy">
+        <span class="eyebrow">Partner with us</span>
+        <h1>Sponsor a chapter, or join our events</h1>
+        <p class="lede">Put your brand in front of Europe's senior GenAI builders. Sponsor a GenAI Community chapter in your own city, or partner with us across our events.</p>
+        <ul class="contact-list">
+          <li><strong>Host a chapter</strong> — bring the community to your city as an Official Host Partner.</li>
+          <li><strong>GenAI Summit EU</strong> — our annual flagship in Valencia.</li>
+          <li><strong>GenAI Workshop Fest</strong> — hands-on, practitioner-led sessions.</li>
+        </ul>
+        <p class="contact-note">Tell us what you have in mind and we'll send you the deck.</p>
+      </div>
+
+      <form class="contact-form" action="#" method="post" aria-label="Sponsor and partnership enquiry">
+        <div class="field">
+          <label for="c-name">Name</label>
+          <input id="c-name" name="name" type="text" required />
+        </div>
+        <div class="field">
+          <label for="c-company">Company</label>
+          <input id="c-company" name="company" type="text" required />
+        </div>
+        <div class="field">
+          <label for="c-role">Role</label>
+          <input id="c-role" name="role" type="text" required />
+        </div>
+        <div class="field">
+          <label for="c-email">Work email</label>
+          <input id="c-email" name="email" type="email" required />
+        </div>
+        <div class="field">
+          <label for="c-phone">Phone <span class="optional">(optional)</span></label>
+          <input id="c-phone" name="phone" type="tel" />
+        </div>
+        <div class="field">
+          <label for="c-interest">I'm interested in</label>
+          <select id="c-interest" name="interest">
+            <option>Sponsoring a chapter in my city</option>
+            <option>GenAI Summit EU</option>
+            <option>GenAI Workshop Fest</option>
+            <option>Something else</option>
+          </select>
+        </div>
+        <div class="field field-full">
+          <label for="c-message">Message <span class="optional">(optional)</span></label>
+          <textarea id="c-message" name="message" rows="3"></textarea>
+        </div>
+        <label class="consent">
+          <input type="checkbox" name="consent" required />
+          <span>I consent to the processing of my data for commercial purposes by <a href="https://www.mytechplan.com" class="link-holo" target="_blank" rel="noopener">My Tech Plan S.L.</a></span>
+        </label>
+        <button type="submit" class="btn btn-iris contact-submit">Send me the deck</button>
+      </form>
+    </div>
+  </section>
+
+  <style>
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 0.85fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+    .lede { font-size: 1.15rem; color: var(--text-dim); max-width: 34rem; }
+    .contact-list {
+      list-style: none;
+      padding: 0;
+      margin: 1.8rem 0 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      color: var(--text-dim);
+    }
+    .contact-list li {
+      position: relative;
+      padding-left: 1.1rem;
+    }
+    .contact-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.6em;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-image: var(--iris);
+    }
+    .contact-list strong { color: var(--text); }
+    .contact-note { color: var(--text-dim); }
+
+    .contact-form {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.8rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem 1.1rem;
+    }
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .field-full { grid-column: 1 / -1; }
+    .field label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
+    }
+    .optional { text-transform: none; letter-spacing: 0; }
+    .contact-form input,
+    .contact-form select,
+    .contact-form textarea {
+      font: inherit;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--line-2);
+      border-radius: 8px;
+      padding: 0.7rem 0.85rem;
+      width: 100%;
+    }
+    .contact-form textarea { resize: vertical; }
+    .contact-form input:focus,
+    .contact-form select:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: var(--text-dim);
+    }
+    .consent {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 0.55rem;
+      align-items: flex-start;
+      text-align: left;
+      font-size: 0.88rem;
+      color: var(--text-dim);
+    }
+    .consent input {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+      margin: 0.15rem 0 0;
+      accent-color: #cdeede;
+    }
+    .contact-submit { grid-column: 1 / -1; justify-self: start; }
+
+    @media (max-width: 820px) {
+      .contact-grid { grid-template-columns: 1fr; gap: 2.2rem; }
+    }
+    @media (max-width: 520px) {
+      .contact-form { grid-template-columns: 1fr; }
+    }
+  </style>
+</Base>

@@ -1,0 +1,177 @@
+---
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+const { title = 'GenAI Community EU', description = 'The European community of generative AI builders and practitioners. Chapters across Europe, expert blog, weekly newsletter, and one annual summit in Valencia.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap nav">
+        <a href="/" class="logo" aria-label="GenAI Community EU home">
+          <Logo size={40} decorative={true} />
+        </a>
+        <nav aria-label="Main">
+          <a href="/">Home</a>
+          <a href="/blog">Blog</a>
+          <a href="/chapters">Chapters</a>
+          <a href="/#summit">Summit</a>
+          <a href="/#newsletter" class="nav-cta">Newsletter</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo"><Logo size={52} /></div>
+          <p class="footer-tag">Built by practitioners, across Europe.<br />Annual gathering at <a href="https://genaisummit.eu" class="link-holo" rel="noopener" target="_blank">GenAI Summit EU</a>, Valencia.</p>
+          <a href="/sponsor" class="btn btn-iris footer-contact">Become a sponsor</a>
+        </div>
+        <nav class="footer-links" aria-label="Footer">
+          <a href="/blog">Blog</a>
+          <a href="/chapters">Chapters</a>
+          <a href="https://genaisummit.eu" rel="noopener">GenAI Summit EU</a>
+          <a href="/#newsletter">Newsletter</a>
+          <a href="/contact">Contact</a>
+          <a class="footer-static">Code of conduct</a>
+        </nav>
+      </div>
+      <div class="wrap footer-bottom">
+        <div class="social">
+          <span class="social-label">Follow us</span>
+          <a href="https://x.com/GenAISummit_EU" class="social-ic" aria-label="Follow us on X" rel="noopener" target="_blank">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/company/genai-community-eu/" class="social-ic" aria-label="Follow us on LinkedIn" rel="noopener" target="_blank">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
+          </a>
+          <a href="https://join.slack.com/t/genaicommunityespacio/shared_invite/zt-40tgj84ep-ON4753OHsvJYI8A0iy923Q" class="social-ic" aria-label="Join us on Slack" rel="noopener" target="_blank">
+            <svg viewBox="0 0 122.8 122.8" aria-hidden="true"><path d="M25.8 77.6c0 7.1-5.8 12.9-12.9 12.9S0 84.7 0 77.6s5.8-12.9 12.9-12.9h12.9v12.9zM32.3 77.6c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9v32.3c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V77.6z"/><path d="M45.2 25.8c-7.1 0-12.9-5.8-12.9-12.9S38.1 0 45.2 0s12.9 5.8 12.9 12.9v12.9H45.2zM45.2 32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H12.9C5.8 58.1 0 52.3 0 45.2s5.8-12.9 12.9-12.9h32.3z"/><path d="M97 45.2c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9-5.8 12.9-12.9 12.9H97V45.2zM90.5 45.2c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V12.9C64.7 5.8 70.5 0 77.6 0s12.9 5.8 12.9 12.9v32.3z"/><path d="M77.6 97c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9-12.9-5.8-12.9-12.9V97h12.9zM77.6 90.5c-7.1 0-12.9-5.8-12.9-12.9s5.8-12.9 12.9-12.9h32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H77.6z"/></svg>
+          </a>
+        </div>
+        <p class="copyright">Made with love &amp; Claude &lt;3 · All rights reserved · © {new Date().getFullYear()} <a href="https://www.mytechplan.com" class="link-holo" target="_blank" rel="noopener">My Tech Plan S.L</a></p>
+      </div>
+    </footer>
+
+    <style>
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: color-mix(in srgb, var(--bg) 72%, transparent);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 64px;
+      }
+      .logo {
+        color: var(--text);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        line-height: 0;
+      }
+      .logo .gc-logo { display: block; }
+      nav[aria-label="Main"] {
+        display: flex;
+        gap: 1.4rem;
+        align-items: center;
+      }
+      nav[aria-label="Main"] a {
+        color: var(--text-dim);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+      nav[aria-label="Main"] a:hover { color: var(--text); }
+      .nav-cta {
+        background-image: var(--iris);
+        background-size: 220% 220%;
+        background-position: 0% 50%;
+        animation: irisShift 6s ease-in-out infinite;
+        color: #14131a !important;
+        font-weight: 600 !important;
+        padding: 0.45rem 1rem;
+        border-radius: 6px;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+      }
+      .nav-cta:hover { animation-duration: 2.8s; }
+
+      .site-footer {
+        background: var(--bg-1);
+        color: var(--text-dim);
+        border-top: 1px solid var(--line);
+        padding: 3.5rem 0 1.5rem;
+      }
+      .footer-grid {
+        display: flex;
+        justify-content: space-between;
+        align-items: stretch;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+      .footer-brand { display: flex; flex-direction: column; }
+      .footer-contact { margin-top: auto; align-self: flex-start; }
+      .footer-logo {
+        color: var(--text);
+        line-height: 0;
+        margin-bottom: 0.9rem;
+      }
+      .footer-logo .gc-logo { display: block; }
+      .footer-tag { color: var(--text-dim); font-size: 0.95rem; }
+      .footer-links { display: flex; flex-direction: column; gap: 0.5rem; }
+      .footer-links a { color: var(--text-dim); text-decoration: none; }
+      .footer-links a[href]:hover { color: var(--text); }
+      .footer-static { color: var(--text-dim); }
+      .copyright .link-holo { font-weight: 400; }
+      .footer-bottom {
+        margin-top: 2.5rem;
+        padding-top: 1.2rem;
+        border-top: 1px solid var(--line);
+        font-size: 0.85rem;
+        color: var(--text-faint);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .copyright { margin: 0; }
+      .social { display: flex; align-items: center; gap: 0.85rem; }
+      .social-label {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--text-faint);
+      }
+      .social-ic { color: var(--text-dim); display: inline-flex; transition: color 120ms ease; }
+      .social-ic svg { width: 17px; height: 17px; fill: currentColor; display: block; }
+      .social-ic:hover { color: var(--text); }
+      @media (max-width: 640px) {
+        nav[aria-label="Main"] { gap: 0.9rem; font-size: 0.9rem; }
+      }
+    </style>
+  </body>
+</html>

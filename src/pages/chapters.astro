@@ -1,0 +1,351 @@
+---
+import Base from '../layouts/Base.astro';
+import Newsletter from '../components/Newsletter.astro';
+
+// MVP: hardcoded list. Move to a content collection when chapters grow.
+const chapters = [
+  { city: 'Valencia', country: 'Spain', status: 'Active', note: 'Home of the annual summit.' },
+  { city: 'Lisbon', country: 'Portugal', status: 'Forming', note: 'Looking for co-organizers.' },
+  { city: 'Berlin', country: 'Germany', status: 'Forming', note: 'Looking for co-organizers.' },
+];
+
+// The path from applying to running an official chapter.
+const steps = [
+  { n: '01', title: 'Apply', desc: 'Send the application form. We do an initial review of your city, profile and fit.' },
+  { n: '02', title: 'Interview', desc: 'A short call with the program team to get to know you and your local ecosystem.' },
+  { n: '03', title: 'Alignment', desc: 'We align on city, motivation, seniority and your availability to host meetups.' },
+  { n: '04', title: 'Approval', desc: 'You get the green light to lead the official GenAI Community chapter in your city.' },
+  { n: '05', title: 'Onboarding', desc: 'Onboarding call plus the starter kit: chapter email, templates, brand assets and playbook.' },
+  { n: '06', title: 'First meetup', desc: 'We plan your first meetup together and get your local community off the ground.' },
+];
+
+// What a Chapter Lead gets (from the GenAI Community program).
+const benefits = [
+  {
+    title: 'Free Summit pass',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="url(#leadIris)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 11v2"/><path d="M13 17v2"/></svg>',
+    desc: 'After two meetups you get a General Pass to GenAI Summit EU, plus a seat at the private Chapter Leaders dinner during the summit.',
+  },
+  {
+    title: 'Build your reputation',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="url(#leadIris)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>',
+    desc: 'An official "GenAI Community Lead" badge, a public profile on genaicommunity.eu, and the right to use the title on LinkedIn while you are active.',
+  },
+  {
+    title: 'Shape the program',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="url(#leadIris)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>',
+    desc: 'Priority to propose speakers for the Summit, and a seat as an expert on the Call for Papers program committee.',
+  },
+  {
+    title: 'Everything ready to go',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="url(#leadIris)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>',
+    desc: 'A full starter kit: templates, brand assets, an operational playbook, your own chapter email, and a private Slack channel for leads.',
+  },
+  {
+    title: 'Perks for your community',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="url(#leadIris)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>',
+    desc: 'A 20% exclusive discount code for your local community for GenAI Summit EU and GenAI Workshop Fest.',
+  },
+  {
+    title: 'Support and benefits',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="url(#leadIris)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/><circle cx="12" cy="12" r="4"/></svg>',
+    desc: 'Financial support to run your chapter, plus a dedicated Program Lead by your side every step of the way.',
+  },
+];
+---
+<Base title="Chapters - GenAI Community EU" description="Local chapters of the GenAI Community across Europe. Find yours or start one.">
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">Chapters</span>
+      <h1>The community, city by city</h1>
+      <p class="lede">Chapters run their own meetups, workshops and study groups. Each one is led by local volunteers and connected to the wider European network.</p>
+
+      <div class="lede-cta">
+        <a href="https://www.eventbrite.es/o/genai-community-121448467666?aff=ebdsshcopyurl" class="btn btn-iris" rel="noopener" target="_blank">Discover upcoming events</a>
+      </div>
+
+      <div class="chapter-grid">
+        {chapters.map((ch) => (
+          <div class="chapter-card">
+            <p class={`status status-${ch.status.toLowerCase()}`}>{ch.status}</p>
+            <h3>{ch.city}</h3>
+            <p class="country">{ch.country}</p>
+            <p class="note">{ch.note}</p>
+          </div>
+        ))}
+        <a href="mailto:chapters@genaicommunity.eu?subject=I want to open a chapter" class="chapter-card chapter-new">
+          <h3>Your city?</h3>
+          <p class="note">No chapter near you yet. Open one - we'll help you with the playbook, branding and first speakers.</p>
+          <span class="btn btn-iris">Open a chapter</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How to open a chapter -->
+  <section class="section funnel-section">
+    <div class="wrap">
+      <span class="eyebrow">How it works</span>
+      <h2>Open a chapter in six steps</h2>
+      <p class="lede">From the first application to your first meetup - here's the path to leading an official chapter in your city.</p>
+
+      <ol class="funnel">
+        {steps.map((s, i) => (
+          <li class="step" style={`--i:${i}`}>
+            <div class="step-node"><span>{s.n}</span></div>
+            <div class="step-body">
+              <h3>{s.title}</h3>
+              <p>{s.desc}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <a href="mailto:chapters@genaicommunity.eu?subject=I want to open a chapter" class="btn btn-iris funnel-cta">Start your application</a>
+    </div>
+  </section>
+
+  <!-- Why lead a chapter -->
+  <section class="section leads-section">
+    <div class="wrap">
+      <span class="eyebrow">Why lead</span>
+      <h2>Six perks of leading your city's chapter</h2>
+      <p class="lede">It's a volunteer role - but it comes with real upside. Tap any card to see more.</p>
+
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="leadIris" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stop-color="#9fe6c4" />
+            <stop offset="33%" stop-color="#bcb6f0" />
+            <stop offset="63%" stop-color="#f3a6d0" />
+            <stop offset="100%" stop-color="#a7d4ef" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <div class="leads-grid">
+        {benefits.map((b) => (
+          <details class="lead-card">
+            <summary>
+              <span class="lead-ic"><Fragment set:html={b.icon} /></span>
+              <span class="lead-title">{b.title}</span>
+              <svg class="lead-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </summary>
+            <p class="lead-desc">{b.desc}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Newsletter />
+
+  <style>
+    .lede { font-size: 1.15rem; color: var(--text-dim); max-width: 38rem; }
+    .lede-cta { margin-top: 1.6rem; }
+    .chapter-grid {
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+    .chapter-card {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1.7rem;
+      transition: border-color 140ms ease, background 140ms ease;
+    }
+    .chapter-card h3 { font-size: 1.5rem; margin-bottom: 0.1rem; }
+    .country { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 0.8rem; }
+    .note { font-size: 0.95rem; color: var(--text-dim); }
+    .status {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0.22rem 0.65rem;
+      border-radius: 99px;
+      border: 1px solid transparent;
+      margin-bottom: 1rem;
+    }
+    .status-active {
+      background: rgba(57, 255, 176, 0.12);
+      border-color: rgba(57, 255, 176, 0.6);
+      color: #5effb4;
+      box-shadow: 0 0 14px rgba(57, 255, 176, 0.3);
+      text-shadow: 0 0 9px rgba(57, 255, 176, 0.55);
+    }
+    .status-forming {
+      background: rgba(255, 196, 64, 0.12);
+      border-color: rgba(255, 196, 64, 0.6);
+      color: #ffcf4d;
+      box-shadow: 0 0 14px rgba(255, 196, 64, 0.28);
+      text-shadow: 0 0 9px rgba(255, 196, 64, 0.5);
+    }
+    .chapter-new {
+      border: 1px dashed var(--line-2);
+      background: transparent;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+    }
+    .chapter-new:hover { border-color: var(--text-dim); }
+    .chapter-new .btn { margin-top: auto; }
+
+    /* ── How to open a chapter: the path ── */
+    .funnel-section { border-top: 1px solid var(--line); }
+    .funnel {
+      list-style: none;
+      margin: 3rem 0 0;
+      padding: 0;
+      position: relative;
+      max-width: 680px;
+    }
+    /* the dotted path running through the nodes */
+    .funnel::before {
+      content: "";
+      position: absolute;
+      left: 23px;
+      top: 24px;
+      bottom: 24px;
+      border-left: 2px dotted var(--line-2);
+    }
+    .step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 1.4rem;
+      padding-bottom: 2.2rem;
+    }
+    .step:last-child { padding-bottom: 0; }
+    .step-node {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      position: relative;
+      z-index: 1;
+      /* dark fill + iridescent gradient ring */
+      background:
+        linear-gradient(var(--bg-2), var(--bg-2)) padding-box,
+        var(--iris) border-box;
+      border: 1.5px solid transparent;
+    }
+    .step-node span {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+    .step-body { padding-top: 0.4rem; }
+    .step-body h3 { margin-bottom: 0.2rem; }
+    .step-body p { color: var(--text-dim); font-size: 0.97rem; margin: 0; }
+    .funnel-cta { margin-top: 2.6rem; }
+
+    /* scroll-reveal animation (progressive enhancement via .ready) */
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: none; }
+    }
+    .funnel.ready .step { opacity: 0; }
+    .funnel.ready.in .step {
+      animation: stepIn 0.5s ease forwards;
+      animation-delay: calc(var(--i) * 110ms);
+    }
+
+    /* ── Why lead: benefit cards (native accordion) ── */
+    .leads-section { border-top: 1px solid var(--line); }
+    .leads-grid {
+      margin-top: 2.6rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      align-items: start;
+    }
+    .lead-card {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1.25rem 1.3rem;
+      transition: border-color 140ms ease, background 140ms ease;
+    }
+    .lead-card[open], .lead-card:hover { border-color: var(--line-2); }
+    .lead-card summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+    .lead-card summary::-webkit-details-marker { display: none; }
+    .lead-ic {
+      width: 42px;
+      height: 42px;
+      flex: none;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--line);
+    }
+    .lead-ic :global(svg) { width: 21px; height: 21px; }
+    .lead-title {
+      flex: 1;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1.02rem;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+    .lead-chev {
+      width: 18px;
+      height: 18px;
+      flex: none;
+      color: var(--text-faint);
+      transition: transform 180ms ease;
+    }
+    .lead-card[open] .lead-chev { transform: rotate(180deg); }
+    .lead-desc {
+      color: var(--text-dim);
+      font-size: 0.93rem;
+      line-height: 1.55;
+      margin: 0.9rem 0 0;
+    }
+
+    @media (max-width: 860px) {
+      .chapter-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .leads-grid { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .funnel.ready .step { opacity: 1; }
+      .funnel.ready.in .step { animation: none; }
+    }
+  </style>
+
+  <script>
+    // Reveal the steps as the path scrolls into view.
+    const funnels = document.querySelectorAll('.funnel');
+    if ('IntersectionObserver' in window) {
+      funnels.forEach((f) => f.classList.add('ready'));
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('in');
+              obs.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      funnels.forEach((f) => obs.observe(f));
+    }
+  </script>
+</Base>

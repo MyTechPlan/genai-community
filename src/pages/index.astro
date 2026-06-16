@@ -1,0 +1,280 @@
+---
+import Base from '../layouts/Base.astro';
+import Newsletter from '../components/Newsletter.astro';
+import Constellation from '../components/Constellation.astro';
+import SlackCTA from '../components/SlackCTA.astro';
+import PostCover from '../components/PostCover.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+---
+<Base>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">A community senior by design</span>
+        <h1>Where Europe's <span class="grad">GenAI builders</span> actually meet</h1>
+        <p class="lede">
+          GenAI Community EU connects practitioners working with generative AI across
+          Europe - through local chapters, an expert-written blog, a weekly newsletter,
+          and one annual summit by the Mediterranean.
+        </p>
+        <div class="hero-ctas">
+          <a href="/#newsletter" class="btn btn-iris">Join the newsletter</a>
+          <a href="/chapters" class="btn btn-ghost">Find your chapter</a>
+        </div>
+      </div>
+      <div class="hero-map">
+        <Constellation />
+      </div>
+    </div>
+  </section>
+
+  <!-- What is it -->
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">What this is</span>
+      <h2>Built by practitioners, for practitioners</h2>
+      <div class="pillars">
+        <div class="pillar">
+          <h3>Real work, not hype</h3>
+          <p>Production systems, agentic architectures, evals, deployment. The stuff you can't learn from a thread of hot takes.</p>
+        </div>
+        <div class="pillar">
+          <h3>Global vision, local impact</h3>
+          <p>Chapters in cities across Europe run their own meetups and workshops. Same community, your timezone.</p>
+        </div>
+        <div class="pillar">
+          <h3>One annual meeting point</h3>
+          <p>Every year the whole network converges at the GenAI Summit EU in Valencia. Two days, face to face.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Blog -->
+  <section class="section section-alt">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">From the blog</span>
+          <h2>Written by people who ship</h2>
+        </div>
+        <a href="/blog" class="btn btn-ghost">All posts</a>
+      </div>
+      <div class="post-grid">
+        {posts.map((post, i) => (
+          <a href={`/blog/${post.id.replace(/\.md$/, '')}`} class="post-card">
+            <PostCover variant={i} />
+            <p class="post-date">{post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+            <h3>{post.data.title}</h3>
+            <p class="post-desc">{post.data.description}</p>
+            <p class="post-author">{post.data.author}{post.data.authorRole ? ` - ${post.data.authorRole}` : ''}</p>
+          </a>
+        ))}
+      </div>
+      <div class="write-cta">
+        <p><strong>Working on something worth sharing?</strong> The blog is open to community experts.</p>
+        <a href="mailto:blog@genaicommunity.eu?subject=I want to write for the blog" class="btn btn-iris">Apply to be a writer</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapters -->
+  <section class="section">
+    <div class="wrap chapters-band">
+      <div>
+        <span class="eyebrow">Chapters</span>
+        <h2>Your city, your people</h2>
+        <p>Chapters are local groups of the community: meetups, hands-on workshops, and honest conversations about what's working in production. If there isn't one near you yet, that's your cue.</p>
+        <div class="hero-ctas">
+          <a href="/chapters" class="btn btn-ghost">See active chapters</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <SlackCTA />
+
+  <!-- Summit -->
+  <section id="summit" class="summit">
+    <div class="wrap summit-grid">
+      <div>
+        <span class="eyebrow eyebrow-light">The annual meeting point</span>
+        <h2 class="grad">GenAI Summit EU</h2>
+        <p>
+          Once a year, the whole community meets in person in Valencia, Spain - two days
+          of technical talks, workshops and networking by the Mediterranean. The 2026
+          edition sold out. Don't sleep on the next one.
+        </p>
+        <a href="https://genaisummit.eu" rel="noopener" class="btn btn-light">Discover the summit</a>
+      </div>
+      <dl class="summit-stats">
+        <div><dt>Attendees</dt><dd>+350</dd></div>
+        <div><dt>Countries</dt><dd>13</dd></div>
+        <div><dt>Speakers</dt><dd>32</dd></div>
+        <div><dt>International</dt><dd>47%</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <Newsletter />
+
+  <style>
+    .hero { padding: 6rem 0 4.5rem; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .lede {
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      max-width: 34rem;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.8rem;
+      flex-wrap: wrap;
+    }
+    .hero-map { padding: 1rem; }
+
+    .section-alt {
+      background: var(--bg-1);
+      border-block: 1px solid var(--line);
+    }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 2.8rem;
+    }
+    .pillar {
+      position: relative;
+      padding-top: 1.3rem;
+      border-top: 1px solid var(--line);
+    }
+    .pillar::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 0;
+      width: 44px;
+      height: 2px;
+      background: var(--iris);
+    }
+    .pillar p { color: var(--text-dim); }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      margin-bottom: 2.4rem;
+      flex-wrap: wrap;
+    }
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+    .post-card {
+      display: block;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1.6rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+    .post-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--line-2);
+      background: var(--bg-3);
+    }
+    .post-card :global(.post-cover) { margin-bottom: 1.1rem; }
+    .post-date {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 0.7rem;
+    }
+    .post-desc { color: var(--text-dim); font-size: 0.95rem; }
+    .post-author {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin: 0.9rem 0 0;
+    }
+    .write-cta {
+      margin-top: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+    }
+    .write-cta p { margin: 0; color: var(--text-dim); }
+    .write-cta strong { color: var(--text); }
+
+    .summit {
+      position: relative;
+      padding: 5.5rem 0;
+      border-block: 1px solid var(--line);
+      background:
+        radial-gradient(700px 380px at 82% 30%, rgba(232, 228, 247, 0.07), transparent 60%),
+        var(--bg-1);
+    }
+    .summit p { color: var(--text-dim); }
+    .summit-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .summit-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4rem;
+      margin: 0;
+    }
+    .summit-stats div {
+      border-left: 1px solid var(--line-2);
+      padding-left: 1rem;
+    }
+    .summit-stats dt {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-faint);
+    }
+    .summit-stats dd {
+      margin: 0.25rem 0 0;
+      font-family: var(--font-display);
+      font-size: 1.9rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    @media (max-width: 860px) {
+      .hero-grid, .summit-grid { grid-template-columns: 1fr; }
+      .pillars, .post-grid { grid-template-columns: 1fr; }
+      .hero { padding-top: 3.5rem; }
+    }
+  </style>
+</Base>

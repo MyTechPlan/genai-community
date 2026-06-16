@@ -1,0 +1,106 @@
+---
+import Base from '../layouts/Base.astro';
+
+// TODO: wire this form to your provider (Formspree, a serverless endpoint, etc.).
+// Right now it is a static placeholder — no submission is sent.
+---
+<Base title="Contact - GenAI Community EU" description="Get in touch with the GenAI Community team.">
+  <section class="section">
+    <div class="wrap">
+    <div class="ctc-wrap">
+      <span class="eyebrow">Get in touch</span>
+      <h1>Have a question? We're here to help</h1>
+      <p class="ctc-lede">Drop us a line and we'll get back to you. For sponsorships and partnerships, <a href="/sponsor" class="link-holo">become a sponsor</a>.</p>
+
+      <form class="ctc-form" action="#" method="post" aria-label="Contact form">
+        <div class="ctc-field">
+          <label for="c-reason">Reason for contact</label>
+          <select id="c-reason" name="reason" required>
+            <option>General question</option>
+            <option>Join or open a chapter</option>
+            <option>Speak at an event</option>
+            <option>Write for the blog</option>
+            <option>Press &amp; media</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="ctc-field">
+          <label for="c-name">Name</label>
+          <input id="c-name" name="name" type="text" required />
+        </div>
+        <div class="ctc-field">
+          <label for="c-email">Email</label>
+          <input id="c-email" name="email" type="email" required />
+        </div>
+        <div class="ctc-field">
+          <label for="c-message">Message</label>
+          <textarea id="c-message" name="message" rows="5" required></textarea>
+        </div>
+        <label class="ctc-consent">
+          <input type="checkbox" name="consent" required />
+          <span>I consent to the processing of my data by <a href="https://www.mytechplan.com" class="link-holo" target="_blank" rel="noopener">My Tech Plan S.L.</a></span>
+        </label>
+        <button type="submit" class="btn btn-iris ctc-submit">Send message</button>
+      </form>
+    </div>
+    </div>
+  </section>
+
+  <style>
+    .ctc-wrap { max-width: 620px; }
+    .ctc-lede { font-size: 1.15rem; color: var(--text-dim); }
+
+    .ctc-form {
+      margin-top: 2.4rem;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .ctc-field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .ctc-field label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
+    }
+    .ctc-form input,
+    .ctc-form select,
+    .ctc-form textarea {
+      font: inherit;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--line-2);
+      border-radius: 8px;
+      padding: 0.7rem 0.85rem;
+      width: 100%;
+    }
+    .ctc-form textarea { resize: vertical; }
+    .ctc-form input:focus,
+    .ctc-form select:focus,
+    .ctc-form textarea:focus {
+      outline: none;
+      border-color: var(--text-dim);
+    }
+    .ctc-consent {
+      display: flex;
+      gap: 0.55rem;
+      align-items: flex-start;
+      text-align: left;
+      font-size: 0.88rem;
+      color: var(--text-dim);
+    }
+    .ctc-consent input {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+      margin: 0.15rem 0 0;
+      accent-color: #cdeede;
+    }
+    .ctc-submit { align-self: start; }
+  </style>
+</Base>

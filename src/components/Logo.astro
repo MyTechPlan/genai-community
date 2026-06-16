@@ -1,0 +1,19 @@
+---
+// `size` is the rendered height in px. The SVG is a self-contained horizontal
+// logo card (light background baked in), so no wrapper styling is needed.
+const { size = 40, decorative = false, label = 'GenAI Community EU' } = Astro.props;
+const a11y = decorative ? { alt: '', 'aria-hidden': 'true' } : { alt: label };
+---
+<img
+  src="/Logo_GenAICommunity_hor.svg"
+  class="gc-logo"
+  style={`height:${size}px`}
+  {...a11y}
+/>
+
+<style>
+  .gc-logo {
+    display: block;
+    width: auto;
+  }
+</style>

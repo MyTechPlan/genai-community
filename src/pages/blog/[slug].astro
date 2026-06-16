@@ -1,0 +1,92 @@
+---
+import Base from '../../layouts/Base.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import PostCover from '../../components/PostCover.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.md$/, '') },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const coverVariant = post.id.length % 5;
+---
+<Base title={`${post.data.title} - GenAI Community EU`} description={post.data.description}>
+  <article class="section">
+    <div class="wrap article-wrap">
+      <PostCover variant={coverVariant} />
+      <p class="post-date">{post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+      <h1>{post.data.title}</h1>
+      <p class="byline">{post.data.author}{post.data.authorRole ? ` - ${post.data.authorRole}` : ''}</p>
+      <div class="prose">
+        <Content />
+      </div>
+      <a href="/blog" class="back">← All posts</a>
+    </div>
+  </article>
+  <Newsletter />
+
+  <style>
+    .article-wrap { max-width: 720px; }
+    .article-wrap :global(.post-cover) { margin-bottom: 1.8rem; }
+    .post-date {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-faint);
+    }
+    .byline { font-weight: 600; color: var(--text-dim); margin-bottom: 2.5rem; }
+    .prose { color: var(--text-dim); }
+    .prose :global(h2) { margin-top: 2rem; font-size: 1.6rem; color: var(--text); }
+    .prose :global(h3) { color: var(--text); }
+    .prose :global(strong) { color: var(--text); }
+    .prose :global(a) {
+      background-image: var(--iris);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 600;
+      text-decoration: none;
+      animation: irisShift 7s ease-in-out infinite;
+    }
+    .prose :global(code) {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      padding: 0.1em 0.4em;
+    }
+    .prose :global(pre) {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      color: var(--text);
+      padding: 1.2rem;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 0.9rem;
+    }
+    .prose :global(pre code) { background: none; border: none; padding: 0; }
+    .prose :global(blockquote) {
+      border-left: 2px solid var(--line-2);
+      margin-left: 0;
+      padding-left: 1.1rem;
+      color: var(--text-dim);
+    }
+    .back {
+      display: inline-block;
+      margin-top: 3rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-decoration: none;
+    }
+    .back:hover { color: var(--text); }
+  </style>
+</Base>

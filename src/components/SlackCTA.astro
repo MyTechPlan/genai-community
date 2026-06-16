@@ -1,0 +1,90 @@
+---
+const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/zt-40tgj84ep-ON4753OHsvJYI8A0iy923Q';
+---
+<section class="slack">
+  <div class="wrap slack-panel">
+    <div class="slack-copy">
+      <span class="eyebrow">Slack</span>
+      <h2>Where the community talks every day</h2>
+      <p>Between meetups and the summit, the conversation never stops. Join senior builders from across Europe swapping what actually works in production - in real time, every day. Find partners, allies and jobs close to home - and people who nerd out over exactly the same things you do. It's also where you'll hear about every upcoming event first.</p>
+      <a href={slackUrl} class="btn btn-iris slack-btn" rel="noopener" target="_blank">
+        <svg class="slack-glyph" viewBox="0 0 122.8 122.8" aria-hidden="true">
+          <path d="M25.8 77.6c0 7.1-5.8 12.9-12.9 12.9S0 84.7 0 77.6s5.8-12.9 12.9-12.9h12.9v12.9zM32.3 77.6c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9v32.3c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V77.6z" fill="#E01E5A"/>
+          <path d="M45.2 25.8c-7.1 0-12.9-5.8-12.9-12.9S38.1 0 45.2 0s12.9 5.8 12.9 12.9v12.9H45.2zM45.2 32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H12.9C5.8 58.1 0 52.3 0 45.2s5.8-12.9 12.9-12.9h32.3z" fill="#36C5F0"/>
+          <path d="M97 45.2c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9-5.8 12.9-12.9 12.9H97V45.2zM90.5 45.2c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V12.9C64.7 5.8 70.5 0 77.6 0s12.9 5.8 12.9 12.9v32.3z" fill="#2EB67D"/>
+          <path d="M77.6 97c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9-12.9-5.8-12.9-12.9V97h12.9zM77.6 90.5c-7.1 0-12.9-5.8-12.9-12.9s5.8-12.9 12.9-12.9h32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H77.6z" fill="#ECB22E"/>
+        </svg>
+        Join us on Slack
+      </a>
+    </div>
+    <div class="slack-art" aria-hidden="true">
+      <svg class="holo-mark" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="slack-holo" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stop-color="#cfeede" />
+            <stop offset="32%" stop-color="#e9e5f6" />
+            <stop offset="58%" stop-color="#fbe2ef" />
+            <stop offset="100%" stop-color="#d7ecf6" />
+          </linearGradient>
+          <filter id="slack-holo-glow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="2.5" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        <circle cx="60" cy="60" r="40" class="holo-halo" />
+        <g class="holo-spin" filter="url(#slack-holo-glow)" fill="url(#slack-holo)">
+          <rect x="64" y="18" width="16" height="38" rx="8" />
+          <rect x="64" y="18" width="16" height="38" rx="8" transform="rotate(90 60 60)" />
+          <rect x="64" y="18" width="16" height="38" rx="8" transform="rotate(180 60 60)" />
+          <rect x="64" y="18" width="16" height="38" rx="8" transform="rotate(270 60 60)" />
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <style>
+    .slack {
+      border-top: 1px solid var(--line);
+      padding: 5rem 0;
+      background:
+        radial-gradient(720px 420px at 88% 50%, rgba(232, 228, 247, 0.06), transparent 62%),
+        var(--bg);
+    }
+    .slack-panel {
+      display: grid;
+      grid-template-columns: 1.4fr 0.6fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+    .slack-copy { max-width: 38rem; }
+    .slack-copy p { color: var(--text-dim); margin-bottom: 1.8rem; }
+    .slack-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .slack-glyph { width: 18px; height: 18px; display: block; }
+
+    .slack-art { display: flex; justify-content: center; }
+    .holo-mark { width: 150px; height: 150px; }
+    .holo-halo {
+      fill: none;
+      stroke: rgba(232, 228, 247, 0.18);
+      stroke-width: 1;
+    }
+    .holo-spin {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: holoSpin 26s linear infinite;
+    }
+    @keyframes holoSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 760px) {
+      .slack-panel { grid-template-columns: 1fr; gap: 2rem; }
+      .slack-art { order: -1; justify-content: flex-start; }
+      .holo-mark { width: 110px; height: 110px; }
+    }
+  </style>
+</section>

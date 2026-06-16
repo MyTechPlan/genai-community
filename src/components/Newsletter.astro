@@ -1,0 +1,63 @@
+---
+// Placeholder form. Swap the action URL for your provider (Mailchimp/Beehiiv/Buttondown).
+---
+<section id="newsletter" class="newsletter">
+  <div class="wrap nl-grid">
+    <div>
+      <span class="eyebrow">Newsletter</span>
+      <h2>One email a week. Everything that matters in EU GenAI</h2>
+      <p>Expert posts, chapter events, and summit news - curated by the community, once a week. No spam, no fluff.</p>
+    </div>
+    <form class="nl-form" action="#" method="post" aria-label="Newsletter signup">
+      <label for="nl-email" class="visually-hidden">Email address</label>
+      <input id="nl-email" type="email" name="email" placeholder="you@company.eu" required />
+      <button type="submit" class="btn btn-iris">Subscribe</button>
+    </form>
+  </div>
+
+  <style>
+    .newsletter {
+      position: relative;
+      color: var(--text);
+      padding: 4.8rem 0;
+      border-top: 1px solid var(--line);
+      background:
+        radial-gradient(800px 420px at 18% 0%, rgba(251, 225, 239, 0.06), transparent 60%),
+        radial-gradient(700px 420px at 95% 120%, rgba(205, 238, 222, 0.05), transparent 60%),
+        var(--bg);
+    }
+    .newsletter .eyebrow { color: var(--text-dim); }
+    .newsletter p { color: var(--text-dim); }
+    .nl-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .nl-form {
+      display: flex;
+      gap: 0.6rem;
+    }
+    .nl-form input {
+      flex: 1;
+      font: inherit;
+      padding: 0.85rem 1rem;
+      border-radius: 7px;
+      border: 1px solid var(--line-2);
+      background: var(--bg-2);
+      color: var(--text);
+      min-width: 0;
+    }
+    .nl-form input::placeholder { color: var(--text-faint); }
+    .visually-hidden {
+      position: absolute;
+      width: 1px; height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+    @media (max-width: 760px) {
+      .nl-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .nl-form { flex-direction: column; }
+    }
+  </style>
+</section>

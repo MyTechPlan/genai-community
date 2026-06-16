@@ -1,0 +1,162 @@
+/* GenAI Community EU - design system
+   Dark, editorial, senior-by-design. Monochrome charcoal + iridescent accent. */
+
+:root {
+  /* surfaces */
+  --bg: #0b0b0c;
+  --bg-1: #141416;   /* raised section band */
+  --bg-2: #161619;   /* card */
+  --bg-3: #1f1f23;   /* card hover */
+
+  /* text */
+  --text: #f4f4f3;
+  --text-dim: #a6a6ad;
+  --text-faint: #6e6e76;
+  --white: #ffffff;
+
+  /* lines */
+  --line: rgba(255, 255, 255, 0.10);
+  --line-2: rgba(255, 255, 255, 0.20);
+
+  /* iridescent brand accent (from the logo swatch) */
+  --iris: linear-gradient(110deg, #cdeede 0%, #e8e4f7 30%, #fbe1ef 55%, #fdf4d6 78%, #d6ecf6 100%);
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Instrument Sans', sans-serif;
+  --font-mono: 'Spline Sans Mono', monospace;
+
+  --max-w: 1100px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(1100px 700px at 78% -8%, rgba(255, 255, 255, 0.05), transparent 60%),
+    radial-gradient(900px 600px at 0% 100%, rgba(214, 236, 246, 0.035), transparent 55%),
+    var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  color: var(--text);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.5em;
+}
+
+h1 { font-size: clamp(2.5rem, 6vw, 4.4rem); font-weight: 700; }
+h2 { font-size: clamp(1.9rem, 4vw, 2.7rem); font-weight: 600; }
+h3 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; }
+
+p { margin: 0 0 1em; }
+a { color: var(--text); }
+
+strong { font-weight: 600; }
+
+.grad {
+  background-image: var(--iris);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: irisShift 7s ease-in-out infinite;
+}
+
+@keyframes irisShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Holographic inline text link */
+.link-holo {
+  background-image: var(--iris);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 600;
+  text-decoration: none;
+  animation: irisShift 7s ease-in-out infinite;
+}
+.link-holo:hover { animation-duration: 2.8s; }
+
+.wrap {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--text-faint);
+  display: block;
+  margin-bottom: 1rem;
+}
+.eyebrow-light { color: var(--text-dim); }
+
+.section {
+  padding: 5.5rem 0;
+}
+
+.btn {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.98rem;
+  text-decoration: none;
+  padding: 0.8rem 1.6rem;
+  border-radius: 7px;
+  transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+.btn:focus-visible,
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+/* Holographic / iridescent button — applied to every button variant */
+.btn-iris,
+.btn-primary,
+.btn-ghost,
+.btn-light {
+  position: relative;
+  color: #14131a;
+  border: none;
+  background-image: var(--iris);
+  background-size: 220% 220%;
+  background-position: 0% 50%;
+  animation: irisShift 6s ease-in-out infinite;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25) inset,
+              0 6px 22px -10px rgba(232, 228, 247, 0.5);
+}
+.btn-iris:hover,
+.btn-primary:hover,
+.btn-ghost:hover,
+.btn-light:hover {
+  transform: translateY(-1px);
+  animation-duration: 2.8s;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4) inset,
+              0 10px 30px -10px rgba(251, 225, 239, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; animation: none !important; }
+}
