@@ -1,5 +1,5 @@
 ---
-// Placeholder form. Swap the action URL for your provider (Mailchimp/Beehiiv/Buttondown).
+// Newsletter signup. Posts to /api/newsletter (Resend notification + reCAPTCHA Enterprise).
 ---
 <section id="newsletter" class="newsletter">
   <div class="wrap nl-grid">
@@ -8,11 +8,23 @@
       <h2>One email a week. Everything that matters in EU GenAI</h2>
       <p>Expert posts, chapter events, and summit news - curated by the community, once a week. No spam, no fluff.</p>
     </div>
-    <form class="nl-form" action="#" method="post" aria-label="Newsletter signup">
-      <label for="nl-email" class="visually-hidden">Email address</label>
-      <input id="nl-email" type="email" name="email" placeholder="you@company.eu" required />
-      <button type="submit" class="btn btn-iris">Subscribe</button>
-    </form>
+    <div class="nl-formwrap">
+      <form
+        id="nl-form"
+        class="nl-form"
+        aria-label="Newsletter signup"
+        data-recaptcha
+        data-endpoint="/api/newsletter"
+        data-action="newsletter_submit"
+      >
+        <label for="nl-email" class="visually-hidden">Email address</label>
+        <input id="nl-email" type="email" name="email" placeholder="you@company.eu" required />
+        <button type="submit" class="btn btn-iris" data-loading="Subscribing…">Subscribe</button>
+      </form>
+      <p class="nl-error" data-form-error hidden></p>
+      <p class="nl-consent">By subscribing you agree to our <a href="/privacy" class="link-holo">Privacy Policy</a>.</p>
+      <p id="nl-form-success" class="nl-success" hidden>✓ You're on the list. Check your inbox to confirm.</p>
+    </div>
   </div>
 
   <style>
@@ -49,6 +61,23 @@
       min-width: 0;
     }
     .nl-form input::placeholder { color: var(--text-faint); }
+    .nl-formwrap { min-width: 0; }
+    .nl-consent {
+      font-size: 0.8rem;
+      color: var(--text-faint);
+      margin: 0.7rem 0 0;
+    }
+    .nl-error {
+      font-size: 0.85rem;
+      color: #f3a3b8;
+      margin: 0.7rem 0 0;
+    }
+    .nl-success {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #cdeede;
+      margin: 0.4rem 0 0;
+    }
     .visually-hidden {
       position: absolute;
       width: 1px; height: 1px;

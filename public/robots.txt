@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://genaicommunity.eu/sitemap-index.xml
+# LLM-readable site summary: https://genaicommunity.eu/llms.txt

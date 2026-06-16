@@ -1,7 +1,57 @@
 ---
 import '../styles/global.css';
 import Logo from '../components/Logo.astro';
-const { title = 'GenAI Community EU', description = 'The European community of generative AI builders and practitioners. Chapters across Europe, expert blog, weekly newsletter, and one annual summit in Valencia.' } = Astro.props;
+import CookieBanner from '../components/CookieBanner.astro';
+import Analytics from '@vercel/analytics/astro';
+const SITE_NAME = 'GenAI Community EU';
+const SITE_DESCRIPTION = 'The European community of generative AI builders and practitioners. Chapters across Europe, expert blog, weekly newsletter, and one annual summit in Valencia.';
+
+const {
+  title = 'GenAI Community EU',
+  description = SITE_DESCRIPTION,
+  ogImage = '/og-image.png',
+  ogType = 'website',
+  noindex = false,
+} = Astro.props;
+
+// SEO — derived per page from props + the site URL set in astro.config.mjs.
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(ogImage, Astro.site);
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': new URL('/#organization', Astro.site).toString(),
+  name: SITE_NAME,
+  legalName: 'My Tech Plan, S.L.',
+  url: Astro.site.toString(),
+  logo: new URL('/icon-512.png', Astro.site).toString(),
+  image: new URL('/og-image.png', Astro.site).toString(),
+  description: SITE_DESCRIPTION,
+  slogan: "Where Europe's GenAI builders actually meet",
+  sameAs: [
+    'https://x.com/GenAISummit_EU',
+    'https://www.linkedin.com/company/genai-community-eu/',
+    'https://genaisummit.eu',
+  ],
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': new URL('/#website', Astro.site).toString(),
+  name: SITE_NAME,
+  url: Astro.site.toString(),
+  description: SITE_DESCRIPTION,
+  inLanguage: 'en',
+  publisher: { '@id': new URL('/#organization', Astro.site).toString() },
+};
+
+// Analytics IDs (dormant until provided). Same Consent-Mode-v2 + GTM + GA4 wiring as site-blog.
+const GTM_ID = import.meta.env.PUBLIC_GTM_ID || '';
+const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || '';
+// reCAPTCHA Enterprise site key (reused from My Tech Plan; override via env if a dedicated key is created).
+const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '6Lfjpl4sAAAAACd0hm3dgKL3rTA22WQi8uwYdAzX';
 ---
 <!doctype html>
 <html lang="en">
@@ -10,14 +60,129 @@ const { title = 'GenAI Community EU', description = 'The European community of g
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Canonical + indexing -->
+    <link rel="canonical" href={canonicalURL} />
+    {noindex
+      ? <meta name="robots" content="noindex, nofollow" />
+      : <meta name="robots" content="index, follow, max-image-preview:large" />}
+
+    <!-- Open Graph (Facebook, LinkedIn, Slack, Discord, WhatsApp) -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="GenAI Community EU — where Europe's GenAI builders actually meet" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:locale" content="en_GB" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@GenAISummit_EU" />
+    <meta name="twitter:creator" content="@GenAISummit_EU" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+    <meta name="twitter:image:alt" content="GenAI Community EU — where Europe's GenAI builders actually meet" />
+
+    <!-- Favicons & app icons -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0b0b0c" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Google Consent Mode v2 — MUST run before any Google tags -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        functionality_storage: 'granted',
+        security_storage: 'granted',
+        wait_for_update: 500,
+      });
+
+      (function () {
+        try {
+          var saved = localStorage.getItem('gc_cookie_consent');
+          if (saved) {
+            var consent = JSON.parse(saved);
+            gtag('consent', 'update', {
+              analytics_storage: consent.analytics ? 'granted' : 'denied',
+              ad_storage: consent.marketing ? 'granted' : 'denied',
+              ad_user_data: consent.marketing ? 'granted' : 'denied',
+              ad_personalization: consent.marketing ? 'granted' : 'denied',
+            });
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    {GTM_ID && (
+      <script is:inline define:vars={{ GTM_ID }}>
+        (function (w, d, s, l, i) {
+          w[l] = w[l] || [];
+          w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+          var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != 'dataLayer' ? '&l=' + l : '';
+          j.async = true;
+          j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+          f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', GTM_ID);
+      </script>
+    )}
+
+    {GA_MEASUREMENT_ID && (
+      <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
+        (function () {
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+          document.head.appendChild(s);
+          gtag('js', new Date());
+          gtag('config', GA_MEASUREMENT_ID);
+        })();
+      </script>
+    )}
+
+    <!-- reCAPTCHA Enterprise (loaded for all forms) -->
+    <script is:inline define:vars={{ RECAPTCHA_SITE_KEY }}>
+      window.__RECAPTCHA_SITE_KEY = RECAPTCHA_SITE_KEY;
+      (function () {
+        if (!RECAPTCHA_SITE_KEY) return;
+        var s = document.createElement('script');
+        s.src = 'https://www.google.com/recaptcha/enterprise.js?render=' + RECAPTCHA_SITE_KEY;
+        s.async = true;
+        s.defer = true;
+        document.head.appendChild(s);
+      })();
+    </script>
   </head>
   <body>
+    {GTM_ID && (
+      <noscript set:html={`<iframe src="https://www.googletagmanager.com/ns.html?id=${GTM_ID}" height="0" width="0" style="display:none;visibility:hidden"></iframe>`} />
+    )}
     <header class="site-header">
       <div class="wrap nav">
         <a href="/" class="logo" aria-label="GenAI Community EU home">
@@ -50,7 +215,8 @@ const { title = 'GenAI Community EU', description = 'The European community of g
           <a href="https://genaisummit.eu" rel="noopener">GenAI Summit EU</a>
           <a href="/#newsletter">Newsletter</a>
           <a href="/contact">Contact</a>
-          <a class="footer-static">Code of conduct</a>
+          <a href="/privacy">Privacy</a>
+          <button type="button" class="footer-static footer-cookie-btn" data-manage-cookies>Manage cookies</button>
         </nav>
       </div>
       <div class="wrap footer-bottom">
@@ -69,6 +235,30 @@ const { title = 'GenAI Community EU', description = 'The European community of g
         <p class="copyright">Made with love &amp; Claude &lt;3 · All rights reserved · © {new Date().getFullYear()} <a href="https://www.mytechplan.com" class="link-holo" target="_blank" rel="noopener">My Tech Plan S.L</a></p>
       </div>
     </footer>
+
+    <CookieBanner />
+
+    <script>
+      import { wireAllForms } from '../scripts/form-submit.js';
+
+      function init() {
+        wireAllForms();
+        const manageBtn = document.querySelector('[data-manage-cookies]');
+        if (manageBtn) {
+          manageBtn.addEventListener('click', () => {
+            window.dispatchEvent(new CustomEvent('showCookieBanner'));
+          });
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    </script>
+
+    <Analytics />
 
     <style>
       .site-header {
@@ -144,6 +334,15 @@ const { title = 'GenAI Community EU', description = 'The European community of g
       .footer-links a { color: var(--text-dim); text-decoration: none; }
       .footer-links a[href]:hover { color: var(--text); }
       .footer-static { color: var(--text-dim); }
+      .footer-cookie-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+      .footer-cookie-btn:hover { color: var(--text); }
       .copyright .link-holo { font-weight: 400; }
       .footer-bottom {
         margin-top: 2.5rem;

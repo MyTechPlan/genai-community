@@ -3,14 +3,8 @@ import Base from '../layouts/Base.astro';
 import Newsletter from '../components/Newsletter.astro';
 import Constellation from '../components/Constellation.astro';
 import SlackCTA from '../components/SlackCTA.astro';
-import PostCover from '../components/PostCover.astro';
-import { getCollection } from 'astro:content';
-
-const posts = (await getCollection('blog'))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 3);
 ---
-<Base>
+<Base title="GenAI Community EU — Where Europe's GenAI builders meet">
   <!-- Hero -->
   <section class="hero">
     <div class="wrap hero-grid">
@@ -63,22 +57,15 @@ const posts = (await getCollection('blog'))
           <span class="eyebrow">From the blog</span>
           <h2>Written by people who ship</h2>
         </div>
-        <a href="/blog" class="btn btn-ghost">All posts</a>
+        <a href="/blog" class="btn btn-ghost">Visit the blog</a>
       </div>
-      <div class="post-grid">
-        {posts.map((post, i) => (
-          <a href={`/blog/${post.id.replace(/\.md$/, '')}`} class="post-card">
-            <PostCover variant={i} />
-            <p class="post-date">{post.data.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-            <h3>{post.data.title}</h3>
-            <p class="post-desc">{post.data.description}</p>
-            <p class="post-author">{post.data.author}{post.data.authorRole ? ` - ${post.data.authorRole}` : ''}</p>
-          </a>
-        ))}
-      </div>
-      <div class="write-cta">
-        <p><strong>Working on something worth sharing?</strong> The blog is open to community experts.</p>
-        <a href="mailto:blog@genaicommunity.eu?subject=I want to write for the blog" class="btn btn-iris">Apply to be a writer</a>
+      <div class="blog-soon">
+        <span class="blog-soon-badge">Coming soon</span>
+        <p>An expert-written blog on building with generative AI in production — agents, evals, infra, and the lessons that only show up at scale. The first posts are on their way.</p>
+        <div class="write-cta-inline">
+          <p><strong>Working on something worth sharing?</strong> The blog is open to community experts.</p>
+          <a href="mailto:blog@genaicommunity.eu?subject=I want to write for the blog" class="btn btn-iris">Apply to be a writer</a>
+        </div>
       </div>
     </div>
   </section>
@@ -179,56 +166,37 @@ const posts = (await getCollection('blog'))
       margin-bottom: 2.4rem;
       flex-wrap: wrap;
     }
-    .post-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.2rem;
-    }
-    .post-card {
-      display: block;
+    .blog-soon {
       background: var(--bg-2);
       border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 1.6rem;
-      text-decoration: none;
-      color: var(--text);
-      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+      padding: 2.2rem;
     }
-    .post-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--line-2);
-      background: var(--bg-3);
-    }
-    .post-card :global(.post-cover) { margin-bottom: 1.1rem; }
-    .post-date {
+    .blog-soon-badge {
+      display: inline-block;
       font-family: var(--font-mono);
       font-size: 0.72rem;
-      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--text-faint);
-      margin-bottom: 0.7rem;
+      letter-spacing: 0.14em;
+      color: #14131a;
+      background-image: var(--iris);
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
     }
-    .post-desc { color: var(--text-dim); font-size: 0.95rem; }
-    .post-author {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-dim);
-      margin: 0.9rem 0 0;
-    }
-    .write-cta {
-      margin-top: 2.5rem;
+    .blog-soon > p { color: var(--text-dim); max-width: 44rem; }
+    .write-cta-inline {
+      margin-top: 1.8rem;
+      padding-top: 1.6rem;
+      border-top: 1px solid var(--line);
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 1.5rem;
       flex-wrap: wrap;
-      background: var(--bg-2);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 1.5rem 2rem;
     }
-    .write-cta p { margin: 0; color: var(--text-dim); }
-    .write-cta strong { color: var(--text); }
+    .write-cta-inline p { margin: 0; color: var(--text-dim); }
+    .write-cta-inline strong { color: var(--text); }
 
     .summit {
       position: relative;

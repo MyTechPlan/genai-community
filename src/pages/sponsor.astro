@@ -1,8 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 
-// TODO: wire this form to your provider (Formspree, a serverless endpoint, etc.).
-// Right now it is a static placeholder — no submission is sent.
+// Posts to /api/sponsor (Resend notification + reCAPTCHA Enterprise) via the
+// shared form-submit script wired in the Base layout.
 ---
 <Base title="Become a sponsor - GenAI Community EU" description="Partner with GenAI Community: sponsor a chapter in your city or join our events — GenAI Summit EU and GenAI Workshop Fest.">
   <section class="section">
@@ -19,7 +19,14 @@ import Base from '../layouts/Base.astro';
         <p class="contact-note">Tell us what you have in mind and we'll send you the deck.</p>
       </div>
 
-      <form class="contact-form" action="#" method="post" aria-label="Sponsor and partnership enquiry">
+      <form
+        id="sponsor-form"
+        class="contact-form"
+        aria-label="Sponsor and partnership enquiry"
+        data-recaptcha
+        data-endpoint="/api/sponsor"
+        data-action="sponsor_submit"
+      >
         <div class="field">
           <label for="c-name">Name</label>
           <input id="c-name" name="name" type="text" required />
@@ -55,10 +62,15 @@ import Base from '../layouts/Base.astro';
         </div>
         <label class="consent">
           <input type="checkbox" name="consent" required />
-          <span>I consent to the processing of my data for commercial purposes by <a href="https://www.mytechplan.com" class="link-holo" target="_blank" rel="noopener">My Tech Plan S.L.</a></span>
+          <span>I consent to the processing of my data for commercial purposes and accept the <a href="/privacy" class="link-holo">Privacy Policy</a>.</span>
         </label>
-        <button type="submit" class="btn btn-iris contact-submit">Send me the deck</button>
+        <p class="form-error" data-form-error hidden></p>
+        <button type="submit" class="btn btn-iris contact-submit" data-loading="Sending…">Send me the deck</button>
       </form>
+      <div id="sponsor-form-success" class="form-success" hidden>
+        <h2>Thanks ✓</h2>
+        <p>We've got your details — we'll send the deck and follow up shortly.</p>
+      </div>
     </div>
   </section>
 
@@ -150,6 +162,21 @@ import Base from '../layouts/Base.astro';
       accent-color: #cdeede;
     }
     .contact-submit { grid-column: 1 / -1; justify-self: start; }
+    .form-error {
+      grid-column: 1 / -1;
+      font-size: 0.88rem;
+      color: #f3a3b8;
+      margin: 0;
+    }
+    .form-success {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 2.4rem 1.8rem;
+      text-align: center;
+    }
+    .form-success h2 { color: #cdeede; }
+    .form-success p { color: var(--text-dim); margin: 0; }
 
     @media (max-width: 820px) {
       .contact-grid { grid-template-columns: 1fr; gap: 2.2rem; }

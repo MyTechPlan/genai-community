@@ -5,6 +5,10 @@ import PostCover from '../../components/PostCover.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
+  // Blog is "coming soon" — no individual posts are published yet.
+  // Re-enable by returning the mapped posts below when the blog launches.
+  const BLOG_LIVE = false;
+  if (!BLOG_LIVE) return [];
   const posts = await getCollection('blog');
   return posts.map((post) => ({
     params: { slug: post.id.replace(/\.md$/, '') },

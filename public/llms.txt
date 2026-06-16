@@ -1,0 +1,30 @@
+# GenAI Community EU
+
+> Where Europe's GenAI builders actually meet — the European community of generative AI builders and practitioners, with local chapters across Europe, an expert blog, a weekly newsletter, and one annual summit in Valencia.
+
+GenAI Community EU connects practitioners working with generative AI across Europe through local chapters (city meetups and hands-on workshops), an expert-written blog, a weekly newsletter, and one annual in-person gathering — GenAI Summit EU in Valencia, Spain. The focus is real production work: agentic architectures, evaluations, infrastructure, and deployment, not hype. The site is operated by My Tech Plan, S.L. The blog is launching soon and has no published posts yet.
+
+## Pages
+
+- [Home](https://genaicommunity.eu/): Overview of the community — what it is, the local chapters, the blog, and the annual GenAI Summit EU.
+- [Chapters](https://genaicommunity.eu/chapters): Local groups across European cities (e.g. Valencia, Lisbon, Berlin) running meetups and workshops; includes how to apply to lead an official chapter and what Chapter Leads receive.
+- [Blog](https://genaicommunity.eu/blog): Coming soon — expert posts on building with generative AI in production (agents, evals, infra). No posts published yet; community experts can apply to write via blog@genaicommunity.eu.
+- [Sponsor](https://genaicommunity.eu/sponsor): Partnership and sponsorship options — host a chapter in your city, or sponsor events such as GenAI Summit EU and GenAI Workshop Fest.
+- [Contact](https://genaicommunity.eu/contact): General contact form for questions about chapters, speaking, writing for the blog, press, and more.
+
+## Events
+
+- [GenAI Summit EU](https://genaisummit.eu): The community's annual flagship — two days of technical talks, workshops, and networking in Valencia, Spain.
+
+## Community
+
+- [Slack](https://join.slack.com/t/genaicommunityespacio/shared_invite/zt-40tgj84ep-ON4753OHsvJYI8A0iy923Q): Join the community Slack workspace.
+- [Newsletter](https://genaicommunity.eu/#newsletter): Subscribe to the weekly newsletter.
+- [Write for the blog](mailto:blog@genaicommunity.eu): Community experts can pitch and contribute posts.
+
+## Optional
+
+- [Privacy Policy](https://genaicommunity.eu/privacy): Privacy and cookie policy for the site.
+- [X / Twitter](https://x.com/GenAISummit_EU): Community updates on X.
+- [LinkedIn](https://www.linkedin.com/company/genai-community-eu/): Company page on LinkedIn.
+- [My Tech Plan, S.L.](https://www.mytechplan.com): The organization that operates GenAI Community EU.

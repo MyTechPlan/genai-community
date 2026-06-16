@@ -1,8 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 
-// TODO: wire this form to your provider (Formspree, a serverless endpoint, etc.).
-// Right now it is a static placeholder — no submission is sent.
+// Posts to /api/contact (Resend notification + reCAPTCHA Enterprise) via the
+// shared form-submit script wired in the Base layout.
 ---
 <Base title="Contact - GenAI Community EU" description="Get in touch with the GenAI Community team.">
   <section class="section">
@@ -12,7 +12,14 @@ import Base from '../layouts/Base.astro';
       <h1>Have a question? We're here to help</h1>
       <p class="ctc-lede">Drop us a line and we'll get back to you. For sponsorships and partnerships, <a href="/sponsor" class="link-holo">become a sponsor</a>.</p>
 
-      <form class="ctc-form" action="#" method="post" aria-label="Contact form">
+      <form
+        id="contact-form"
+        class="ctc-form"
+        aria-label="Contact form"
+        data-recaptcha
+        data-endpoint="/api/contact"
+        data-action="contact_submit"
+      >
         <div class="ctc-field">
           <label for="c-reason">Reason for contact</label>
           <select id="c-reason" name="reason" required>
@@ -38,10 +45,15 @@ import Base from '../layouts/Base.astro';
         </div>
         <label class="ctc-consent">
           <input type="checkbox" name="consent" required />
-          <span>I consent to the processing of my data by <a href="https://www.mytechplan.com" class="link-holo" target="_blank" rel="noopener">My Tech Plan S.L.</a></span>
+          <span>I have read and accept the <a href="/privacy" class="link-holo">Privacy Policy</a>.</span>
         </label>
-        <button type="submit" class="btn btn-iris ctc-submit">Send message</button>
+        <p class="ctc-error" data-form-error hidden></p>
+        <button type="submit" class="btn btn-iris ctc-submit" data-loading="Sending…">Send message</button>
       </form>
+      <div id="contact-form-success" class="ctc-success" hidden>
+        <h2>Message sent ✓</h2>
+        <p>Thanks for reaching out — we'll get back to you shortly.</p>
+      </div>
     </div>
     </div>
   </section>
@@ -102,5 +114,20 @@ import Base from '../layouts/Base.astro';
       accent-color: #cdeede;
     }
     .ctc-submit { align-self: start; }
+    .ctc-error {
+      font-size: 0.88rem;
+      color: #f3a3b8;
+      margin: 0;
+    }
+    .ctc-success {
+      margin-top: 2.4rem;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 2.4rem 1.8rem;
+      text-align: center;
+    }
+    .ctc-success h2 { color: #cdeede; }
+    .ctc-success p { color: var(--text-dim); margin: 0; }
   </style>
 </Base>
