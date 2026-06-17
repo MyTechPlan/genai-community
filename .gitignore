@@ -28,3 +28,7 @@ pnpm-debug.log*
 
 # vercel
 .vercel
+
+# test artifacts
+.playwright-mcp/
+newsletter-success*.png
