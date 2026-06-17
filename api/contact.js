@@ -1,8 +1,7 @@
 import { handleContactRequest } from './_lib/contact-request.js';
 
-// Sender must be a Resend-verified domain. genaisummit.eu is verified in the reused
-// Resend account; switch to noreply@genaicommunity.eu once that domain is verified too.
-const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'GenAI Community EU <noreply@genaisummit.eu>';
+// Sender uses the Resend-verified genaicommunity.eu domain (own brand).
+const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'GenAI Community EU <noreply@genaicommunity.eu>';
 const TO_EMAIL = process.env.CONTACT_TO_EMAIL || 'hello@genaicommunity.eu';
 
 const MAX_LENGTHS = {

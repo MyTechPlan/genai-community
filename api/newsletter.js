@@ -1,6 +1,6 @@
 import { handleContactRequest } from './_lib/contact-request.js';
 
-const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'GenAI Community EU <noreply@genaisummit.eu>';
+const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'GenAI Community EU <noreply@genaicommunity.eu>';
 const TO_EMAIL = process.env.NEWSLETTER_TO_EMAIL || process.env.CONTACT_TO_EMAIL || 'hello@genaicommunity.eu';
 
 const MAX_LENGTHS = {

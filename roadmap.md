@@ -9,11 +9,10 @@ Production: https://genai-community-three.vercel.app (Vercel project `genai-comm
 
 These are blocked on credentials or external setup. The code is ready; only the values/console steps are missing.
 
-- [ ] **reCAPTCHA — allow the domains.** MTP's reCAPTCHA Enterprise key (`6Lfjpl4…`, GCP project `my-tech-plan-1674492903312`) is bound to `mytechplan.com`. In Google Cloud → reCAPTCHA Enterprise → the key's **allowed domains**, add `genaicommunity.eu` (and `genai-community-three.vercel.app` if you want to test on the temp URL). Until then live form submissions can fail server-side assessment (403). The serverless functions are already deployed and `RECAPTCHA_API_KEY` is set in Production.
-- [x] **Resend — sender domain wired.** Form notifications send **from `noreply@genaisummit.eu`** (the one domain verified in the reused `mytechplan` Resend account) **to `hello@genaicommunity.eu`** (your Google Workspace inbox), with `reply_to` set to the person who submitted. Works today. Note: Google Workspace handles *receiving* (MX); Resend handles *sending* (SPF/DKIM TXT) — they coexist on a domain with no conflict.
-- [ ] **(Optional) Own-brand sender.** To send from `@genaicommunity.eu` instead of `@genaisummit.eu`, add `genaicommunity.eu` in Resend (add its DKIM/SPF TXT records — does **not** touch your Workspace MX), then set `CONTACT_FROM_EMAIL=GenAI Community EU <noreply@genaicommunity.eu>` in Vercel.
+- [x] **reCAPTCHA — domains allowed.** `genaicommunity.eu` + `www.genaicommunity.eu` added to the reCAPTCHA Enterprise key (`6Lfjpl4…`), so forms pass server-side captcha on the live domain. (`RECAPTCHA_API_KEY` already set in Production. The temp `*.vercel.app` URL is not whitelisted, so test on the real domain.)
+- [x] **Resend — sender wired (own brand).** `genaicommunity.eu` is verified in Resend, so form notifications send **from `noreply@genaicommunity.eu`** **to `hello@genaicommunity.eu`** (your Google Workspace inbox), with `reply_to` set to the person who submitted. Note: Google Workspace handles *receiving* (MX); Resend handles *sending* (SPF/DKIM TXT) — they coexist on the domain with no conflict.
 - [ ] **Analytics — provide GenAI Community's own IDs.** Google tags are wired but **dormant**. Create a GTM container + GA4 property for GenAI Community, then set Vercel env vars `PUBLIC_GTM_ID` and `PUBLIC_GA_MEASUREMENT_ID` and redeploy. (Vercel Analytics is already live and needs nothing.) Avoid reusing MTP's IDs — it would mix traffic into MTP's property.
-- [ ] **Custom domain — migrate genaicommunity.eu.** Add `genaicommunity.eu` (+ `www`) in the Vercel project's Domains and point DNS. All canonical/OG/sitemap URLs already target the real domain, so SEO consolidates automatically.
+- [x] **Custom domain — connected.** `genaicommunity.eu` + `www` are live on Vercel. ⚠️ Open item: the apex 308-redirects to `www`, but the page canonical points to the apex → set the apex as **Primary** in Vercel → Settings → Domains (or ask me to switch the code `site` to `www`) so serving + canonical + Search Console all align on one host.
 
 ### Env vars to set in Vercel (when ready)
 | Variable | Status | Notes |
@@ -21,7 +20,7 @@ These are blocked on credentials or external setup. The code is ready; only the 
 | `RESEND_API_KEY` | ✅ set (Production) | reused from MTP |
 | `RECAPTCHA_API_KEY` | ✅ set (Production) | reused from MTP |
 | `CONTACT_TO_EMAIL` | ✅ set | `hello@genaicommunity.eu` (your Workspace inbox) |
-| `CONTACT_FROM_EMAIL` | ⬜ optional | flip to `noreply@genaicommunity.eu` after Resend domain verify |
+| `CONTACT_FROM_EMAIL` | code default | `noreply@genaicommunity.eu` (verified in Resend) |
 | `PUBLIC_GTM_ID` | ⬜ pending | activates Google Tag Manager |
 | `PUBLIC_GA_MEASUREMENT_ID` | ⬜ pending | activates GA4 |
 | `PUBLIC_RECAPTCHA_SITE_KEY` | default baked in | override only if a dedicated key is created |
