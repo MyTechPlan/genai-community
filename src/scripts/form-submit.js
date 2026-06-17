@@ -63,8 +63,12 @@ export function wireForm(form) {
       }
 
       if (successEl) {
+        // inline style beats class rules like `.nl-form { display:flex }`,
+        // which would otherwise override the [hidden] attribute.
+        form.style.display = 'none';
         form.hidden = true;
         successEl.hidden = false;
+        successEl.style.removeProperty('display');
       } else {
         form.reset();
         setLoading(form, false);
