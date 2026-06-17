@@ -10,7 +10,11 @@ const ALLOWED_ORIGINS = [
 // Override via env if a dedicated key is provisioned for genaicommunity.eu.
 const RECAPTCHA_PROJECT_ID = process.env.RECAPTCHA_PROJECT_ID || 'my-tech-plan-1674492903312';
 const RECAPTCHA_SITE_KEY = process.env.PUBLIC_RECAPTCHA_SITE_KEY || '6Lfjpl4sAAAAACd0hm3dgKL3rTA22WQi8uwYdAzX';
-const RECAPTCHA_SCORE_THRESHOLD = 0.5;
+// Lower default (0.3) than MTP's 0.5: this audience uses privacy browsers (Brave/VPN)
+// that legitimately score low. Tune via RECAPTCHA_SCORE_THRESHOLD. Still blocks raw bots.
+const RECAPTCHA_SCORE_THRESHOLD = process.env.RECAPTCHA_SCORE_THRESHOLD
+  ? Number(process.env.RECAPTCHA_SCORE_THRESHOLD)
+  : 0.3;
 const EXTERNAL_FETCH_TIMEOUT_MS = 8000;
 
 export function isProductionEnv(env = process.env) {

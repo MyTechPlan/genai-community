@@ -27,7 +27,10 @@ export function wireForm(form) {
   const endpoint = form.dataset.endpoint;
   const action = form.dataset.action || 'submit';
   const successEl = form.id ? document.getElementById(`${form.id}-success`) : null;
-  const errorEl = form.querySelector('[data-form-error]');
+  // Error element may live inside the form OR as a sibling (#<form-id>-error).
+  const errorEl =
+    form.querySelector('[data-form-error]') ||
+    (form.id ? document.getElementById(`${form.id}-error`) : null);
 
   if (!endpoint) return;
 
