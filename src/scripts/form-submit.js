@@ -69,7 +69,7 @@ export function wireForm(form) {
     } catch (error) {
       console.error('Form submission error:', error);
       if (errorEl) {
-        errorEl.textContent = 'Something went wrong. Please try again, or email community@genaicommunity.eu directly.';
+        errorEl.textContent = 'Something went wrong. Please try again, or email hello@genaicommunity.eu directly.';
         errorEl.hidden = false;
       }
       setLoading(form, false);

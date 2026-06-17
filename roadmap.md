@@ -10,7 +10,8 @@ Production: https://genai-community-three.vercel.app (Vercel project `genai-comm
 These are blocked on credentials or external setup. The code is ready; only the values/console steps are missing.
 
 - [ ] **reCAPTCHA — allow the domains.** MTP's reCAPTCHA Enterprise key (`6Lfjpl4…`, GCP project `my-tech-plan-1674492903312`) is bound to `mytechplan.com`. In Google Cloud → reCAPTCHA Enterprise → the key's **allowed domains**, add `genaicommunity.eu` (and `genai-community-three.vercel.app` if you want to test on the temp URL). Until then live form submissions can fail server-side assessment (403). The serverless functions are already deployed and `RECAPTCHA_API_KEY` is set in Production.
-- [ ] **Resend — verify the sender domain.** Emails currently send **from `noreply@mytechplan.com`** (already verified) **to `community@genaicommunity.eu`**, so they work today. Once `genaicommunity.eu` is verified in Resend, set the Vercel env var `CONTACT_FROM_EMAIL=GenAI Community EU <noreply@genaicommunity.eu>`.
+- [x] **Resend — sender domain wired.** Form notifications send **from `noreply@genaisummit.eu`** (the one domain verified in the reused `mytechplan` Resend account) **to `hello@genaicommunity.eu`** (your Google Workspace inbox), with `reply_to` set to the person who submitted. Works today. Note: Google Workspace handles *receiving* (MX); Resend handles *sending* (SPF/DKIM TXT) — they coexist on a domain with no conflict.
+- [ ] **(Optional) Own-brand sender.** To send from `@genaicommunity.eu` instead of `@genaisummit.eu`, add `genaicommunity.eu` in Resend (add its DKIM/SPF TXT records — does **not** touch your Workspace MX), then set `CONTACT_FROM_EMAIL=GenAI Community EU <noreply@genaicommunity.eu>` in Vercel.
 - [ ] **Analytics — provide GenAI Community's own IDs.** Google tags are wired but **dormant**. Create a GTM container + GA4 property for GenAI Community, then set Vercel env vars `PUBLIC_GTM_ID` and `PUBLIC_GA_MEASUREMENT_ID` and redeploy. (Vercel Analytics is already live and needs nothing.) Avoid reusing MTP's IDs — it would mix traffic into MTP's property.
 - [ ] **Custom domain — migrate genaicommunity.eu.** Add `genaicommunity.eu` (+ `www`) in the Vercel project's Domains and point DNS. All canonical/OG/sitemap URLs already target the real domain, so SEO consolidates automatically.
 
@@ -19,7 +20,7 @@ These are blocked on credentials or external setup. The code is ready; only the 
 |---|---|---|
 | `RESEND_API_KEY` | ✅ set (Production) | reused from MTP |
 | `RECAPTCHA_API_KEY` | ✅ set (Production) | reused from MTP |
-| `CONTACT_TO_EMAIL` | ✅ set | `community@genaicommunity.eu` |
+| `CONTACT_TO_EMAIL` | ✅ set | `hello@genaicommunity.eu` (your Workspace inbox) |
 | `CONTACT_FROM_EMAIL` | ⬜ optional | flip to `noreply@genaicommunity.eu` after Resend domain verify |
 | `PUBLIC_GTM_ID` | ⬜ pending | activates Google Tag Manager |
 | `PUBLIC_GA_MEASUREMENT_ID` | ⬜ pending | activates GA4 |
@@ -33,7 +34,7 @@ These are blocked on credentials or external setup. The code is ready; only the 
 - [ ] **Newsletter provider.** `/api/newsletter` currently emails a signup notification. Wire it to a real ESP (Mailchimp / Beehiiv / Buttondown) with double opt-in for proper GDPR consent + list management.
 - [ ] **Chapters as data.** `/chapters` uses a hardcoded array — move to an Astro content collection as the chapter list grows.
 - [ ] **Code of conduct page.** Create a code-of-conduct page and add it to the footer (not referenced anywhere yet).
-- [ ] **Google Search Console.** Verify `genaicommunity.eu` and submit `https://genaicommunity.eu/sitemap-index.xml`.
+- [ ] **Google Search Console — submit sitemap.** Domain `genaicommunity.eu` is already verified ✅. Once the domain points to this Vercel project, submit `https://genaicommunity.eu/sitemap-index.xml`.
 
 ---
 
