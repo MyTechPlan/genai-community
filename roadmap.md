@@ -29,11 +29,17 @@ These are blocked on credentials or external setup. The code is ready; only the 
 
 ## 🔜 Next up (content & launch)
 
-- [ ] **Launch the blog.** Set `BLOG_LIVE = true` in `src/pages/blog/[slug].astro`, add real posts under `src/content/blog/*.md`, restore the homepage "From the blog" post grid (currently a coming-soon card in `src/pages/index.astro`), and replace the `/blog` coming-soon page with the post list. Add per-post `Article` JSON-LD and an RSS feed at that point.
+- [ ] **Launch the blog.** Set `BLOG_LIVE = true` in `src/pages/blog/[slug].astro`, add real posts under `src/content/blog/*.md`, restore the homepage "From the blog" post grid (currently a coming-soon card in `src/pages/index.astro`), and replace the `/blog` coming-soon page with the post list. **Also revert the SEO holds:** remove `noindex` from `src/pages/blog/index.astro` and the `/blog` sitemap `filter` in `astro.config.mjs`. Add per-post `Article` JSON-LD and an RSS feed at that point.
 - [x] **Newsletter → Beehiiv (done).** `/api/newsletter` adds the subscriber to Beehiiv (publication `pub_87fc77fb…`) via API with `double_opt_override: 'on'` (GDPR confirmation email). If Beehiiv errors, it falls back to an email notification to `hello@` so no signup is lost. Verified live (`via: "beehiiv"`). Env: `BEEHIIV_API_KEY`, `BEEHIIV_PUBLICATION_KEY_V2`. Send newsletters from Beehiiv → Broadcasts.
 - [ ] **Chapters as data.** `/chapters` uses a hardcoded array — move to an Astro content collection as the chapter list grows.
 - [ ] **Code of conduct page.** Create a code-of-conduct page and add it to the footer (not referenced anywhere yet).
-- [ ] **Google Search Console — submit sitemap.** Domain `genaicommunity.eu` is already verified ✅. Once the domain points to this Vercel project, submit `https://genaicommunity.eu/sitemap-index.xml`.
+### Indexation & measurement (domain is live → actionable now)
+
+- [x] **Sitemap + robots + canonical/OG/JSON-LD** shipped. `/blog` (coming soon) is now `noindex` **and** excluded from the sitemap so Google doesn't index a placeholder; both revert at blog launch (see above).
+- [ ] **You — submit the sitemap.** In Search Console (`genaicommunity.eu` already verified ✅) submit `https://genaicommunity.eu/sitemap-index.xml`, then watch the **Pages / Coverage** report and request indexing for the key URLs (home, `/chapters`, `/sponsor`, `/contact`, `/privacy`).
+- [ ] **You — apex as Primary.** Vercel → Settings → Domains: make `genaicommunity.eu` the Primary domain (it currently 308-redirects to `www` while the canonical points to the apex). Keeps serving + canonical + GSC aligned on one host. *(Tell me if you'd rather standardize on `www` and I'll switch the code `site`.)*
+- [ ] **You — link GA4 ↔ Search Console.** Once GA4 exists (the `G-…` pending above), link them in GA4 Admin → Product links to see search queries inside GA.
+- [ ] *(optional)* Submit to **Bing Webmaster Tools** as well.
 
 ---
 
