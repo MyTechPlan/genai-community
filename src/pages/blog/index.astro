@@ -2,32 +2,59 @@
 import Base from '../../layouts/Base.astro';
 import Newsletter from '../../components/Newsletter.astro';
 ---
-<Base title="Blog - GenAI Community EU" description="Expert posts on generative AI in production, written by the European community. Coming soon." noindex={true}>
+<Base title="Blog - GenAI Community EU" description="Insights from Europe's GenAI community — practical lessons, technical perspectives and strategic analysis on building, applying and governing generative AI across Europe.">
+  <!-- Hero -->
+  <section class="section blog-hero">
+    <div class="wrap blog-hero-wrap">
+      <span class="eyebrow">Blog</span>
+      <h1>Insights from Europe's <span class="grad">GenAI community</span></h1>
+      <p class="lede">Explore practical lessons, technical perspectives and strategic analysis on how generative AI is being built, applied and governed across Europe. Written by experts doing the work.</p>
+      <div class="blog-ctas">
+        <a href="https://genaicommunity.beehiiv.com/" target="_blank" rel="noopener" class="btn btn-iris">Take me to the blog</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Apply to be a writer -->
   <section class="section">
     <div class="wrap">
-      <div class="soon-wrap">
-        <span class="eyebrow">Blog</span>
-        <h1>Coming <span class="grad">soon</span></h1>
-        <p class="lede">We're lining up the first posts — practitioners writing about building with generative AI: agents, evals, infra, and what actually survives contact with production.</p>
-        <p class="soon-sub">Want to be the first to read them? Join the newsletter below. Want to write one? We'd love to hear from you.</p>
-        <div class="soon-ctas">
-          <a href="/#newsletter" class="btn btn-iris">Join the newsletter</a>
-          <a href="mailto:blog@genaicommunity.eu?subject=I want to write for the blog" class="btn btn-ghost">Apply to be a writer</a>
+      <div class="writer-card">
+        <span class="eyebrow">Write with us</span>
+        <h2>Apply to be a writer</h2>
+        <p>Share your expertise with a senior European audience. Submit your profile and proposed topic; if approved, you will receive our publishing guidelines and can send us your ready-to-publish article.</p>
+        <p>Contributors receive full author credit, a professional profile and potential visibility through our newsletter, social channels, community events and GenAI Summit opportunities.</p>
+        <div class="blog-ctas">
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLScjPwZeHfBJEtiYv3nDJd6emPq6e8gh2rtjBft5ElBTxHaV4Q/viewform" target="_blank" rel="noopener" class="btn btn-iris">Apply to be a writer</a>
         </div>
       </div>
     </div>
   </section>
+
   <Newsletter />
 
   <style>
-    .soon-wrap { max-width: 40rem; }
+    .blog-hero { padding: 5rem 0 3.5rem; }
+    .blog-hero-wrap { max-width: 42rem; }
     .lede { font-size: 1.2rem; color: var(--text-dim); margin-top: 0.5rem; }
-    .soon-sub { color: var(--text-dim); }
-    .soon-ctas {
+    .blog-ctas {
       display: flex;
       gap: 0.8rem;
       margin-top: 1.8rem;
       flex-wrap: wrap;
     }
+
+    .writer-card {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 2.4rem;
+      max-width: 52rem;
+    }
+    .writer-card h2 { margin-top: 0.6rem; }
+    .writer-card p {
+      color: var(--text-dim);
+      max-width: 44rem;
+    }
+    .writer-card .blog-ctas { margin-top: 1.6rem; }
   </style>
 </Base>
