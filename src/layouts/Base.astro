@@ -188,7 +188,10 @@ const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '6Lfjpl4
         <a href="/" class="logo" aria-label="GenAI Community EU home">
           <Logo size={40} decorative={true} />
         </a>
-        <nav aria-label="Main">
+        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
+          <span></span><span></span><span></span>
+        </button>
+        <nav id="main-nav" aria-label="Main">
           <a href="/">Home</a>
           <a href="/blog">Blog</a>
           <a href="/chapters">Chapters</a>
@@ -247,6 +250,24 @@ const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '6Lfjpl4
         if (manageBtn) {
           manageBtn.addEventListener('click', () => {
             window.dispatchEvent(new CustomEvent('showCookieBanner'));
+          });
+        }
+
+        // Mobile menu toggle
+        const header = document.querySelector('.site-header');
+        const navToggle = header?.querySelector('.nav-toggle');
+        if (header && navToggle) {
+          navToggle.addEventListener('click', () => {
+            const open = header.classList.toggle('nav-open');
+            navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+          });
+          header.querySelectorAll('nav[aria-label="Main"] a').forEach((link) => {
+            link.addEventListener('click', () => {
+              header.classList.remove('nav-open');
+              navToggle.setAttribute('aria-expanded', 'false');
+              navToggle.setAttribute('aria-label', 'Open menu');
+            });
           });
         }
       }
@@ -308,6 +329,31 @@ const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '6Lfjpl4
       }
       .nav-cta:hover { animation-duration: 2.8s; }
 
+      /* Mobile menu toggle (hamburger) — hidden on desktop */
+      .nav-toggle {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 42px;
+        height: 42px;
+        padding: 9px;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      .nav-toggle span {
+        display: block;
+        height: 2px;
+        width: 100%;
+        background: var(--text);
+        border-radius: 2px;
+        transition: transform 0.22s ease, opacity 0.22s ease;
+      }
+      .site-header.nav-open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      .site-header.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
+      .site-header.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
       .site-footer {
         background: var(--bg-1);
         color: var(--text-dim);
@@ -368,8 +414,34 @@ const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '6Lfjpl4
       .social-ic { color: var(--text-dim); display: inline-flex; transition: color 120ms ease; }
       .social-ic svg { width: 17px; height: 17px; fill: currentColor; display: block; }
       .social-ic:hover { color: var(--text); }
-      @media (max-width: 640px) {
-        nav[aria-label="Main"] { gap: 0.9rem; font-size: 0.9rem; }
+      @media (max-width: 768px) {
+        .nav-toggle { display: flex; }
+        nav[aria-label="Main"] {
+          position: absolute;
+          top: 64px;
+          left: 0;
+          right: 0;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0;
+          padding: 0.4rem 1.5rem 1rem;
+          background: color-mix(in srgb, var(--bg) 96%, transparent);
+          backdrop-filter: blur(10px);
+          border-bottom: 1px solid var(--line);
+          display: none;
+        }
+        .site-header.nav-open nav[aria-label="Main"] { display: flex; }
+        nav[aria-label="Main"] a {
+          padding: 0.85rem 0;
+          font-size: 1rem;
+          border-bottom: 1px solid var(--line);
+        }
+        nav[aria-label="Main"] a:last-child { border-bottom: none; }
+        .nav-cta {
+          margin-top: 0.7rem;
+          text-align: center;
+          padding: 0.7rem 1rem;
+        }
       }
     </style>
   </body>
