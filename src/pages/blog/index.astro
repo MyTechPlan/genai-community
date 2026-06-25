@@ -5,12 +5,14 @@ import Newsletter from '../../components/Newsletter.astro';
 <Base title="Blog - GenAI Community EU" description="Insights from Europe's GenAI community — practical lessons, technical perspectives and strategic analysis on building, applying and governing generative AI across Europe.">
   <!-- Hero -->
   <section class="section blog-hero">
-    <div class="wrap blog-hero-wrap">
-      <span class="eyebrow">Blog</span>
-      <h1>Insights from Europe's <span class="grad">GenAI community</span></h1>
-      <p class="lede">Explore practical lessons, technical perspectives and strategic analysis on how generative AI is being built, applied and governed across Europe. Written by experts doing the work.</p>
-      <div class="blog-ctas">
-        <a href="https://genaicommunity.beehiiv.com/" target="_blank" rel="noopener" class="btn btn-iris">Take me to the blog</a>
+    <div class="wrap">
+      <div class="blog-hero-inner">
+        <span class="eyebrow">Blog</span>
+        <h1>Insights from Europe's <span class="grad">GenAI community</span></h1>
+        <p class="lede">Explore practical lessons, technical perspectives and strategic analysis on how generative AI is being built, applied and governed across Europe. Written by experts doing the work.</p>
+        <div class="blog-ctas">
+          <a href="https://genaicommunity.beehiiv.com/" target="_blank" rel="noopener" class="btn btn-iris">Take me to the blog</a>
+        </div>
       </div>
     </div>
   </section>
@@ -34,7 +36,7 @@ import Newsletter from '../../components/Newsletter.astro';
 
   <style>
     .blog-hero { padding: 5rem 0 3.5rem; }
-    .blog-hero-wrap { max-width: 42rem; }
+    .blog-hero-inner { max-width: 42rem; }
     .lede { font-size: 1.2rem; color: var(--text-dim); margin-top: 0.5rem; }
     .blog-ctas {
       display: flex;
