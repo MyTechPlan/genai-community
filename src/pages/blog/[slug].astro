@@ -5,8 +5,8 @@ import PostCover from '../../components/PostCover.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
-  // Blog is "coming soon" — no individual posts are published yet.
-  // Re-enable by returning the mapped posts below when the blog launches.
+  // The blog is published on Beehiiv; the on-site post route is intentionally
+  // disabled. Flip BLOG_LIVE to true only if posts are ever hosted on-site.
   const BLOG_LIVE = false;
   if (!BLOG_LIVE) return [];
   const posts = await getCollection('blog');
