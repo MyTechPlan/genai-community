@@ -67,6 +67,15 @@ function initCommunityForm() {
     }
   }
 
+  // Move focus to the first control of a slide (used on validation failure so the error —
+  // announced via role="alert" — is paired with focus landing on the relevant input, not
+  // the nav button the user just activated).
+  function focusFirstControl(slide) {
+    const el = slide.querySelector('input, textarea, select');
+    if (!el) return;
+    try { el.focus({ preventScroll: true }); } catch { el.focus(); }
+  }
+
   function isOptional(slide) {
     return slide.dataset.optional === 'true';
   }
@@ -91,6 +100,7 @@ function initCommunityForm() {
       const checked = slide.querySelector('input[type="radio"]:checked');
       if (!checked && !isOptional(slide)) {
         showSlideError(slide, 'Please pick one option.');
+        focusFirstControl(slide);
         return false;
       }
       return true;
@@ -100,6 +110,7 @@ function initCommunityForm() {
       const checked = slide.querySelectorAll('input[type="checkbox"]:checked');
       if (checked.length === 0 && !isOptional(slide)) {
         showSlideError(slide, 'Please select at least one option.');
+        focusFirstControl(slide);
         return false;
       }
       return true;
@@ -109,6 +120,7 @@ function initCommunityForm() {
       const box = slide.querySelector('input[type="checkbox"]');
       if (box && !box.checked) {
         showSlideError(slide, 'Please agree to the Code of Conduct to continue.');
+        focusFirstControl(slide);
         return false;
       }
       return true;
@@ -261,6 +273,9 @@ function initCommunityForm() {
   // --- events ----------------------------------------------------------------
 
   if (nextBtn) nextBtn.addEventListener('click', goNext);
+  // The submit button is type="button" (see join.astro) so it never fires a native form
+  // submit; the controller drives submission from its click (and the Enter handler below).
+  if (submitBtn) submitBtn.addEventListener('click', goNext);
   if (backBtn) backBtn.addEventListener('click', goBack);
 
   // Track whether the last key was an arrow (capture phase runs before the native

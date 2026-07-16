@@ -15,6 +15,34 @@ const MAX = { name: 80, email: 254, url: 200, city: 80, country: 80, company: 12
 const MAX_MULTI = 12;
 const NEWSLETTER_VALUES = new Set(['yes', 'no']);
 
+// Closed option sets — must mirror the choices in src/pages/join.astro. Validating the
+// fixed-choice fields against these keeps a direct API caller from contaminating the
+// Sheet/CRM with arbitrary values (note: en-dashes match the form's option labels).
+const ROLE_VALUES = new Set([
+  'Founder / CEO', 'CTO / Tech Lead / Engineering Manager', 'AI / ML / Data',
+  'Software Engineering', 'Product / Innovation / Strategy', 'Consultant / Advisor',
+  'Research / Academia', 'Other',
+]);
+const EXPERIENCE_VALUES = new Set([
+  'Less than 3 years', '3–5 years', '6–10 years', '11–15 years', '15+ years',
+]);
+const GENAI_VALUES = new Set([
+  'Exploring / learning', 'Using GenAI tools in my daily work',
+  'Building prototypes or internal tools', 'Working with GenAI in production',
+  'Leading GenAI strategy, adoption or teams',
+]);
+const MOTIVATION_VALUES = new Set([
+  'Learn from senior practitioners', 'Connect with other GenAI professionals',
+  'Discover real use cases', 'Share knowledge and experience', 'Attend local meetups',
+  'Join the European GenAI network', 'Explore collaboration opportunities',
+]);
+const PARTICIPATION_VALUES = new Set([
+  'Attend on-site meetups in my city', 'Join Slack discussions',
+  'Network with other GenAI professionals', 'Connect with the European GenAI community',
+  'Share insights, resources or use cases', 'Find clients, job opportunities or collaborations',
+  'Get inspired and keep learning', "I'm not sure yet",
+]);
+
 function isValidEmail(email) {
   return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
 }
@@ -113,21 +141,24 @@ export default async function handler(req, res) {
     const company = trimStr(raw.company, MAX.company);
     const experienceYears = trimStr(raw.experienceYears, MAX.choice);
     const genaiExperience = trimStr(raw.genaiExperience, MAX.choice);
-    const motivations = cleanArray(raw.motivations, MAX_MULTI, MAX.choice);
-    const participation = cleanArray(raw.participation, MAX_MULTI, MAX.choice);
+    // Drop any array entries that aren't in the closed option set (keeps junk out of the
+    // store); an all-unknown array then fails the non-empty check below.
+    const motivations = cleanArray(raw.motivations, MAX_MULTI, MAX.choice).filter((v) => MOTIVATION_VALUES.has(v));
+    const participation = cleanArray(raw.participation, MAX_MULTI, MAX.choice).filter((v) => PARTICIPATION_VALUES.has(v));
     const newsletter = trimStr(raw.newsletter, 8).toLowerCase();
     const codeOfConduct = truthy(raw.codeOfConduct);
 
-    // Required-field validation mirrors the ✅ fields in the form spec.
+    // Required-field validation mirrors the ✅ fields in the form spec; fixed-choice
+    // fields must also be one of their allowed values.
     const missing = [];
     if (!firstName) missing.push('firstName');
     if (!lastName) missing.push('lastName');
     if (!email || email.length > MAX.email || !isValidEmail(email)) missing.push('email');
     if (!city) missing.push('city');
     if (!country) missing.push('country');
-    if (!role) missing.push('role');
-    if (!experienceYears) missing.push('experienceYears');
-    if (!genaiExperience) missing.push('genaiExperience');
+    if (!ROLE_VALUES.has(role)) missing.push('role');
+    if (!EXPERIENCE_VALUES.has(experienceYears)) missing.push('experienceYears');
+    if (!GENAI_VALUES.has(genaiExperience)) missing.push('genaiExperience');
     if (!motivations.length) missing.push('motivations');
     if (!participation.length) missing.push('participation');
     if (!NEWSLETTER_VALUES.has(newsletter)) missing.push('newsletter');
@@ -174,7 +205,12 @@ export default async function handler(req, res) {
         }
       }
       if (!isProduction && stored.skipped) {
-        console.log('Community application (dev mode — no store/email configured):', record);
+        // Redacted: never log applicant PII (name/email/LinkedIn/employer) even in dev/preview.
+        console.log('Community application accepted in dev mode', {
+          submittedAt: record.submittedAt,
+          source: record.source,
+          newsletter: record.newsletter,
+        });
         return res.status(200).json({ success: true, via: 'dev' });
       }
       return res.status(500).json({ error: 'Could not save your application. Please try again.' });

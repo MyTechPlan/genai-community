@@ -217,7 +217,10 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
               <span class="cf-step" data-step-label aria-hidden="true"></span>
               <span class="cf-hint">press <kbd>Enter&nbsp;↵</kbd></span>
               <button type="button" class="cf-next btn btn-iris">OK</button>
-              <button type="submit" class="cf-submit btn btn-iris" data-loading="Submitting…">Submit application</button>
+              <!-- type="button" (not submit): with no submit button in the form, a no-JS
+                   Enter keypress can't trigger an implicit GET that would leak PII into the
+                   URL. The controller drives submission from this button's click + Enter. -->
+              <button type="button" class="cf-submit btn btn-iris" data-loading="Submitting…">Submit application</button>
             </div>
           </div>
 

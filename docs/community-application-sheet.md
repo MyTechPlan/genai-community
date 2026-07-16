@@ -24,7 +24,11 @@ In the Sheet: **Extensions → Apps Script**. Replace the default code with:
 ```javascript
 // GenAI Community — /join application webhook.
 // Appends one row per application to the "Applications" tab.
-const SECRET = ''; // optional: set to the same value as SHEETS_WEBHOOK_SECRET in Vercel; '' disables the check
+// STRONGLY RECOMMENDED: set SECRET below. The Web App is deployed to "Anyone", so with an
+// empty SECRET anyone who discovers the /exec URL can write rows straight into the Sheet,
+// bypassing the site's validation and reCAPTCHA. Set it to the same value as
+// SHEETS_WEBHOOK_SECRET in Vercel.
+const SECRET = '';
 const SHEET_NAME = 'Applications';
 const HEADERS = [
   'Submitted', 'First name', 'Last name', 'Email', 'LinkedIn', 'City', 'Country',
@@ -66,7 +70,9 @@ function json(obj) {
 }
 ```
 
-If you set `SECRET` here, use the **same** value for `SHEETS_WEBHOOK_SECRET` in Vercel (step 4).
+> **Security:** because the Web App is deployed to **Anyone** (step 3), always set `SECRET` and
+> the matching `SHEETS_WEBHOOK_SECRET` in Vercel (step 4) before going live — otherwise the `/exec`
+> URL is an open write endpoint into your Sheet.
 
 ## 3. Deploy as a Web App
 
@@ -84,7 +90,7 @@ Project `genai-community` → **Settings → Environment Variables** (Production
 | Variable | Required | Value |
 |---|---|---|
 | `SHEETS_WEBHOOK_URL` | yes | the `/exec` Web app URL from step 3 |
-| `SHEETS_WEBHOOK_SECRET` | optional | same string as `SECRET` in the script (blocks stray POSTs to the public URL) |
+| `SHEETS_WEBHOOK_SECRET` | **yes (production)** | same string as `SECRET` in the script — the Web App is public, so this is what actually blocks unauthorized writes to the Sheet |
 
 Optional override:
 
