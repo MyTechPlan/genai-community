@@ -43,6 +43,11 @@ function doPost(e) {
       return json({ ok: false, error: 'unauthorized' });
     }
     const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // Read action: find the most recent application by email (used by the Slack welcome bot).
+    if (data.action === 'lookup') return doLookup(data, ss);
+
+    // Default action: append one application row.
     let sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
     if (sheet.getLastRow() === 0) sheet.appendRow(HEADERS);
     sheet.appendRow([
@@ -57,6 +62,27 @@ function doPost(e) {
   } catch (err) {
     return json({ ok: false, error: String(err) });
   }
+}
+
+// Return the newest row whose Email (column 4) matches, as an application object.
+// The Slack bot calls this with { action:'lookup', email, secret } to personalise the welcome.
+function doLookup(data, ss) {
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet || sheet.getLastRow() < 2) return json({ ok: true, found: false });
+  const email = String(data.email || '').trim().toLowerCase();
+  if (!email) return json({ ok: true, found: false });
+  const rows = sheet.getDataRange().getValues();
+  for (let i = rows.length - 1; i >= 1; i--) { // newest first, skip header row
+    if (String(rows[i][3]).trim().toLowerCase() === email) {
+      const r = rows[i];
+      return json({ ok: true, found: true, application: {
+        submittedAt: r[0], firstName: r[1], lastName: r[2], email: r[3], linkedin: r[4],
+        city: r[5], country: r[6], role: r[7], company: r[8], experienceYears: r[9],
+        genaiExperience: r[10], intro: r[11], motivations: r[12], participation: r[13],
+      } });
+    }
+  }
+  return json({ ok: true, found: false });
 }
 
 // Neutralise spreadsheet formula injection: a leading = + - @ makes Sheets evaluate the
