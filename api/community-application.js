@@ -103,7 +103,9 @@ export default async function handler(req, res) {
 
     const firstName = trimStr(raw.firstName, MAX.name);
     const lastName = trimStr(raw.lastName, MAX.name);
-    const email = trimStr(raw.email, MAX.email);
+    // Do NOT truncate the email — trimming to MAX.email would defeat the length check
+    // below and could persist/subscribe a mangled address. Validate the raw trimmed value.
+    const email = typeof raw.email === 'string' ? raw.email.trim() : '';
     const linkedin = trimStr(raw.linkedin, MAX.url);
     const city = trimStr(raw.city, MAX.city);
     const country = trimStr(raw.country, MAX.country);
