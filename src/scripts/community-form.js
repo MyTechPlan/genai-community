@@ -40,6 +40,8 @@ function initCommunityForm() {
   const lastIndex = total - 1;
 
   let index = 0;
+  let submitting = false; // re-entrancy guard so repeated Enter can't fire concurrent POSTs
+  let lastKeyWasArrow = false; // suppress single-choice auto-advance during arrow-key nav
   let prefersReducedMotion = false;
   try {
     prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -197,6 +199,7 @@ function initCommunityForm() {
   }
 
   async function submit() {
+    if (submitting) return; // a POST is already in flight — ignore repeat Enter/clicks
     if (errorEl) {
       errorEl.hidden = true;
       errorEl.textContent = '';
@@ -209,6 +212,7 @@ function initCommunityForm() {
       }
     }
 
+    submitting = true;
     setSubmitting(true);
     try {
       const payload = buildPayload();
@@ -229,6 +233,9 @@ function initCommunityForm() {
       // Success: swap the whole form card for the Slack welcome screen.
       const card = container.querySelector('.cf-card');
       if (card) card.hidden = true;
+      // Hide the progress track too (inline style beats `.cf-js .cf-progress{display:block}`).
+      const progress = container.querySelector('.cf-progress');
+      if (progress) progress.style.display = 'none';
       if (successEl) {
         successEl.hidden = false;
         successEl.style.removeProperty('display');
@@ -242,7 +249,11 @@ function initCommunityForm() {
         errorEl.textContent =
           'Something went wrong. Please try again, or email hello@genaicommunity.eu directly.';
         errorEl.hidden = false;
+        // role="alert" announces it; move focus so keyboard users land on the retry context.
+        errorEl.setAttribute('tabindex', '-1');
+        try { errorEl.focus({ preventScroll: true }); } catch { errorEl.focus(); }
       }
+      submitting = false;
       setSubmitting(false);
     }
   }
@@ -251,6 +262,12 @@ function initCommunityForm() {
 
   if (nextBtn) nextBtn.addEventListener('click', goNext);
   if (backBtn) backBtn.addEventListener('click', goBack);
+
+  // Track whether the last key was an arrow (capture phase runs before the native
+  // radiogroup `change`), and reset on pointer use, so we can tell arrow-key navigation
+  // apart from a deliberate click/letter selection for auto-advance.
+  form.addEventListener('keydown', (event) => { lastKeyWasArrow = event.key.startsWith('Arrow'); }, true);
+  form.addEventListener('pointerdown', () => { lastKeyWasArrow = false; });
 
   // The real submit button lives inside the form; intercept so we control the flow.
   form.addEventListener('submit', (event) => {
@@ -265,6 +282,7 @@ function initCommunityForm() {
   // Enter advances (and prevents implicit early submit from text inputs).
   form.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter') return;
+    if (event.repeat) { event.preventDefault(); return; } // ignore held-Enter key-repeat
     const target = event.target;
     if (target && target.tagName === 'TEXTAREA') return; // (none today, future-proof)
     event.preventDefault();
@@ -301,6 +319,9 @@ function initCommunityForm() {
       if (!input || input.type !== 'radio' || !input.checked) return;
       if (!slide.classList.contains('is-active')) return;
       clearSlideError(slide);
+      // Don't auto-advance when the selection came from arrow-key navigation — the user
+      // is still reviewing options. Clicks, taps and letter keys still advance.
+      if (lastKeyWasArrow) return;
       const advance = () => {
         if (slide.classList.contains('is-active')) goNext();
       };

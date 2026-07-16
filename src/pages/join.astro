@@ -39,7 +39,7 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
                   <input id="f-last" name="lastName" type="text" required maxlength="80" autocomplete="family-name" />
                 </div>
               </div>
-              <p class="q-error" data-q-error hidden></p>
+              <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
             <!-- Q2 — Email -->
@@ -53,7 +53,7 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
                   <input id="f-email" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="you@company.eu" />
                 </div>
               </div>
-              <p class="q-error" data-q-error hidden></p>
+              <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
             <!-- Q3 — LinkedIn (optional) -->
@@ -67,7 +67,7 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
                   <input id="f-linkedin" name="linkedin" type="url" maxlength="200" autocomplete="url" placeholder="https://linkedin.com/in/you" />
                 </div>
               </div>
-              <p class="q-error" data-q-error hidden></p>
+              <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
             <!-- Q4 — Based -->
@@ -85,7 +85,7 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
                   <input id="f-country" name="country" type="text" required maxlength="80" autocomplete="country-name" />
                 </div>
               </div>
-              <p class="q-error" data-q-error hidden></p>
+              <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
             <!-- Q5 — Role -->
@@ -102,7 +102,7 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
                 <label class="q-opt"><input type="radio" name="role" value="Research / Academia" /><span class="q-opt-key">G</span><span class="q-opt-label">Research / Academia</span></label>
                 <label class="q-opt"><input type="radio" name="role" value="Other" /><span class="q-opt-key">H</span><span class="q-opt-label">Other</span></label>
               </div>
-              <p class="q-error" data-q-error hidden></p>
+              <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
             <!-- Q6 — Company (optional) -->
@@ -115,7 +115,7 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
                   <input id="f-company" name="company" type="text" maxlength="120" autocomplete="organization" />
                 </div>
               </div>
-              <p class="q-error" data-q-error hidden></p>
+              <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
             <!-- Q7 — Years of experience -->
@@ -129,7 +129,7 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
                 <label class="q-opt"><input type="radio" name="experienceYears" value="11–15 years" /><span class="q-opt-key">D</span><span class="q-opt-label">11–15 years</span></label>
                 <label class="q-opt"><input type="radio" name="experienceYears" value="15+ years" /><span class="q-opt-key">E</span><span class="q-opt-label">15+ years</span></label>
               </div>
-              <p class="q-error" data-q-error hidden></p>
+              <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
             <!-- Q8 — GenAI experience -->
@@ -143,7 +143,7 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
                 <label class="q-opt"><input type="radio" name="genaiExperience" value="Working with GenAI in production" /><span class="q-opt-key">D</span><span class="q-opt-label">Working with GenAI in production</span></label>
                 <label class="q-opt"><input type="radio" name="genaiExperience" value="Leading GenAI strategy, adoption or teams" /><span class="q-opt-key">E</span><span class="q-opt-label">Leading GenAI strategy, adoption or teams</span></label>
               </div>
-              <p class="q-error" data-q-error hidden></p>
+              <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
             <!-- Q9 — Why join (multi) -->
@@ -160,7 +160,7 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
                 <label class="q-opt"><input type="checkbox" name="motivations" value="Join the European GenAI network" /><span class="q-opt-key">F</span><span class="q-opt-label">Join the European GenAI network</span></label>
                 <label class="q-opt"><input type="checkbox" name="motivations" value="Explore collaboration opportunities" /><span class="q-opt-key">G</span><span class="q-opt-label">Explore collaboration opportunities</span></label>
               </div>
-              <p class="q-error" data-q-error hidden></p>
+              <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
             <!-- Q10 — How participate (multi) -->
@@ -178,7 +178,7 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
                 <label class="q-opt"><input type="checkbox" name="participation" value="Get inspired and keep learning" /><span class="q-opt-key">G</span><span class="q-opt-label">Get inspired and keep learning</span></label>
                 <label class="q-opt"><input type="checkbox" name="participation" value="I'm not sure yet" /><span class="q-opt-key">H</span><span class="q-opt-label">I'm not sure yet</span></label>
               </div>
-              <p class="q-error" data-q-error hidden></p>
+              <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
             <!-- Q11 — Newsletter -->
@@ -190,7 +190,7 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
                 <label class="q-opt"><input type="radio" name="newsletter" value="yes" required /><span class="q-opt-key">A</span><span class="q-opt-label">Yes, sign me up</span></label>
                 <label class="q-opt"><input type="radio" name="newsletter" value="no" /><span class="q-opt-key">B</span><span class="q-opt-label">No, not for now</span></label>
               </div>
-              <p class="q-error" data-q-error hidden></p>
+              <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
             <!-- Q12 — Code of Conduct -->
@@ -204,12 +204,12 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
                   <span>Yes, I agree to follow the GenAI Community Code of Conduct.</span>
                 </label>
               </div>
-              <p class="q-error" data-q-error hidden></p>
+              <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
           </div>
 
-          <p id="join-error" class="cf-error" data-form-error hidden></p>
+          <p id="join-error" class="cf-error" data-form-error role="alert" hidden></p>
 
           <div class="cf-nav">
             <button type="button" class="cf-back" aria-label="Previous question">← Back</button>
@@ -454,9 +454,13 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
     }
     .cf-js .cf-back { display: inline-flex; }
     .cf-js .cf-step, .cf-js .cf-hint { display: inline-flex; }
-    .cf-next { display: none; }
+    /* Both nav buttons are JS-only: without JS the form is a stacked fallback whose
+       real submit path is the <noscript> email note (the endpoint needs a JS-generated
+       reCAPTCHA token, so a no-JS POST could never succeed and would only leak PII to a
+       GET URL). The controller then reveals the right one per slide via the hidden attr. */
+    .cf-next, .cf-submit { display: none; }
     .cf-js .cf-next:not([hidden]) { display: inline-flex; }
-    .cf-submit:not([hidden]) { display: inline-flex; }
+    .cf-js .cf-submit:not([hidden]) { display: inline-flex; }
     /* [hidden] must beat the global `.btn { display: inline-block }` (equal-specificity
        author rule otherwise wins over the UA [hidden] rule and the button stays visible). */
     .cf-next[hidden], .cf-submit[hidden] { display: none; }

@@ -39,13 +39,22 @@ export async function saveApplication(record, env = process.env) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
       // Apps Script Web Apps 302-redirect the POST to script.googleusercontent.com;
-      // fetch follows redirects by default, so an OK final response means it ran.
+      // fetch follows redirects by default so we reach the script's real response.
       redirect: 'follow',
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
 
     if (!response.ok) {
       console.error('Sheets webhook error:', response.status);
+      return { success: false, status: response.status };
+    }
+    // Apps Script returns HTTP 200 even for its OWN handled errors (secret mismatch,
+    // caught exceptions) and for Google's login/interstitial HTML on a stale deployment
+    // URL — so the JSON body, not the status, is the real signal. Require { ok: true }
+    // before treating the row as written, otherwise the caller falls back to email.
+    const data = await response.json().catch(() => null);
+    if (!data || data.ok !== true) {
+      console.error('Sheets webhook rejected:', (data && data.error) || 'non-ok body');
       return { success: false, status: response.status };
     }
     return { success: true };

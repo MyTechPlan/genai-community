@@ -153,16 +153,14 @@ export default async function handler(req, res) {
       source: 'genaicommunity.eu/join',
     };
 
-    // 1) Persist to the swappable application store (currently the Google Sheet webhook).
-    let stored = { success: false, skipped: true };
-    if (hasApplicationStore()) {
-      stored = await saveApplication(record, env);
-    }
-
-    // 2) Newsletter opt-in → Beehiiv (double opt-in), independent of the storage outcome.
-    if (newsletter === 'yes' && hasBeehiiv()) {
-      await addToBeehiiv(email, { campaign: 'community-application' });
-    }
+    // 1) Persist to the swappable store, and 2) opt into Beehiiv (double opt-in) — these
+    //    are independent, so run them concurrently to keep the request off the critical path.
+    const [stored] = await Promise.all([
+      hasApplicationStore() ? saveApplication(record, env) : Promise.resolve({ success: false, skipped: true }),
+      newsletter === 'yes' && hasBeehiiv()
+        ? addToBeehiiv(email, { campaign: 'community-application' })
+        : Promise.resolve(null),
+    ]);
 
     // 3) If we couldn't persist (no store configured, or the webhook failed), email hello@
     //    so an application is never lost.
