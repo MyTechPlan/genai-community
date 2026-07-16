@@ -32,7 +32,7 @@ const SECRET = '';
 const SHEET_NAME = 'Applications';
 const HEADERS = [
   'Submitted', 'First name', 'Last name', 'Email', 'LinkedIn', 'City', 'Country',
-  'Role', 'Company', 'Experience', 'GenAI experience', 'Why join', 'Participation',
+  'Role', 'Company', 'Experience', 'GenAI experience', 'Intro', 'Why join', 'Participation',
   'Newsletter', 'Code of Conduct', 'Source',
 ];
 
@@ -49,8 +49,9 @@ function doPost(e) {
       safe(data.submittedAt || new Date().toISOString()),
       safe(data.firstName), safe(data.lastName), safe(data.email), safe(data.linkedin),
       safe(data.city), safe(data.country), safe(data.role), safe(data.company),
-      safe(data.experienceYears), safe(data.genaiExperience), safe(data.motivations),
-      safe(data.participation), safe(data.newsletter), safe(data.codeOfConduct), safe(data.source),
+      safe(data.experienceYears), safe(data.genaiExperience), safe(data.intro),
+      safe(data.motivations), safe(data.participation), safe(data.newsletter),
+      safe(data.codeOfConduct), safe(data.source),
     ]);
     return json({ ok: true });
   } catch (err) {

@@ -146,6 +146,20 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
               <p class="q-error" data-q-error role="alert" hidden></p>
             </div>
 
+            <!-- Intro — free text; becomes the member's intro in the Slack welcome -->
+            <div class="q-slide" data-kind="fields" role="group" aria-labelledby="q-intro-title">
+              <span class="q-eyebrow">About you</span>
+              <p class="q-title" id="q-intro-title">Introduce yourself to the community</p>
+              <p class="q-help">A few lines on your background and what you're building with GenAI. This is the intro the community sees when you join — so make it sound like you.</p>
+              <div class="q-body">
+                <div class="q-field">
+                  <label for="f-intro">Your intro</label>
+                  <textarea id="f-intro" name="intro" required maxlength="1200" rows="5" placeholder="e.g. I've spent 10 years in process engineering and made the jump to building GenAI agents. Today I build…"></textarea>
+                </div>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
             <!-- Q9 — Why join (multi) -->
             <div class="q-slide" data-kind="multi" role="group" aria-labelledby="q9-title">
               <span class="q-eyebrow">Motivation &amp; participation</span>
@@ -338,7 +352,8 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
       letter-spacing: 0.1em;
       color: var(--text-faint);
     }
-    .q-field input {
+    .q-field input,
+    .q-field textarea {
       font: inherit;
       color: var(--text);
       background: var(--bg);
@@ -347,8 +362,16 @@ const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/z
       padding: 0.75rem 0.9rem;
       width: 100%;
     }
-    .q-field input::placeholder { color: var(--text-faint); }
-    .q-field input:focus { outline: none; border-color: var(--text-dim); }
+    .q-field textarea {
+      font-family: var(--font-body);
+      resize: vertical;
+      min-height: 7rem;
+      line-height: 1.5;
+    }
+    .q-field input::placeholder,
+    .q-field textarea::placeholder { color: var(--text-faint); }
+    .q-field input:focus,
+    .q-field textarea:focus { outline: none; border-color: var(--text-dim); }
 
     /* choice options */
     .q-opts { display: flex; flex-direction: column; gap: 0.6rem; }

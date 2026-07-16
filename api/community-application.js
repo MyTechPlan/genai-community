@@ -11,7 +11,7 @@ const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'GenAI Community EU <norepl
 const TO_EMAIL =
   process.env.APPLICATIONS_TO_EMAIL || process.env.CONTACT_TO_EMAIL || 'hello@genaicommunity.eu';
 
-const MAX = { name: 80, email: 254, url: 200, city: 80, country: 80, company: 120, choice: 120 };
+const MAX = { name: 80, email: 254, url: 200, city: 80, country: 80, company: 120, choice: 120, intro: 1200 };
 const MAX_MULTI = 12;
 const NEWSLETTER_VALUES = new Set(['yes', 'no']);
 
@@ -94,6 +94,7 @@ function applicationEmailPayload(record) {
         ${row('Company', esc(record.company))}
         ${row('Experience', esc(record.experienceYears))}
         ${row('GenAI experience', esc(record.genaiExperience))}
+        ${row('Intro', esc(record.intro))}
         ${row('Why join', esc(record.motivations))}
         ${row('Participation', esc(record.participation))}
         ${row('Newsletter', esc(record.newsletter))}
@@ -141,6 +142,7 @@ export default async function handler(req, res) {
     const company = trimStr(raw.company, MAX.company);
     const experienceYears = trimStr(raw.experienceYears, MAX.choice);
     const genaiExperience = trimStr(raw.genaiExperience, MAX.choice);
+    const intro = trimStr(raw.intro, MAX.intro);
     // Drop any array entries that aren't in the closed option set (keeps junk out of the
     // store); an all-unknown array then fails the non-empty check below.
     const motivations = cleanArray(raw.motivations, MAX_MULTI, MAX.choice).filter((v) => MOTIVATION_VALUES.has(v));
@@ -159,6 +161,7 @@ export default async function handler(req, res) {
     if (!ROLE_VALUES.has(role)) missing.push('role');
     if (!EXPERIENCE_VALUES.has(experienceYears)) missing.push('experienceYears');
     if (!GENAI_VALUES.has(genaiExperience)) missing.push('genaiExperience');
+    if (!intro) missing.push('intro');
     if (!motivations.length) missing.push('motivations');
     if (!participation.length) missing.push('participation');
     if (!NEWSLETTER_VALUES.has(newsletter)) missing.push('newsletter');
@@ -179,6 +182,7 @@ export default async function handler(req, res) {
       company,
       experienceYears,
       genaiExperience,
+      intro,
       motivations: motivations.join('; '),
       participation: participation.join('; '),
       newsletter,

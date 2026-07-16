@@ -85,7 +85,7 @@ function initCommunityForm() {
     const kind = slide.dataset.kind;
 
     if (kind === 'fields') {
-      const inputs = Array.from(slide.querySelectorAll('input'));
+      const inputs = Array.from(slide.querySelectorAll('input, textarea'));
       for (const input of inputs) {
         if (!input.checkValidity()) {
           showSlideError(slide, input.validationMessage || 'Please complete this field.');
@@ -187,6 +187,7 @@ function initCommunityForm() {
       linkedin: (fd.get('linkedin') || '').toString(),
       city: (fd.get('city') || '').toString(),
       country: (fd.get('country') || '').toString(),
+      intro: (fd.get('intro') || '').toString(),
       role: (fd.get('role') || '').toString(),
       company: (fd.get('company') || '').toString(),
       experienceYears: (fd.get('experienceYears') || '').toString(),
