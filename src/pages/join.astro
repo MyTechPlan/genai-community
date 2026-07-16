@@ -1,0 +1,539 @@
+---
+import Base from '../layouts/Base.astro';
+
+// Community membership application — a Typeform-style one-question-at-a-time flow.
+// Progressive enhancement: every question renders as a normal stacked form; the
+// controller in src/scripts/community-form.js enhances it into single-slide mode and
+// POSTs to /api/community-application (reCAPTCHA + Google Sheet store + Beehiiv opt-in).
+const slackUrl = 'https://join.slack.com/t/genaicommunityespacio/shared_invite/zt-40tgj84ep-ON4753OHsvJYI8A0iy923Q';
+---
+<Base
+  title="Join - GenAI Community EU"
+  description="Apply to join GenAI Community, the European network of senior generative AI builders and practitioners. Two minutes, a few questions, and you're in."
+>
+  <section class="section join">
+    <div class="wrap">
+      <div class="join-intro">
+        <span class="eyebrow">Join the community</span>
+        <h1>Become part of<br /><span class="grad">GenAI Community</span></h1>
+        <p class="join-lede">Europe's senior GenAI builders, all in one network: local chapters, a daily Slack, and one annual summit. Answer a few questions and you're in. It takes about two minutes.</p>
+      </div>
+
+      <div class="cf" data-community-form>
+        <div class="cf-progress" aria-hidden="true"><span class="cf-progress-bar"></span></div>
+
+        <form id="join-form" class="cf-card" aria-label="Community membership application" novalidate>
+          <div class="cf-slides">
+
+            <!-- Q1 — Full name -->
+            <div class="q-slide" data-kind="fields" role="group" aria-labelledby="q1-title">
+              <span class="q-eyebrow">About you</span>
+              <p class="q-title" id="q1-title">First things first, what's your name?</p>
+              <div class="q-body q-fields">
+                <div class="q-field">
+                  <label for="f-first">First name</label>
+                  <input id="f-first" name="firstName" type="text" required maxlength="80" autocomplete="given-name" />
+                </div>
+                <div class="q-field">
+                  <label for="f-last">Last name</label>
+                  <input id="f-last" name="lastName" type="text" required maxlength="80" autocomplete="family-name" />
+                </div>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+            <!-- Q2 — Email -->
+            <div class="q-slide" data-kind="fields" role="group" aria-labelledby="q2-title">
+              <span class="q-eyebrow">About you</span>
+              <p class="q-title" id="q2-title">What's your email?</p>
+              <p class="q-help">We'll use it to follow up on your application.</p>
+              <div class="q-body q-fields q-fields-1">
+                <div class="q-field">
+                  <label for="f-email">Email address</label>
+                  <input id="f-email" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="you@company.eu" />
+                </div>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+            <!-- Q3 — LinkedIn (optional) -->
+            <div class="q-slide" data-kind="fields" data-optional="true" role="group" aria-labelledby="q3-title">
+              <span class="q-eyebrow">About you</span>
+              <p class="q-title" id="q3-title">Your LinkedIn? <span class="q-opt-tag">optional</span></p>
+              <p class="q-help">Helps us get to know you. Feel free to skip.</p>
+              <div class="q-body q-fields q-fields-1">
+                <div class="q-field">
+                  <label for="f-linkedin">LinkedIn profile</label>
+                  <input id="f-linkedin" name="linkedin" type="url" maxlength="200" autocomplete="url" placeholder="https://linkedin.com/in/you" />
+                </div>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+            <!-- Q4 — Based -->
+            <div class="q-slide" data-kind="fields" role="group" aria-labelledby="q4-title">
+              <span class="q-eyebrow">About you</span>
+              <p class="q-title" id="q4-title">Where are you based?</p>
+              <p class="q-help">So we can point you to the nearest chapter.</p>
+              <div class="q-body q-fields">
+                <div class="q-field">
+                  <label for="f-city">City</label>
+                  <input id="f-city" name="city" type="text" required maxlength="80" autocomplete="address-level2" />
+                </div>
+                <div class="q-field">
+                  <label for="f-country">Country</label>
+                  <input id="f-country" name="country" type="text" required maxlength="80" autocomplete="country-name" />
+                </div>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+            <!-- Q5 — Role -->
+            <div class="q-slide" data-kind="single" role="radiogroup" aria-labelledby="q5-title">
+              <span class="q-eyebrow">About you</span>
+              <p class="q-title" id="q5-title">What best describes your current role?</p>
+              <div class="q-body q-opts">
+                <label class="q-opt"><input type="radio" name="role" value="Founder / CEO" required /><span class="q-opt-key">A</span><span class="q-opt-label">Founder / CEO</span></label>
+                <label class="q-opt"><input type="radio" name="role" value="CTO / Tech Lead / Engineering Manager" /><span class="q-opt-key">B</span><span class="q-opt-label">CTO / Tech Lead / Engineering Manager</span></label>
+                <label class="q-opt"><input type="radio" name="role" value="AI / ML / Data" /><span class="q-opt-key">C</span><span class="q-opt-label">AI / ML / Data</span></label>
+                <label class="q-opt"><input type="radio" name="role" value="Software Engineering" /><span class="q-opt-key">D</span><span class="q-opt-label">Software Engineering</span></label>
+                <label class="q-opt"><input type="radio" name="role" value="Product / Innovation / Strategy" /><span class="q-opt-key">E</span><span class="q-opt-label">Product / Innovation / Strategy</span></label>
+                <label class="q-opt"><input type="radio" name="role" value="Consultant / Advisor" /><span class="q-opt-key">F</span><span class="q-opt-label">Consultant / Advisor</span></label>
+                <label class="q-opt"><input type="radio" name="role" value="Research / Academia" /><span class="q-opt-key">G</span><span class="q-opt-label">Research / Academia</span></label>
+                <label class="q-opt"><input type="radio" name="role" value="Other" /><span class="q-opt-key">H</span><span class="q-opt-label">Other</span></label>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+            <!-- Q6 — Company (optional) -->
+            <div class="q-slide" data-kind="fields" data-optional="true" role="group" aria-labelledby="q6-title">
+              <span class="q-eyebrow">About you</span>
+              <p class="q-title" id="q6-title">Which company or organization? <span class="q-opt-tag">optional</span></p>
+              <div class="q-body q-fields q-fields-1">
+                <div class="q-field">
+                  <label for="f-company">Company / organization</label>
+                  <input id="f-company" name="company" type="text" maxlength="120" autocomplete="organization" />
+                </div>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+            <!-- Q7 — Years of experience -->
+            <div class="q-slide" data-kind="single" role="radiogroup" aria-labelledby="q7-title">
+              <span class="q-eyebrow">About you</span>
+              <p class="q-title" id="q7-title">How many years of professional experience do you have in your field?</p>
+              <div class="q-body q-opts">
+                <label class="q-opt"><input type="radio" name="experienceYears" value="Less than 3 years" required /><span class="q-opt-key">A</span><span class="q-opt-label">Less than 3 years</span></label>
+                <label class="q-opt"><input type="radio" name="experienceYears" value="3–5 years" /><span class="q-opt-key">B</span><span class="q-opt-label">3–5 years</span></label>
+                <label class="q-opt"><input type="radio" name="experienceYears" value="6–10 years" /><span class="q-opt-key">C</span><span class="q-opt-label">6–10 years</span></label>
+                <label class="q-opt"><input type="radio" name="experienceYears" value="11–15 years" /><span class="q-opt-key">D</span><span class="q-opt-label">11–15 years</span></label>
+                <label class="q-opt"><input type="radio" name="experienceYears" value="15+ years" /><span class="q-opt-key">E</span><span class="q-opt-label">15+ years</span></label>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+            <!-- Q8 — GenAI experience -->
+            <div class="q-slide" data-kind="single" role="radiogroup" aria-labelledby="q8-title">
+              <span class="q-eyebrow">About you</span>
+              <p class="q-title" id="q8-title">How would you describe your current experience with Generative AI?</p>
+              <div class="q-body q-opts">
+                <label class="q-opt"><input type="radio" name="genaiExperience" value="Exploring / learning" required /><span class="q-opt-key">A</span><span class="q-opt-label">Exploring / learning</span></label>
+                <label class="q-opt"><input type="radio" name="genaiExperience" value="Using GenAI tools in my daily work" /><span class="q-opt-key">B</span><span class="q-opt-label">Using GenAI tools in my daily work</span></label>
+                <label class="q-opt"><input type="radio" name="genaiExperience" value="Building prototypes or internal tools" /><span class="q-opt-key">C</span><span class="q-opt-label">Building prototypes or internal tools</span></label>
+                <label class="q-opt"><input type="radio" name="genaiExperience" value="Working with GenAI in production" /><span class="q-opt-key">D</span><span class="q-opt-label">Working with GenAI in production</span></label>
+                <label class="q-opt"><input type="radio" name="genaiExperience" value="Leading GenAI strategy, adoption or teams" /><span class="q-opt-key">E</span><span class="q-opt-label">Leading GenAI strategy, adoption or teams</span></label>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+            <!-- Intro — free text; becomes the member's intro in the Slack welcome -->
+            <div class="q-slide" data-kind="fields" role="group" aria-labelledby="q-intro-title">
+              <span class="q-eyebrow">About you</span>
+              <p class="q-title" id="q-intro-title">Introduce yourself to the community</p>
+              <p class="q-help">A few lines on your background and what you're building with GenAI. This is the intro the community sees when you join, so make it sound like you.</p>
+              <div class="q-body">
+                <div class="q-field">
+                  <label for="f-intro">Your intro</label>
+                  <textarea id="f-intro" name="intro" required maxlength="1200" rows="5" placeholder="e.g. I've spent 10 years in process engineering and made the jump to building GenAI agents. Today I build…"></textarea>
+                </div>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+            <!-- Q9 — Why join (multi) -->
+            <div class="q-slide" data-kind="multi" role="group" aria-labelledby="q9-title">
+              <span class="q-eyebrow">Motivation &amp; participation</span>
+              <p class="q-title" id="q9-title">Why do you want to join GenAI Community?</p>
+              <p class="q-help">Pick all that apply.</p>
+              <div class="q-body q-opts">
+                <label class="q-opt"><input type="checkbox" name="motivations" value="Learn from senior practitioners" /><span class="q-opt-key">A</span><span class="q-opt-label">Learn from senior practitioners</span></label>
+                <label class="q-opt"><input type="checkbox" name="motivations" value="Connect with other GenAI professionals" /><span class="q-opt-key">B</span><span class="q-opt-label">Connect with other GenAI professionals</span></label>
+                <label class="q-opt"><input type="checkbox" name="motivations" value="Discover real use cases" /><span class="q-opt-key">C</span><span class="q-opt-label">Discover real use cases</span></label>
+                <label class="q-opt"><input type="checkbox" name="motivations" value="Share knowledge and experience" /><span class="q-opt-key">D</span><span class="q-opt-label">Share knowledge and experience</span></label>
+                <label class="q-opt"><input type="checkbox" name="motivations" value="Attend local meetups" /><span class="q-opt-key">E</span><span class="q-opt-label">Attend local meetups</span></label>
+                <label class="q-opt"><input type="checkbox" name="motivations" value="Join the European GenAI network" /><span class="q-opt-key">F</span><span class="q-opt-label">Join the European GenAI network</span></label>
+                <label class="q-opt"><input type="checkbox" name="motivations" value="Explore collaboration opportunities" /><span class="q-opt-key">G</span><span class="q-opt-label">Explore collaboration opportunities</span></label>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+            <!-- Q10 — How participate (multi) -->
+            <div class="q-slide" data-kind="multi" role="group" aria-labelledby="q10-title">
+              <span class="q-eyebrow">Motivation &amp; participation</span>
+              <p class="q-title" id="q10-title">How would you like to participate in the community?</p>
+              <p class="q-help">Pick all that apply.</p>
+              <div class="q-body q-opts">
+                <label class="q-opt"><input type="checkbox" name="participation" value="Attend on-site meetups in my city" /><span class="q-opt-key">A</span><span class="q-opt-label">Attend on-site meetups in my city</span></label>
+                <label class="q-opt"><input type="checkbox" name="participation" value="Join Slack discussions" /><span class="q-opt-key">B</span><span class="q-opt-label">Join Slack discussions</span></label>
+                <label class="q-opt"><input type="checkbox" name="participation" value="Network with other GenAI professionals" /><span class="q-opt-key">C</span><span class="q-opt-label">Network with other GenAI professionals</span></label>
+                <label class="q-opt"><input type="checkbox" name="participation" value="Connect with the European GenAI community" /><span class="q-opt-key">D</span><span class="q-opt-label">Connect with the European GenAI community</span></label>
+                <label class="q-opt"><input type="checkbox" name="participation" value="Share insights, resources or use cases" /><span class="q-opt-key">E</span><span class="q-opt-label">Share insights, resources or use cases</span></label>
+                <label class="q-opt"><input type="checkbox" name="participation" value="Find clients, job opportunities or collaborations" /><span class="q-opt-key">F</span><span class="q-opt-label">Find clients, job opportunities or collaborations</span></label>
+                <label class="q-opt"><input type="checkbox" name="participation" value="Get inspired and keep learning" /><span class="q-opt-key">G</span><span class="q-opt-label">Get inspired and keep learning</span></label>
+                <label class="q-opt"><input type="checkbox" name="participation" value="I'm not sure yet" /><span class="q-opt-key">H</span><span class="q-opt-label">I'm not sure yet</span></label>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+            <!-- Q11 — Newsletter -->
+            <div class="q-slide" data-kind="single" role="radiogroup" aria-labelledby="q11-title">
+              <span class="q-eyebrow">Consent &amp; communication</span>
+              <p class="q-title" id="q11-title">Want the GenAI Community newsletter?</p>
+              <p class="q-help">Expert articles, community updates and upcoming events. You'll confirm your subscription by email.</p>
+              <div class="q-body q-opts">
+                <label class="q-opt"><input type="radio" name="newsletter" value="yes" required /><span class="q-opt-key">A</span><span class="q-opt-label">Yes, sign me up</span></label>
+                <label class="q-opt"><input type="radio" name="newsletter" value="no" /><span class="q-opt-key">B</span><span class="q-opt-label">No, not for now</span></label>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+            <!-- Q12 — Code of Conduct -->
+            <div class="q-slide" data-kind="consent" role="group" aria-labelledby="q12-title">
+              <span class="q-eyebrow">Consent &amp; communication</span>
+              <p class="q-title" id="q12-title">One last thing: our Code of Conduct</p>
+              <p class="q-help">GenAI Community is a professional, inclusive and respectful space. Please read and agree to our <a href="/code-of-conduct" target="_blank" rel="noopener" class="link-holo">Code of Conduct</a> before joining.</p>
+              <div class="q-body">
+                <label class="q-consent">
+                  <input type="checkbox" name="codeOfConduct" required />
+                  <span>Yes, I agree to follow the GenAI Community Code of Conduct.</span>
+                </label>
+              </div>
+              <p class="q-error" data-q-error role="alert" hidden></p>
+            </div>
+
+          </div>
+
+          <p id="join-error" class="cf-error" data-form-error role="alert" hidden></p>
+
+          <div class="cf-nav">
+            <button type="button" class="cf-back" aria-label="Previous question">← Back</button>
+            <div class="cf-nav-right">
+              <span class="cf-step" data-step-label aria-hidden="true"></span>
+              <span class="cf-hint">press <kbd>Enter&nbsp;↵</kbd></span>
+              <button type="button" class="cf-next btn btn-iris">OK</button>
+              <!-- type="button" (not submit): with no submit button in the form, a no-JS
+                   Enter keypress can't trigger an implicit GET that would leak PII into the
+                   URL. The controller drives submission from this button's click + Enter. -->
+              <button type="button" class="cf-submit btn btn-iris" data-loading="Submitting…">Submit application</button>
+            </div>
+          </div>
+
+          <p class="cf-consent">By submitting you agree to our <a href="/privacy" class="link-holo">Privacy Policy</a>. Protected by reCAPTCHA.</p>
+        </form>
+
+        <div id="join-success" class="cf-success" hidden>
+          <div class="cf-success-badge" aria-hidden="true">✓</div>
+          <h2>You're in. Welcome to <span class="grad">GenAI Community</span></h2>
+          <p>Application received. The last step: jump into our Slack, where the community talks every day. Say hi in <strong>#introductions</strong>.</p>
+          <a href={slackUrl} class="btn btn-iris cf-slack" rel="noopener" target="_blank">
+            <svg class="cf-slack-glyph" viewBox="0 0 122.8 122.8" aria-hidden="true">
+              <path d="M25.8 77.6c0 7.1-5.8 12.9-12.9 12.9S0 84.7 0 77.6s5.8-12.9 12.9-12.9h12.9v12.9zM32.3 77.6c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9v32.3c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V77.6z" fill="#E01E5A"/>
+              <path d="M45.2 25.8c-7.1 0-12.9-5.8-12.9-12.9S38.1 0 45.2 0s12.9 5.8 12.9 12.9v12.9H45.2zM45.2 32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H12.9C5.8 58.1 0 52.3 0 45.2s5.8-12.9 12.9-12.9h32.3z" fill="#36C5F0"/>
+              <path d="M97 45.2c0-7.1 5.8-12.9 12.9-12.9s12.9 5.8 12.9 12.9-5.8 12.9-12.9 12.9H97V45.2zM90.5 45.2c0 7.1-5.8 12.9-12.9 12.9s-12.9-5.8-12.9-12.9V12.9C64.7 5.8 70.5 0 77.6 0s12.9 5.8 12.9 12.9v32.3z" fill="#2EB67D"/>
+              <path d="M77.6 97c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9-12.9-5.8-12.9-12.9V97h12.9zM77.6 90.5c-7.1 0-12.9-5.8-12.9-12.9s5.8-12.9 12.9-12.9h32.3c7.1 0 12.9 5.8 12.9 12.9s-5.8 12.9-12.9 12.9H77.6z" fill="#ECB22E"/>
+            </svg>
+            Join us on Slack
+          </a>
+        </div>
+
+        <noscript>
+          <p class="cf-noscript">This form works best with JavaScript enabled. If you'd rather not, email us at <a href="mailto:hello@genaicommunity.eu" class="link-holo">hello@genaicommunity.eu</a> and we'll onboard you directly.</p>
+        </noscript>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import '../scripts/community-form.js';
+  </script>
+
+  <style>
+    .join-intro { max-width: 48rem; }
+    .join-lede { font-size: 1.2rem; color: var(--text-dim); margin-top: 0.5rem; }
+
+    .cf { max-width: 720px; margin: 2.6rem 0 0; }
+
+    /* progress bar (JS only) */
+    .cf-progress {
+      display: none;
+      height: 3px;
+      background: var(--line);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 1.6rem;
+    }
+    .cf-js .cf-progress { display: block; }
+    .cf-progress-bar {
+      display: block;
+      height: 100%;
+      width: 0;
+      background-image: var(--iris);
+      transition: width 0.35s ease;
+    }
+
+    .cf-card {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 2.4rem;
+    }
+
+    /* Slides: stacked by default (no-JS), one-at-a-time under .cf-js */
+    .q-slide { padding: 1.6rem 0; border-bottom: 1px solid var(--line); }
+    .q-slide:first-child { padding-top: 0.2rem; }
+    .cf-js .q-slide { display: none; padding: 0; border-bottom: none; }
+    .cf-js .q-slide.is-active { display: block; animation: cfIn 0.34s ease; }
+
+    @keyframes cfIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .q-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-faint);
+      display: block;
+      margin-bottom: 0.7rem;
+    }
+    .q-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 3.4vw, 1.75rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin: 0 0 0.3rem;
+    }
+    .q-help { color: var(--text-dim); font-size: 0.98rem; margin: 0.2rem 0 0; }
+    .q-opt-tag {
+      font-family: var(--font-mono);
+      font-size: 0.62em;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-faint);
+      vertical-align: middle;
+      border: 1px solid var(--line-2);
+      border-radius: 5px;
+      padding: 0.1em 0.5em;
+      margin-left: 0.4rem;
+    }
+    .q-body { margin-top: 1.4rem; }
+
+    /* text fields */
+    .q-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .q-fields-1 { grid-template-columns: 1fr; max-width: 30rem; }
+    .q-field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .q-field label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
+    }
+    .q-field input,
+    .q-field textarea {
+      font: inherit;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--line-2);
+      border-radius: 8px;
+      padding: 0.75rem 0.9rem;
+      width: 100%;
+    }
+    .q-field textarea {
+      font-family: var(--font-body);
+      resize: vertical;
+      min-height: 7rem;
+      line-height: 1.5;
+    }
+    .q-field input::placeholder,
+    .q-field textarea::placeholder { color: var(--text-faint); }
+    .q-field input:focus,
+    .q-field textarea:focus { outline: none; border-color: var(--text-dim); }
+
+    /* choice options */
+    .q-opts { display: flex; flex-direction: column; gap: 0.6rem; }
+    .q-opt {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--line-2);
+      border-radius: 10px;
+      background: var(--bg);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+    }
+    .q-opt:hover { border-color: var(--text-faint); background: var(--bg-3); }
+    .q-opt:active { transform: scale(0.995); }
+    .q-opt input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      pointer-events: none;
+    }
+    .q-opt-key {
+      flex: 0 0 auto;
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      border: 1px solid var(--line-2);
+      border-radius: 6px;
+      color: var(--text-dim);
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .q-opt-label { flex: 1; color: var(--text); }
+    .q-opt:has(input:checked) { border-color: var(--text); background: var(--bg-3); }
+    .q-opt:has(input:checked) .q-opt-key {
+      background-image: var(--iris);
+      color: #14131a;
+      border-color: transparent;
+      font-weight: 600;
+    }
+    .q-opt:has(input:focus-visible) { outline: 2px solid var(--white); outline-offset: 2px; }
+
+    /* consent checkbox */
+    .q-consent {
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+      font-size: 0.98rem;
+      color: var(--text-dim);
+      cursor: pointer;
+    }
+    .q-consent input {
+      flex: 0 0 auto;
+      width: 18px;
+      height: 18px;
+      margin: 0.15rem 0 0;
+      accent-color: #cdeede;
+    }
+
+    .q-error, .cf-error {
+      font-size: 0.88rem;
+      color: #f3a3b8;
+      margin: 0.9rem 0 0;
+    }
+
+    /* nav */
+    .cf-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .cf-nav-right { display: flex; align-items: center; gap: 0.9rem; }
+    .cf-back {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0.4rem 0;
+    }
+    .cf-back:hover:not(:disabled) { color: var(--text); }
+    .cf-back:disabled { opacity: 0.35; cursor: default; }
+    .cf-step, .cf-hint {
+      display: none;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-faint);
+    }
+    .cf-hint kbd {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      border: 1px solid var(--line-2);
+      border-radius: 5px;
+      padding: 0.05em 0.4em;
+      color: var(--text-dim);
+    }
+    .cf-js .cf-back { display: inline-flex; }
+    .cf-js .cf-step, .cf-js .cf-hint { display: inline-flex; }
+    /* Both nav buttons are JS-only: without JS the form is a stacked fallback whose
+       real submit path is the <noscript> email note (the endpoint needs a JS-generated
+       reCAPTCHA token, so a no-JS POST could never succeed and would only leak PII to a
+       GET URL). The controller then reveals the right one per slide via the hidden attr. */
+    .cf-next, .cf-submit { display: none; }
+    .cf-js .cf-next:not([hidden]) { display: inline-flex; }
+    .cf-js .cf-submit:not([hidden]) { display: inline-flex; }
+    /* [hidden] must beat the global `.btn { display: inline-block }` (equal-specificity
+       author rule otherwise wins over the UA [hidden] rule and the button stays visible). */
+    .cf-next[hidden], .cf-submit[hidden] { display: none; }
+    .cf-next, .cf-submit { border: none; cursor: pointer; }
+
+    .cf-consent {
+      font-size: 0.8rem;
+      color: var(--text-faint);
+      margin: 1.2rem 0 0;
+    }
+    .cf-js .cf-consent { margin-top: 1.6rem; }
+
+    /* success */
+    .cf-success {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 3rem 2.4rem;
+      text-align: center;
+    }
+    .cf-success-badge {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #14131a;
+      background-image: var(--iris);
+      border-radius: 50%;
+    }
+    .cf-success h2 { margin-bottom: 0.6rem; }
+    .cf-success p { color: var(--text-dim); max-width: 34rem; margin: 0 auto 1.8rem; }
+    .cf-slack { display: inline-flex; align-items: center; gap: 0.6rem; }
+    .cf-slack-glyph { width: 18px; height: 18px; display: block; }
+
+    .cf-noscript {
+      margin-top: 1.4rem;
+      color: var(--text-dim);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 560px) {
+      .cf-card { padding: 1.8rem 1.4rem; }
+      .q-fields { grid-template-columns: 1fr; }
+      .cf-hint { display: none !important; }
+    }
+  </style>
+</Base>
