@@ -24,6 +24,8 @@ These are blocked on credentials or external setup. The code is ready; only the 
 | `PUBLIC_GTM_ID` | ⬜ pending | activates Google Tag Manager |
 | `PUBLIC_GA_MEASUREMENT_ID` | ⬜ pending | activates GA4 |
 | `PUBLIC_RECAPTCHA_SITE_KEY` | default baked in | override only if a dedicated key is created |
+| `SHEETS_WEBHOOK_URL` | ⬜ pending | Apps Script `/exec` URL that appends `/join` applications to the Google Sheet (see `docs/community-application-sheet.md`). Until set, applications email to `hello@`. |
+| `SHEETS_WEBHOOK_SECRET` | ⬜ optional | shared secret checked by the Apps Script to reject stray POSTs to the public webhook |
 
 ---
 
@@ -32,7 +34,8 @@ These are blocked on credentials or external setup. The code is ready; only the 
 - [~] **Blog model = Beehiiv.** `/blog` is now a landing that sends readers to the Beehiiv blog (`genaicommunity.beehiiv.com`) and recruits writers via the Google Form. The on-site blog (`BLOG_LIVE` flag + `src/content/blog/*.md` + `/blog/[slug]`) is still dormant — only revisit it if you decide to host posts on-site instead of Beehiiv (then add per-post `Article` JSON-LD + RSS).
 - [x] **Newsletter → Beehiiv (done).** `/api/newsletter` adds the subscriber to Beehiiv (publication `pub_87fc77fb…`) via API with `double_opt_override: 'on'` (GDPR confirmation email). If Beehiiv errors, it falls back to an email notification to `hello@` so no signup is lost. Verified live (`via: "beehiiv"`). Env: `BEEHIIV_API_KEY`, `BEEHIIV_PUBLICATION_KEY_V2`. Send newsletters from Beehiiv → Broadcasts.
 - [ ] **Chapters as data.** `/chapters` uses a hardcoded array — move to an Astro content collection as the chapter list grows.
-- [ ] **Code of conduct page.** Create a code-of-conduct page and add it to the footer (not referenced anywhere yet).
+- [x] **Code of conduct page.** `/code-of-conduct` is live (from the CEO's Jul-26 source doc), linked in the footer and referenced by the `/join` form's consent step. Source archived in `docs/source/code-of-conduct-source.md`.
+- [~] **Community membership form (`/join`).** Typeform-style one-question-at-a-time application (12 questions from `docs/source/community-form-questions.md`). Posts to `/api/community-application`: reCAPTCHA → Google Sheet webhook (swappable store) → Beehiiv opt-in (Q11) → email-to-`hello@` fallback. Ends on the Slack invite. **You:** set up the Sheet + Apps Script and add `SHEETS_WEBHOOK_URL` — see `docs/community-application-sheet.md`. Until then, applications email to `hello@`.
 ### Indexation & measurement (domain is live → actionable now)
 
 - [x] **Sitemap + robots + canonical/OG/JSON-LD** shipped. `/blog` is now a real **collaborator-program landing** (points to the Beehiiv blog + "apply to be a writer"), so it is **indexed and in the sitemap** (the earlier placeholder `noindex` + sitemap filter were removed).

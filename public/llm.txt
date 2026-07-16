@@ -7,6 +7,7 @@ GenAI Community EU connects practitioners working with generative AI across Euro
 ## Pages
 
 - [Home](https://genaicommunity.eu/): Overview of the community — what it is, the local chapters, the blog, and the annual GenAI Summit EU.
+- [Join](https://genaicommunity.eu/join): Membership application — a short guided form (professional profile, motivation, newsletter opt-in, and agreement to the Code of Conduct). On completion, applicants are invited into the community Slack.
 - [Chapters](https://genaicommunity.eu/chapters): Local groups across European cities (e.g. Valencia, Lisbon, Berlin) running meetups and workshops; includes how to apply to lead an official chapter and what Chapter Leads receive.
 - [Blog](https://genaicommunity.eu/blog): Landing for the GenAI Community blog — expert posts on building with generative AI in production (agents, evals, infra), published on Beehiiv (https://genaicommunity.beehiiv.com/). Community experts can apply to write via the form linked on the page.
 - [Sponsor](https://genaicommunity.eu/sponsor): Partnership and sponsorship options — host a chapter in your city, or sponsor events such as GenAI Summit EU and GenAI Workshop Fest.
@@ -25,6 +26,7 @@ GenAI Community EU connects practitioners working with generative AI across Euro
 ## Optional
 
 - [Privacy Policy](https://genaicommunity.eu/privacy): Privacy and cookie policy for the site.
+- [Code of Conduct](https://genaicommunity.eu/code-of-conduct): The community's Code of Conduct — the expected standards of behaviour across all GenAI Community spaces and activities.
 - [X / Twitter](https://x.com/GenAISummit_EU): Community updates on X.
 - [LinkedIn](https://www.linkedin.com/company/genai-community-eu/): Company page on LinkedIn.
 - [My Tech Plan, S.L.](https://www.mytechplan.com): The organization that operates GenAI Community EU.
