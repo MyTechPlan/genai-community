@@ -63,3 +63,33 @@ export async function saveApplication(record, env = process.env) {
     return { success: false };
   }
 }
+
+// Find the most recent application for an email, via the Apps Script `lookup` action
+// (used by the Slack welcome bot to personalise the greeting). Returns
+// { found: boolean, application?: {...} }. Never throws — a miss just yields a generic welcome.
+export async function lookupApplication(email, env = process.env) {
+  const url = env.SHEETS_WEBHOOK_URL || SHEETS_WEBHOOK_URL;
+  const secret = env.SHEETS_WEBHOOK_SECRET || SHEETS_WEBHOOK_SECRET;
+  if (!url || !email) return { found: false };
+
+  try {
+    const body = secret ? { action: 'lookup', email, secret } : { action: 'lookup', email };
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      redirect: 'follow',
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!response.ok) {
+      console.error('Sheets lookup error:', response.status);
+      return { found: false };
+    }
+    const data = await response.json().catch(() => null);
+    if (!data || data.ok !== true) return { found: false };
+    return { found: Boolean(data.found), application: data.application || null };
+  } catch (error) {
+    console.error('Sheets lookup request error:', error?.name === 'TimeoutError' ? 'timeout' : error);
+    return { found: false };
+  }
+}
