@@ -136,7 +136,7 @@ const topics = ['General', 'Speaking', 'Partnership', 'Venue'];
         <div class="bio-text">
           {lead.bio.map((paragraph) => <p>{paragraph}</p>)}
         </div>
-        <p class="bio-quote grad">“{lead.quote}”</p>
+        {lead.quote && <p class="bio-quote grad">“{lead.quote}”</p>}
         <div class="bio-foot">
           <button type="button" class="btn btn-outline" data-bio-close>Close</button>
           <a href={lead.linkedin} class="btn btn-iris bio-in" target="_blank" rel="noopener noreferrer">
