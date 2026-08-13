@@ -37,13 +37,9 @@ export default function handler(req, res) {
     errorLogLabel: 'Contact form error:',
     buildEmailPayload(data) {
       const chapterInbox = CHAPTER_INBOXES[String(data.chapter || '').toLowerCase()];
-      // Transitional safety net: a chapter inbox that hasn't been created yet would
-      // bounce asynchronously and the enquiry would be lost, so hello@ keeps a copy.
-      // Drop this cc once the chapter inboxes are confirmed live.
       return {
         from: FROM_EMAIL,
         to: [chapterInbox || TO_EMAIL],
-        ...(chapterInbox && chapterInbox !== TO_EMAIL ? { cc: [TO_EMAIL] } : {}),
         reply_to: data.email,
         subject: `New contact (${data.reason}): ${data.name}`,
         html: `
