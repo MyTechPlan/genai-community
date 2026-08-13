@@ -357,11 +357,15 @@ const topics = ['General', 'Speaking', 'Partnership', 'Venue'];
 
     /* ── Leads ── */
     .leads-section { border-top: 1px solid var(--line); }
+    /* 825.6px = two 400px cards plus the gap. The lead photos are 400px wide, so this
+       is the widest the grid can go before the browser starts upscaling them. Revisit
+       once higher-resolution portraits land. */
     .leads-grid {
       margin-top: 2rem;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 1.6rem;
+      max-width: 825.6px;
     }
     .lead-card {
       display: flex;
