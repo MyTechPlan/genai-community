@@ -1,13 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Newsletter from '../components/Newsletter.astro';
-
-// MVP: hardcoded list. Move to a content collection when chapters grow.
-const chapters = [
-  { city: 'Valencia', country: 'Spain', status: 'Active', note: 'Home of the annual summit.' },
-  { city: 'Lisbon', country: 'Portugal', status: 'Forming', note: 'Looking for co-organizers.' },
-  { city: 'Berlin', country: 'Germany', status: 'Forming', note: 'Looking for co-organizers.' },
-];
+import { chapters } from '../data/chapters.js';
 
 // The path from applying to running an official chapter.
 const steps = [
@@ -66,12 +60,22 @@ const benefits = [
 
       <div class="chapter-grid">
         {chapters.map((ch) => (
-          <div class="chapter-card">
-            <p class={`status status-${ch.status.toLowerCase()}`}>{ch.status}</p>
-            <h3>{ch.city}</h3>
-            <p class="country">{ch.country}</p>
-            <p class="note">{ch.note}</p>
-          </div>
+          ch.slug ? (
+            <a href={`/chapters/${ch.slug}`} class="chapter-card chapter-open">
+              <p class={`status status-${ch.status.toLowerCase()}`}>{ch.status}</p>
+              <h3>{ch.city}</h3>
+              <p class="country">{ch.country}</p>
+              <p class="note">{ch.note}</p>
+              <span class="chapter-go grad">Visit the chapter →</span>
+            </a>
+          ) : (
+            <div class="chapter-card">
+              <p class={`status status-${ch.status.toLowerCase()}`}>{ch.status}</p>
+              <h3>{ch.city}</h3>
+              <p class="country">{ch.country}</p>
+              <p class="note">{ch.note}</p>
+            </div>
+          )
         ))}
         <a href="https://forms.gle/uS2tiZ87TjJTAgq59" target="_blank" rel="noopener" class="chapter-card chapter-new">
           <h3>Your city?</h3>
@@ -183,6 +187,21 @@ const benefits = [
       color: #ffcf4d;
       box-shadow: 0 0 14px rgba(255, 196, 64, 0.28);
       text-shadow: 0 0 9px rgba(255, 196, 64, 0.5);
+    }
+    .chapter-open {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .chapter-open:hover { background: var(--bg-3); border-color: var(--line-2); }
+    /* as a flex item the pill would stretch to the card width */
+    .chapter-open .status { align-self: flex-start; }
+    .chapter-go {
+      margin-top: auto;
+      padding-top: 0.9rem;
+      font-weight: 600;
+      font-size: 0.95rem;
     }
     .chapter-new {
       border: 1px dashed var(--line-2);

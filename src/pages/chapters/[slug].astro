@@ -1,0 +1,741 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { getChapterPages } from '../../data/chapters.js';
+
+// One page per chapter that has a slug. Everything on it comes from src/data/chapters.js,
+// so a new city is a data change, not a new template.
+export function getStaticPaths() {
+  return getChapterPages().map((chapter) => ({
+    params: { slug: chapter.slug },
+    props: { chapter },
+  }));
+}
+
+const { chapter } = Astro.props;
+const [headlineLead, headlineAccent] = chapter.headline;
+
+const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(chapter.map.bbox)}&layer=mapnik&marker=${encodeURIComponent(`${chapter.map.lat},${chapter.map.lon}`)}`;
+const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(chapter.map.query)}`;
+
+// Reuses /api/contact, so the reCAPTCHA action has to stay 'contact_submit' — the
+// assessment rejects a token whose action doesn't match the one the endpoint expects.
+const formId = `${chapter.slug}-contact-form`;
+const topics = ['General', 'Speaking', 'Partnership', 'Venue'];
+---
+<Base
+  title={`${chapter.city} chapter - GenAI Community EU`}
+  description={chapter.lede}
+>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="crumbs">
+          <span class="eyebrow crumb">Chapters / {chapter.city}, {chapter.country}</span>
+          <span class={`status status-${chapter.status.toLowerCase()}`}>{chapter.status}</span>
+        </div>
+        <h1>{headlineLead} <span class="grad">{headlineAccent}</span></h1>
+        <p class="lede">{chapter.lede}</p>
+        <div class="hero-cta">
+          <a href="/join" class="btn btn-iris">Join the chapter</a>
+          <a href="#leads" class="btn btn-outline">Meet the leads</a>
+        </div>
+        <p class="coords">{chapter.map.coords} · EST. {chapter.established}</p>
+      </div>
+
+      <div class="map-card">
+        <iframe
+          src={mapSrc}
+          title={`Map of ${chapter.map.query}`}
+          loading="lazy"
+          referrerpolicy="no-referrer"
+        ></iframe>
+        <div class="map-veil"></div>
+        <a href={mapsHref} class="map-link" target="_blank" rel="noopener noreferrer">
+          <span class="map-place">
+            <span class="map-city">{chapter.localName || `${chapter.city}, ${chapter.country}`}</span>
+            <span class="map-coords">{chapter.map.coords}</span>
+          </span>
+          <span class="btn btn-iris map-pill">View on Google Maps</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section leads-section" id="leads">
+    <div class="wrap">
+      <span class="eyebrow">Chapter leads</span>
+      <h2>Meet the leads</h2>
+
+      <div class="leads-grid">
+        {chapter.leads.map((lead) => (
+          <article class="lead-card" data-bio-open={`bio-${lead.id}`}>
+            <Image
+              class="lead-photo"
+              src={lead.photo}
+              alt={lead.photoAlt}
+              format="webp"
+              quality={80}
+              loading="lazy"
+              decoding="async"
+              style={`object-position:${lead.photoPosition}`}
+            />
+            <div class="lead-body">
+              <span class="lead-kicker">{lead.kicker}</span>
+              <h3>{lead.name}</h3>
+              <p class="lead-role">{lead.role} at <strong>{lead.company}</strong></p>
+              <p class="lead-summary">{lead.summary}</p>
+              <div class="lead-tags">
+                {lead.tags.map((tag) => <span class="tag">{tag}</span>)}
+              </div>
+              <div class="lead-foot">
+                <button type="button" class="lead-more grad" data-bio-trigger={`bio-${lead.id}`}>
+                  Read full bio →
+                </button>
+                <a
+                  href={lead.linkedin}
+                  class="lead-in"
+                  aria-label={`${lead.shortName} on LinkedIn`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {chapter.leads.map((lead) => (
+    <dialog class="bio" id={`bio-${lead.id}`} aria-labelledby={`bio-${lead.id}-name`}>
+      <button type="button" class="bio-close" aria-label="Close bio" data-bio-close>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+      <div class="bio-inner">
+        <div class="bio-head">
+          <Image
+            class="bio-photo"
+            src={lead.photo}
+            alt=""
+            width={176}
+            height={176}
+            format="webp"
+            quality={80}
+            loading="lazy"
+            decoding="async"
+          />
+          <div>
+            <span class="bio-kicker">{lead.kicker}</span>
+            <h3 id={`bio-${lead.id}-name`}>{lead.name}</h3>
+            <p class="bio-role">{lead.modalRole}</p>
+          </div>
+        </div>
+        <p class="bio-meta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span>{chapter.city} chapter · Lead since {chapter.established}</span>
+        </p>
+        <div class="bio-text">
+          {lead.bio.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+        <p class="bio-quote grad">“{lead.quote}”</p>
+        <div class="bio-foot">
+          <button type="button" class="btn btn-outline" data-bio-close>Close</button>
+          <a href={lead.linkedin} class="btn btn-iris bio-in" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            Connect on LinkedIn
+          </a>
+        </div>
+      </div>
+    </dialog>
+  ))}
+
+  <section class="events">
+    <div class="wrap events-grid">
+      <div>
+        <span class="eyebrow">Events</span>
+        <h2>Meetups, workshops and study groups</h2>
+        <p class="lede">The chapter meets through the year across {chapter.city}. Every date, venue and RSVP lives on the community Eventbrite, and new events are announced there first.</p>
+      </div>
+      <div class="events-cta">
+        <a href="https://www.eventbrite.es/o/genai-community-121448467666?aff=ebdsshcopyurl" class="btn btn-iris events-main" target="_blank" rel="noopener noreferrer">
+          See events on Eventbrite
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+        </a>
+        <div class="events-social">
+          <a href="https://www.linkedin.com/company/genai-community-eu/" class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://x.com/GenAISummit_EU" class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            X
+          </a>
+        </div>
+        <p class="events-note">Follow to catch each meetup first.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section contact-section">
+    <div class="wrap contact-grid">
+      <div>
+        <span class="eyebrow">Contact</span>
+        <h2>Get in touch</h2>
+        <p class="lede">Speaking, venues, partnerships, press, or joining the team. Send a note and the chapter will get back to you.</p>
+        <p class="contact-note">Submissions are checked by reCAPTCHA, so bots cannot spam the chapter.</p>
+      </div>
+
+      <form
+        id={formId}
+        class="cform"
+        aria-label={`${chapter.city} chapter contact form`}
+        data-recaptcha
+        data-endpoint="/api/contact"
+        data-action="contact_submit"
+      >
+        <div class="cform-row">
+          <div class="cform-field">
+            <label for={`${formId}-name`}>Name</label>
+            <input id={`${formId}-name`} name="name" type="text" autocomplete="name" required />
+          </div>
+          <div class="cform-field">
+            <label for={`${formId}-email`}>Email</label>
+            <input id={`${formId}-email`} name="email" type="email" autocomplete="email" required />
+          </div>
+        </div>
+
+        <fieldset class="cform-topics">
+          <legend>Topic</legend>
+          <div class="chips">
+            {topics.map((topic, i) => (
+              <label class="chip">
+                <input type="radio" name="reason" value={`${chapter.city} chapter: ${topic}`} checked={i === 0} />
+                <span>{topic}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <div class="cform-field">
+          <label for={`${formId}-message`}>Message</label>
+          <textarea id={`${formId}-message`} name="message" rows="4" required></textarea>
+        </div>
+
+        <label class="cform-consent">
+          <input type="checkbox" name="consent" required />
+          <span>I have read and accept the <a href="/privacy" class="link-holo">Privacy Policy</a>.</span>
+        </label>
+
+        <p class="cform-error" data-form-error role="alert" hidden></p>
+
+        <div class="cform-send">
+          <button type="submit" class="btn btn-iris" data-loading="Sending…">Send enquiry</button>
+          <span class="cform-legal">Protected by reCAPTCHA</span>
+        </div>
+      </form>
+
+      <div id={`${formId}-success`} class="cform-success" role="status" aria-live="polite" hidden>
+        <h3>Message sent ✓</h3>
+        <p>Thanks for reaching out. The {chapter.city} chapter will get back to you shortly.</p>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* ── Hero ── */
+    .hero { padding: 4.5rem 0 4rem; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 3.5rem;
+      align-items: center;
+    }
+    .crumbs { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .crumb { margin-bottom: 0; }
+    .status {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      border-radius: 999px;
+      padding: 0.2rem 0.65rem;
+      border: 1px solid transparent;
+    }
+    .status-active { color: #cdeede; border-color: rgba(205, 238, 222, 0.35); }
+    .status-forming { color: #fdf4d6; border-color: rgba(253, 244, 214, 0.35); }
+    .hero h1 { font-size: clamp(2.4rem, 5vw, 3.4rem); margin-bottom: 1rem; }
+    .lede { font-size: 1.09rem; color: var(--text-dim); max-width: 56ch; }
+    .hero-cta { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.6rem; }
+    .coords {
+      margin: 1.7rem 0 0;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      color: var(--text-faint);
+    }
+
+    /* Outline variant — the global .btn-* variants are all iridescent fills. */
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--line-2);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.98rem;
+      padding: 0.8rem 1.6rem;
+      border-radius: 7px;
+      text-decoration: none;
+      transition: border-color 120ms ease;
+    }
+    .btn-outline:hover { border-color: var(--text-dim); }
+    .btn-outline svg { width: 15px; height: 15px; flex: none; }
+
+    /* ── Map ── */
+    .map-card {
+      position: relative;
+      height: 330px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--bg-1);
+    }
+    .map-card iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      filter: grayscale(0.6) brightness(0.85) contrast(1.1);
+    }
+    .map-veil {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent 45%);
+      pointer-events: none;
+    }
+    /* Anchored to the top: OpenStreetMap pins its (licence-required) attribution to the
+       bottom of the embed, where it wraps to two or three lines on a narrow card. */
+    .map-link {
+      position: absolute;
+      left: 1rem;
+      top: 0.9rem;
+      /* stay clear of the embed's zoom controls in the top-right corner */
+      right: 4.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.6rem;
+      text-decoration: none;
+      z-index: 1;
+    }
+    .map-place { display: flex; flex-direction: column; gap: 0.15rem; }
+    .map-city {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+    .map-coords { font-size: 0.72rem; color: #d1d1d6; }
+    .map-pill {
+      flex: none;
+      border-radius: 999px;
+      padding: 0.5rem 1rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    /* ── Leads ── */
+    .leads-section { border-top: 1px solid var(--line); }
+    .leads-grid {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.6rem;
+    }
+    .lead-card {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: background 150ms ease, transform 150ms ease, border-color 150ms ease;
+    }
+    .lead-card:hover {
+      background: var(--bg-3);
+      transform: translateY(-2px);
+      border-color: var(--line-2);
+    }
+    .lead-photo {
+      display: block;
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      background: var(--bg-3);
+    }
+    .lead-body {
+      padding: 1.4rem 1.6rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      flex: 1;
+    }
+    .lead-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-faint);
+    }
+    .lead-body h3 { font-size: 1.4rem; margin: 0; }
+    .lead-role { margin: 0; font-size: 0.9rem; color: var(--text-dim); }
+    .lead-role strong { color: var(--text); }
+    .lead-summary { margin: 0; font-size: 0.95rem; line-height: 1.6; color: var(--text-dim); }
+    .lead-tags { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+    .tag {
+      border: 1px solid var(--line-2);
+      border-radius: 999px;
+      padding: 0.2rem 0.7rem;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lead-foot {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-top: 1px solid var(--line);
+      padding-top: 1rem;
+      margin-top: auto;
+    }
+    /* background-color only: the `background` shorthand would wipe the gradient and the
+       background-clip that .grad relies on, leaving transparent text on nothing. */
+    .lead-more {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .lead-in {
+      margin-left: auto;
+      width: 38px;
+      height: 38px;
+      flex: none;
+      border: 1px solid var(--line-2);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
+      transition: color 120ms ease, border-color 120ms ease;
+    }
+    .lead-in:hover { color: var(--text); border-color: rgba(232, 228, 247, 0.5); }
+    .lead-in svg { width: 16px; height: 16px; }
+
+    /* ── Bio dialog ── */
+    /* The dialog is the fixed frame and the inner panel scrolls, so the close button
+       stays put instead of scrolling away on a long bio. */
+    .bio {
+      width: min(680px, 92vw);
+      max-height: 88vh;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      overflow: visible;
+    }
+    .bio::backdrop { background: rgba(0, 0, 0, 0.62); backdrop-filter: blur(6px); }
+    .bio-inner {
+      max-height: 88vh;
+      overflow: auto;
+      overscroll-behavior: contain;
+      background: var(--bg-1);
+      border: 1px solid var(--line-2);
+      border-radius: 16px;
+      padding: 2.1rem 2.2rem;
+      box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8);
+    }
+    .bio-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 2;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--line-2);
+      background: color-mix(in srgb, var(--bg-1) 85%, transparent);
+      backdrop-filter: blur(4px);
+      color: var(--text-dim);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bio-close:hover { background: var(--bg-3); color: var(--text); }
+    .bio-close svg { width: 17px; height: 17px; }
+    .bio-head { display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1.4rem; padding-right: 2.5rem; }
+    .bio-photo {
+      display: block;
+      width: 88px;
+      height: 88px;
+      flex: none;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid var(--line-2);
+    }
+    .bio-kicker {
+      display: inline-flex;
+      border: 1px solid var(--line-2);
+      border-radius: 999px;
+      padding: 0.2rem 0.7rem;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+    }
+    .bio-head h3 { margin: 0.6rem 0 0.3rem; font-size: 1.55rem; }
+    .bio-role { margin: 0; font-size: 0.88rem; color: var(--text-dim); }
+    .bio-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      margin: 0 0 1.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .bio-meta svg { width: 14px; height: 14px; flex: none; color: var(--text-faint); }
+    .bio-text { font-size: 0.97rem; line-height: 1.7; color: #c6c6cc; }
+    .bio-text p:last-child { margin-bottom: 0; }
+    .bio-quote {
+      margin: 1.4rem 0 0;
+      border-top: 1px solid var(--line);
+      padding-top: 1.1rem;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1.25rem;
+      line-height: 1.35;
+    }
+    .bio-foot { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.6rem; flex-wrap: wrap; }
+    .bio-in { display: inline-flex; align-items: center; gap: 0.5rem; }
+    .bio-in svg { width: 15px; height: 15px; }
+
+    /* ── Events ── */
+    .events {
+      background: var(--bg-1);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 4rem 0;
+    }
+    .events-grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 3.5rem;
+      align-items: center;
+    }
+    .events h2 { font-size: clamp(1.7rem, 3.4vw, 2.1rem); }
+    .events-cta { display: flex; flex-direction: column; gap: 0.85rem; }
+    .events-main { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .events-main svg { width: 15px; height: 15px; }
+    .events-social { display: flex; gap: 0.6rem; }
+    .events-social .btn-outline { flex: 1; padding: 0.7rem 0.9rem; font-size: 0.88rem; }
+    .events-note { margin: 0; font-size: 0.78rem; color: var(--text-faint); text-align: center; }
+
+    /* ── Contact ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 440px;
+      gap: 3.5rem;
+      align-items: start;
+    }
+    .contact-note { font-size: 0.85rem; color: var(--text-faint); max-width: 46ch; }
+    .cform {
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .cform-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+    .cform-field { display: flex; flex-direction: column; gap: 0.35rem; }
+    /* --text-faint at this size falls under 4.5:1 on the card background */
+    .cform-field label,
+    .cform-topics legend {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      padding: 0;
+    }
+    .cform input[type='text'],
+    .cform input[type='email'],
+    .cform textarea {
+      font: inherit;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--line-2);
+      border-radius: 8px;
+      padding: 0.7rem 0.85rem;
+      width: 100%;
+    }
+    .cform textarea { resize: vertical; }
+    /* scoped to the bordered fields: a blanket input:focus would also strip the
+       focus ring from the consent checkbox, which has no border to recolour */
+    .cform input[type='text']:focus,
+    .cform input[type='email']:focus,
+    .cform textarea:focus { outline: none; border-color: var(--text-dim); }
+    .cform-topics { border: none; margin: 0; padding: 0; }
+    .chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    .chip { cursor: pointer; }
+    .chip input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .chip span {
+      display: inline-block;
+      border: 1px solid var(--line-2);
+      border-radius: 999px;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+    }
+    .chip:hover span { border-color: var(--text-dim); }
+    .chip input:checked + span {
+      background: rgba(232, 228, 247, 0.14);
+      border-color: rgba(232, 228, 247, 0.4);
+      color: var(--text);
+    }
+    .chip input:focus-visible + span { outline: 2px solid var(--white); outline-offset: 2px; }
+    .cform-consent {
+      display: flex;
+      gap: 0.55rem;
+      align-items: flex-start;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+    .cform-consent input {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+      margin: 0.15rem 0 0;
+      accent-color: #cdeede;
+    }
+    .cform-error { font-size: 0.88rem; color: #f3a3b8; margin: 0; }
+    .cform-send { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+    .cform-send .btn { cursor: pointer; }
+    .cform-legal { font-size: 0.72rem; color: var(--text-faint); }
+    .cform-success {
+      grid-column: 2;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 2.2rem 1.8rem;
+      text-align: center;
+    }
+    .cform-success h3 { color: #cdeede; }
+    .cform-success p { color: var(--text-dim); margin: 0; }
+
+    @media (max-width: 960px) {
+      .hero-grid,
+      .events-grid,
+      .contact-grid { grid-template-columns: 1fr; gap: 2.4rem; }
+      .cform-success { grid-column: 1; }
+      .map-card { height: 260px; }
+    }
+    @media (max-width: 700px) {
+      .leads-grid { grid-template-columns: 1fr; }
+      .cform-row { grid-template-columns: 1fr; }
+      .bio-inner { padding: 1.6rem 1.3rem; }
+      .bio-head { flex-direction: column; align-items: flex-start; gap: 1rem; padding-right: 0; }
+      /* the map overlay competes with the OSM controls on a narrow card */
+      .map-coords { display: none; }
+      .map-city { font-size: 0.88rem; }
+      .map-pill { font-size: 0.55rem; padding: 0.45rem 0.8rem; letter-spacing: 0.12em; }
+    }
+    @media (max-width: 560px) {
+      /* side by side, these two squeeze each other into two-line labels */
+      .hero-cta { flex-direction: column; align-items: stretch; }
+      .hero-cta .btn { text-align: center; }
+      /* flex:1 here squeezed "Connect on LinkedIn" into a three-line button */
+      .bio-foot { flex-direction: column-reverse; align-items: stretch; }
+      .bio-foot .btn { text-align: center; }
+      .bio-in { justify-content: center; }
+    }
+  </style>
+
+  <script>
+    // Bio modals: native <dialog> gives Escape, focus trapping and inertness for free.
+    const dialogs = document.querySelectorAll('dialog.bio');
+
+    function openBio(id) {
+      const dialog = document.getElementById(id);
+      if (!(dialog instanceof HTMLDialogElement)) return;
+      // Hiding the body scrollbar reclaims its width and shifts the page under the
+      // backdrop, so pad by exactly what the scrollbar was occupying.
+      const scrollbar = window.innerWidth - document.documentElement.clientWidth;
+      dialog.showModal();
+      document.body.style.overflow = 'hidden';
+      if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`;
+    }
+
+    document.querySelectorAll('[data-bio-trigger]').forEach((trigger) => {
+      trigger.addEventListener('click', (event) => {
+        event.stopPropagation();
+        openBio(trigger.dataset.bioTrigger);
+      });
+    });
+
+    // The whole card is clickable too, except where a real control already handles it.
+    document.querySelectorAll('[data-bio-open]').forEach((card) => {
+      card.addEventListener('click', (event) => {
+        if (event.target.closest('a, button')) return;
+        openBio(card.dataset.bioOpen);
+      });
+    });
+
+    dialogs.forEach((dialog) => {
+      dialog.addEventListener('close', () => {
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
+      });
+      // Clicking the backdrop reports the dialog itself as the target.
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+      dialog.querySelectorAll('[data-bio-close]').forEach((button) => {
+        button.addEventListener('click', () => dialog.close());
+      });
+    });
+  </script>
+</Base>
