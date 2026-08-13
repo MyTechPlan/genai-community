@@ -4,10 +4,19 @@ import { handleContactRequest } from './_lib/contact-request.js';
 const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'GenAI Community EU <noreply@genaicommunity.eu>';
 const TO_EMAIL = process.env.CONTACT_TO_EMAIL || 'hello@genaicommunity.eu';
 
+// Chapter pages post here too, and their enquiries go to that chapter's own inbox.
+// The form sends a slug, never an address, and anything not on this list falls back to
+// TO_EMAIL — so a direct API caller can't turn the form into a relay to an arbitrary
+// mailbox. Add a chapter here when its inbox exists.
+const CHAPTER_INBOXES = {
+  lisbon: 'lisbon@genaicommunity.eu',
+};
+
 const MAX_LENGTHS = {
   name: 120,
   email: 254,
   reason: 80,
+  chapter: 40,
   message: 5000,
 };
 
@@ -19,6 +28,7 @@ export default function handler(req, res) {
       name: { defaultValue: undefined },
       email: { defaultValue: undefined },
       reason: { defaultValue: 'General question' },
+      chapter: { defaultValue: '' },
       message: { defaultValue: undefined },
     },
     maxLengths: MAX_LENGTHS,
@@ -26,9 +36,10 @@ export default function handler(req, res) {
     devSuccessMessage: 'Form received (email not configured — dev mode)',
     errorLogLabel: 'Contact form error:',
     buildEmailPayload(data) {
+      const chapterInbox = CHAPTER_INBOXES[String(data.chapter || '').toLowerCase()];
       return {
         from: FROM_EMAIL,
-        to: [TO_EMAIL],
+        to: [chapterInbox || TO_EMAIL],
         reply_to: data.email,
         subject: `New contact (${data.reason}): ${data.name}`,
         html: `

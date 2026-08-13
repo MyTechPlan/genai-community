@@ -16,7 +16,6 @@ const { chapter } = Astro.props;
 const [headlineLead, headlineAccent] = chapter.headline;
 
 const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(chapter.map.bbox)}&layer=mapnik&marker=${encodeURIComponent(`${chapter.map.lat},${chapter.map.lon}`)}`;
-const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(chapter.map.query)}`;
 
 // Reuses /api/contact, so the reCAPTCHA action has to stay 'contact_submit' — the
 // assessment rejects a token whose action doesn't match the one the endpoint expects.
@@ -51,13 +50,10 @@ const topics = ['General', 'Speaking', 'Partnership', 'Venue'];
           referrerpolicy="no-referrer"
         ></iframe>
         <div class="map-veil"></div>
-        <a href={mapsHref} class="map-link" target="_blank" rel="noopener noreferrer">
-          <span class="map-place">
-            <span class="map-city">{chapter.localName || `${chapter.city}, ${chapter.country}`}</span>
-            <span class="map-coords">{chapter.map.coords}</span>
-          </span>
-          <span class="btn btn-iris map-pill">View on Google Maps</span>
-        </a>
+        <p class="map-label">
+          <span class="map-city">{chapter.localName || `${chapter.city}, ${chapter.country}`}</span>
+          <span class="map-coords">{chapter.map.coords}</span>
+        </p>
       </div>
     </div>
   </section>
@@ -196,6 +192,7 @@ const topics = ['General', 'Speaking', 'Partnership', 'Venue'];
         data-endpoint="/api/contact"
         data-action="contact_submit"
       >
+        <input type="hidden" name="chapter" value={chapter.slug} />
         <div class="cform-row">
           <div class="cform-field">
             <label for={`${formId}-name`}>Name</label>
@@ -323,20 +320,18 @@ const topics = ['General', 'Speaking', 'Partnership', 'Venue'];
     }
     /* Anchored to the top: OpenStreetMap pins its (licence-required) attribution to the
        bottom of the embed, where it wraps to two or three lines on a narrow card. */
-    .map-link {
+    .map-label {
       position: absolute;
       left: 1rem;
       top: 0.9rem;
       /* stay clear of the embed's zoom controls in the top-right corner */
       right: 4.25rem;
+      margin: 0;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      gap: 0.6rem;
-      text-decoration: none;
+      gap: 0.15rem;
       z-index: 1;
     }
-    .map-place { display: flex; flex-direction: column; gap: 0.15rem; }
     .map-city {
       font-family: var(--font-display);
       font-weight: 700;
@@ -345,15 +340,6 @@ const topics = ['General', 'Speaking', 'Partnership', 'Venue'];
       color: var(--white);
     }
     .map-coords { font-size: 0.72rem; color: #d1d1d6; }
-    .map-pill {
-      flex: none;
-      border-radius: 999px;
-      padding: 0.5rem 1rem;
-      font-size: 0.62rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-    }
 
     /* ── Leads ── */
     .leads-section { border-top: 1px solid var(--line); }
@@ -683,9 +669,7 @@ const topics = ['General', 'Speaking', 'Partnership', 'Venue'];
       .bio-inner { padding: 1.6rem 1.3rem; }
       .bio-head { flex-direction: column; align-items: flex-start; gap: 1rem; padding-right: 0; }
       /* the map overlay competes with the OSM controls on a narrow card */
-      .map-coords { display: none; }
       .map-city { font-size: 0.88rem; }
-      .map-pill { font-size: 0.55rem; padding: 0.45rem 0.8rem; letter-spacing: 0.12em; }
     }
     @media (max-width: 560px) {
       /* side by side, these two squeeze each other into two-line labels */
