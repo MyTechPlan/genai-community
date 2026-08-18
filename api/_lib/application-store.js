@@ -14,7 +14,16 @@ import { isProductionEnv } from './contact-security.js';
 
 const SHEETS_WEBHOOK_URL = process.env.SHEETS_WEBHOOK_URL || '';
 const SHEETS_WEBHOOK_SECRET = process.env.SHEETS_WEBHOOK_SECRET || '';
-const TIMEOUT_MS = 8000;
+// Writes and reads get different budgets on purpose.
+//
+// WRITE: appendRow contends for the spreadsheet's lock, so while someone is editing the
+// sheet in the browser a save that normally takes ~2s can run well past 8s. The row still
+// lands; we were just hanging up first and emailing the "store unavailable" fallback for
+// an application that had in fact been saved (and inviting a retry that duplicates the row).
+const WRITE_TIMEOUT_MS = 25000;
+// READ: api/slack-events.js awaits this lookup before it acknowledges the event, and Slack
+// retries any event it hasn't seen acked within 3s. Keep this budget short.
+const LOOKUP_TIMEOUT_MS = 8000;
 
 export function hasApplicationStore() {
   return Boolean(SHEETS_WEBHOOK_URL);
@@ -41,7 +50,7 @@ export async function saveApplication(record, env = process.env) {
       // Apps Script Web Apps 302-redirect the POST to script.googleusercontent.com;
       // fetch follows redirects by default so we reach the script's real response.
       redirect: 'follow',
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      signal: AbortSignal.timeout(WRITE_TIMEOUT_MS),
     });
 
     if (!response.ok) {
@@ -79,7 +88,7 @@ export async function lookupApplication(email, env = process.env) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
       redirect: 'follow',
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      signal: AbortSignal.timeout(LOOKUP_TIMEOUT_MS),
     });
     if (!response.ok) {
       console.error('Sheets lookup error:', response.status);
