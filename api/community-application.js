@@ -1,6 +1,7 @@
 import { getCorsOrigin, isProductionEnv, sanitizeInput, sendResendEmail, verifyRecaptcha } from './_lib/contact-security.js';
 import { addToBeehiiv, hasBeehiiv } from './_lib/beehiiv.js';
 import { saveApplication, hasApplicationStore } from './_lib/application-store.js';
+import { waitUntil } from '@vercel/functions';
 
 // Community membership application ("/join").
 // 1) verify reCAPTCHA  2) validate the ✅ required fields from the form spec
@@ -190,37 +191,52 @@ export default async function handler(req, res) {
       source: 'genaicommunity.eu/join',
     };
 
-    // 1) Persist to the swappable store, and 2) opt into Beehiiv (double opt-in) — these
-    //    are independent, so run them concurrently to keep the request off the critical path.
-    const [stored] = await Promise.all([
-      hasApplicationStore() ? saveApplication(record, env) : Promise.resolve({ success: false, skipped: true }),
-      newsletter === 'yes' && hasBeehiiv()
-        ? addToBeehiiv(email, { campaign: 'community-application' })
-        : Promise.resolve(null),
-    ]);
+    // The applicant is not made to wait on our back office. Everything they need (the
+    // Slack invite on the success screen) is already decided by this point, so the Sheet
+    // write, the newsletter opt-in and the email fallback all run after the response.
+    //
+    // This is what stops a slow Sheet from surfacing as a form error. Google's appendRow
+    // contends for the spreadsheet lock, so a save that usually takes ~2s can run far
+    // longer while someone is editing the sheet. We used to abort, show an error and
+    // invite a retry that wrote the applicant to a second row, all for a row that had
+    // in fact been saved.
+    const persist = (async () => {
+      try {
+        const [stored] = await Promise.all([
+          hasApplicationStore() ? saveApplication(record, env) : Promise.resolve({ success: false, skipped: true }),
+          newsletter === 'yes' && hasBeehiiv()
+            ? addToBeehiiv(email, { campaign: 'community-application' })
+            : Promise.resolve(null),
+        ]);
 
-    // 3) If we couldn't persist (no store configured, or the webhook failed), email hello@
-    //    so an application is never lost.
-    if (!stored.success) {
-      if (env.RESEND_API_KEY) {
-        const emailResult = await sendResendEmail(applicationEmailPayload(record), env);
-        if (emailResult.success) {
-          return res.status(200).json({ success: true, via: 'email-fallback' });
+        if (stored.success) return;
+
+        // Couldn't persist: email hello@ so an application is never lost.
+        if (env.RESEND_API_KEY) {
+          const emailResult = await sendResendEmail(applicationEmailPayload(record), env);
+          if (emailResult.success) return;
         }
-      }
-      if (!isProduction && stored.skipped) {
-        // Redacted: never log applicant PII (name/email/LinkedIn/employer) even in dev/preview.
-        console.log('Community application accepted in dev mode', {
+
+        // Redacted: never log applicant PII (name/email/LinkedIn/employer).
+        console.error('Community application not persisted and fallback email failed', {
           submittedAt: record.submittedAt,
           source: record.source,
-          newsletter: record.newsletter,
+          storeSkipped: Boolean(stored.skipped),
         });
-        return res.status(200).json({ success: true, via: 'dev' });
+      } catch (error) {
+        console.error('Community application persistence error:', error);
       }
-      return res.status(500).json({ error: 'Could not save your application. Please try again.' });
+    })();
+
+    // waitUntil keeps the invocation alive for the background work. Outside Vercel
+    // (local dev) there is no request context, so fall back to awaiting it inline.
+    try {
+      waitUntil(persist);
+    } catch {
+      await persist;
     }
 
-    return res.status(200).json({ success: true, via: 'sheets' });
+    return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Community application handler error:', error);
     return res.status(500).json({ error: 'Internal server error' });
