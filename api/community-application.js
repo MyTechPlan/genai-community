@@ -12,6 +12,12 @@ const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'GenAI Community EU <norepl
 const TO_EMAIL =
   process.env.APPLICATIONS_TO_EMAIL || process.env.CONTACT_TO_EMAIL || 'hello@genaicommunity.eu';
 
+// The Slack shared-invite link. Kept in sync with `slackUrl` in src/pages/join.astro,
+// which renders the same link on the success screen; override both via env if it rotates.
+const SLACK_INVITE_URL =
+  process.env.SLACK_INVITE_URL ||
+  'https://join.slack.com/t/genaicommunityespacio/shared_invite/zt-40tgj84ep-ON4753OHsvJYI8A0iy923Q';
+
 const MAX = { name: 80, email: 254, url: 200, city: 80, country: 80, company: 120, choice: 120, intro: 1200 };
 const MAX_MULTI = 12;
 const NEWSLETTER_VALUES = new Set(['yes', 'no']);
@@ -103,6 +109,32 @@ function applicationEmailPayload(record) {
         ${row('Submitted', esc(record.submittedAt))}
       </table>
       <p style="color:#888;font-size:13px;">⚠️ The application store was unavailable, so this is an email fallback. Please copy it into the tracking Sheet manually.</p>
+    `,
+  };
+}
+
+// Sent to the applicant. Until now the invite link existed only on the success screen,
+// so anyone who closed the tab lost it and had no record that they had applied at all.
+// This is a service message tied to the application, not marketing: it goes out whatever
+// the person chose for the newsletter.
+function welcomeEmailPayload(record) {
+  return {
+    from: FROM_EMAIL,
+    to: [record.email],
+    reply_to: TO_EMAIL,
+    subject: "You're in. One last step: join the GenAI Community Slack",
+    html: `
+      <div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:520px;color:#14131a;line-height:1.6;">
+        <h2 style="font-size:22px;margin:0 0 14px;">Welcome to GenAI Community, ${esc(record.firstName)}</h2>
+        <p style="margin:0 0 16px;">We have your application. There is one last step: our Slack, where the community talks every day.</p>
+        <p style="margin:0 0 24px;">
+          <a href="${SLACK_INVITE_URL}" style="display:inline-block;background:#14131a;color:#ffffff;text-decoration:none;font-weight:600;padding:13px 26px;border-radius:7px;">Join the Slack</a>
+        </p>
+        <p style="margin:0 0 16px;">Please join with <strong>${esc(record.email)}</strong>, the same address you used to apply. That is how we recognise you and welcome you properly in <strong>#new-members</strong>.</p>
+        <p style="margin:0 0 8px;color:#6e6e76;font-size:13px;">If the button does not work, copy this link:</p>
+        <p style="margin:0 0 24px;color:#6e6e76;font-size:13px;word-break:break-all;">${SLACK_INVITE_URL}</p>
+        <p style="margin:0;color:#6e6e76;font-size:13px;">Questions? Just reply to this email.</p>
+      </div>
     `,
   };
 }
@@ -202,12 +234,20 @@ export default async function handler(req, res) {
     // in fact been saved.
     const persist = (async () => {
       try {
-        const [stored] = await Promise.all([
+        // None of these three reject: saveApplication, addToBeehiiv and sendResendEmail
+        // all resolve to a result object, so one failing cannot skip the others.
+        const [stored, , welcome] = await Promise.all([
           hasApplicationStore() ? saveApplication(record, env) : Promise.resolve({ success: false, skipped: true }),
           newsletter === 'yes' && hasBeehiiv()
             ? addToBeehiiv(email, { campaign: 'community-application' })
             : Promise.resolve(null),
+          env.RESEND_API_KEY ? sendResendEmail(welcomeEmailPayload(record), env) : Promise.resolve(null),
         ]);
+
+        // Worth knowing about: they applied but never got the invite in writing.
+        if (welcome && !welcome.success) {
+          console.error('Welcome email to applicant failed', { submittedAt: record.submittedAt });
+        }
 
         if (stored.success) return;
 
