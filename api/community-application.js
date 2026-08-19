@@ -117,6 +117,10 @@ function applicationEmailPayload(record) {
 // so anyone who closed the tab lost it and had no record that they had applied at all.
 // This is a service message tied to the application, not marketing: it goes out whatever
 // the person chose for the newsletter.
+// Button matches the site's iridescent CTA on /join. Two email constraints shape it:
+// the glyph is a hosted PNG because Gmail strips inline SVG, and background-color carries
+// a solid fallback because Outlook's Word engine ignores linear-gradient. The label alone
+// still reads correctly if a client blocks the image.
 function welcomeEmailPayload(record) {
   return {
     from: FROM_EMAIL,
@@ -128,7 +132,10 @@ function welcomeEmailPayload(record) {
         <h2 style="font-size:22px;margin:0 0 14px;">Welcome to GenAI Community, ${esc(record.firstName)}</h2>
         <p style="margin:0 0 16px;">We have your application. There is one last step: our Slack, where the community talks every day.</p>
         <p style="margin:0 0 24px;">
-          <a href="${SLACK_INVITE_URL}" style="display:inline-block;background:#14131a;color:#ffffff;text-decoration:none;font-weight:600;padding:13px 26px;border-radius:7px;">Join the Slack</a>
+          <a href="${SLACK_INVITE_URL}" style="display:inline-block;background-color:#e8e4f7;background-image:linear-gradient(110deg,#cdeede 0%,#e8e4f7 30%,#fbe1ef 55%,#fdf4d6 78%,#d6ecf6 100%);color:#14131a;text-decoration:none;font-weight:600;font-size:16px;padding:13px 26px;border-radius:7px;">
+            <img src="https://www.genaicommunity.eu/slack-mark.png" width="18" height="18" alt="" style="vertical-align:middle;margin-right:9px;border:0;" />
+            <span style="vertical-align:middle;">Join us on Slack</span>
+          </a>
         </p>
         <p style="margin:0 0 16px;">Please join with <strong>${esc(record.email)}</strong>, the same address you used to apply. That is how we recognise you and welcome you properly in <strong>#new-members</strong>.</p>
         <p style="margin:0 0 8px;color:#6e6e76;font-size:13px;">If the button does not work, copy this link:</p>
