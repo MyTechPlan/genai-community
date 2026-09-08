@@ -10,7 +10,7 @@ const RAW_PUBLICATION_ID =
 // The endpoint expects the `pub_`-prefixed V2 id; tolerate a bare UUID in env.
 const PUBLICATION_ID = RAW_PUBLICATION_ID.startsWith('pub_') ? RAW_PUBLICATION_ID : `pub_${RAW_PUBLICATION_ID}`;
 
-const SITE = 'https://genaicommunity.eu';
+const SITE = 'https://www.genaicommunity.eu';
 const TIMEOUT_MS = 8000;
 
 export function hasBeehiiv() {
