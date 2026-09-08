@@ -2,6 +2,6 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://genaicommunity.eu',
+  site: 'https://www.genaicommunity.eu',
   integrations: [sitemap()],
 });
