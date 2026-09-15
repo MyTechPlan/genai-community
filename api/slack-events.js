@@ -1,9 +1,11 @@
 // Slack Events endpoint for the community welcome bot.
 // When someone joins the workspace (`team_join`), look up their application by email in
 // the Google Sheet and post a personalised welcome to #new-members. No match → a warm
-// generic welcome. See docs/slack-welcome-bot.md for the Slack app + env setup.
+// generic welcome, plus the funnel guard: DM the joiner the /join link and alert the admins,
+// so a forwarded invite link never lets someone in unnoticed. Everything the bot says is
+// fixed text; it never reads or answers messages. See docs/slack-welcome-bot.md for setup.
 
-import { verifySlackSignature, slackEscape, slackPostMessage, slackGetUserEmail } from './_lib/slack.js';
+import { verifySlackSignature, slackEscape, slackPostMessage, slackGetUserEmail, slackListAdmins } from './_lib/slack.js';
 import { lookupApplication } from './_lib/application-store.js';
 import { waitUntil } from '@vercel/functions';
 
@@ -11,6 +13,9 @@ const SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET || '';
 const VERIFICATION_TOKEN = process.env.SLACK_VERIFICATION_TOKEN || ''; // legacy fallback verifier
 const BOT_TOKEN = process.env.SLACK_BOT_TOKEN || '';
 const WELCOME_CHANNEL = process.env.SLACK_WELCOME_CHANNEL || '';
+// Where "joined without an application" alerts go. Unset → DM every workspace admin/owner.
+const ADMIN_CHANNEL = process.env.SLACK_ADMIN_CHANNEL || '';
+const JOIN_URL = 'https://www.genaicommunity.eu/join';
 
 // Best-effort dedupe of Slack's at-least-once retries within a warm instance.
 const seenEvents = new Set();
@@ -101,6 +106,34 @@ async function handleTeamJoin(event) {
 
   const { text, blocks } = buildWelcome({ userId, application });
   await slackPostMessage({ token: BOT_TOKEN, channel: WELCOME_CHANNEL, text, blocks });
+
+  if (!application) await guardFunnel({ userId, email });
+}
+
+// The membership form is the only intended way in. Someone arriving without an application
+// got the invite link second-hand, so point them at the form and tell the admins. Both
+// messages are best-effort and independent: one failing must not suppress the other.
+async function guardFunnel({ userId, email }) {
+  const shownEmail = email ? slackEscape(email) : 'unknown';
+
+  const dm = slackPostMessage({
+    token: BOT_TOKEN,
+    channel: userId, // a user id as channel = direct message (needs the im:write scope)
+    text: `Welcome to GenAI Community! We could not find a membership application for this account, and the form is how we get to know every member. Please take two minutes to complete it: ${JOIN_URL} — This is an automated message; replies are not read.`,
+  });
+
+  const alertText = `:mag: <@${userId}> joined the workspace without a membership application (email: ${shownEmail}). They were sent the ${JOIN_URL} link.`;
+  const alert = (async () => {
+    if (ADMIN_CHANNEL) {
+      await slackPostMessage({ token: BOT_TOKEN, channel: ADMIN_CHANNEL, text: alertText });
+      return;
+    }
+    const admins = await slackListAdmins({ token: BOT_TOKEN });
+    if (!admins.length) console.error('Funnel guard: no admin channel configured and no admins found');
+    await Promise.all(admins.map((admin) => slackPostMessage({ token: BOT_TOKEN, channel: admin, text: alertText })));
+  })();
+
+  await Promise.all([dm, alert]);
 }
 
 export default async function handler(req, res) {

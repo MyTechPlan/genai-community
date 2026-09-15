@@ -1,5 +1,5 @@
 // Shared Slack helpers for the community welcome bot (api/slack-events.js).
-// Kept dependency-free (no @slack/* SDK) — three small primitives over the Web API.
+// Kept dependency-free (no @slack/* SDK) — four small primitives over the Web API.
 
 import crypto from 'node:crypto';
 
@@ -76,4 +76,32 @@ export async function slackGetUserEmail({ token, userId }) {
     console.error('Slack users.info error:', error?.name === 'TimeoutError' ? 'timeout' : error);
     return null;
   }
+}
+
+// Workspace admins and owners (for the funnel-guard alert when no admin channel is
+// configured). Needs users:read. Returns [] on any failure so the caller just skips.
+export async function slackListAdmins({ token }) {
+  const admins = [];
+  let cursor = '';
+  try {
+    do {
+      const url = `${SLACK_API}/users.list?limit=200${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}`;
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      });
+      const data = await response.json().catch(() => null);
+      if (!data || !data.ok) {
+        console.error('Slack users.list failed:', (data && data.error) || 'no body');
+        return admins;
+      }
+      for (const m of data.members || []) {
+        if ((m.is_admin || m.is_owner) && !m.deleted && !m.is_bot) admins.push(m.id);
+      }
+      cursor = data.response_metadata?.next_cursor || '';
+    } while (cursor);
+  } catch (error) {
+    console.error('Slack users.list error:', error?.name === 'TimeoutError' ? 'timeout' : error);
+  }
+  return admins;
 }
