@@ -21,9 +21,11 @@ const SHEETS_WEBHOOK_SECRET = process.env.SHEETS_WEBHOOK_SECRET || '';
 // lands; we were just hanging up first and emailing the "store unavailable" fallback for
 // an application that had in fact been saved (and inviting a retry that duplicates the row).
 const WRITE_TIMEOUT_MS = 25000;
-// READ: api/slack-events.js awaits this lookup before it acknowledges the event, and Slack
-// retries any event it hasn't seen acked within 3s. Keep this budget short.
-const LOOKUP_TIMEOUT_MS = 8000;
+// READ: api/slack-events.js acks Slack before running this (waitUntil), so the 3s event
+// window no longer constrains it. A cold Apps Script has been measured at 16s, and a
+// timeout here means a real applicant gets the generic welcome plus the funnel-guard
+// "we could not find your application" DM — so give it the same budget as the write.
+const LOOKUP_TIMEOUT_MS = 25000;
 
 export function hasApplicationStore() {
   return Boolean(SHEETS_WEBHOOK_URL);
