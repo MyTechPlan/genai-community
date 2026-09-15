@@ -5,6 +5,7 @@
 
 import { verifySlackSignature, slackEscape, slackPostMessage, slackGetUserEmail } from './_lib/slack.js';
 import { lookupApplication } from './_lib/application-store.js';
+import { waitUntil } from '@vercel/functions';
 
 const SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET || '';
 const VERIFICATION_TOKEN = process.env.SLACK_VERIFICATION_TOKEN || ''; // legacy fallback verifier
@@ -133,6 +134,10 @@ export default async function handler(req, res) {
   }
 
   if (payload.type === 'event_callback') {
+    // Slack redelivers any event it has not seen a 2xx for within 3 seconds. The original
+    // delivery is already being handled, so a retry can only ever produce a duplicate welcome.
+    if (req.headers['x-slack-retry-num']) return res.status(200).json({ ok: true });
+
     const eventId = payload.event_id;
     if (eventId) {
       if (seenEvents.has(eventId)) return res.status(200).json({ ok: true });
@@ -141,10 +146,16 @@ export default async function handler(req, res) {
     }
     const event = payload.event || {};
     if (event.type === 'team_join') {
-      try {
-        await handleTeamJoin(event);
-      } catch (error) {
+      // Acknowledge first. The Sheet lookup alone has been measured at 3s+, and a late ack
+      // makes Slack retry. waitUntil keeps the invocation alive for the background work;
+      // outside Vercel (no request context) it throws, so fall back to awaiting inline.
+      const work = handleTeamJoin(event).catch((error) => {
         console.error('team_join handler error:', error);
+      });
+      try {
+        waitUntil(work);
+      } catch {
+        await work;
       }
     }
     return res.status(200).json({ ok: true });
