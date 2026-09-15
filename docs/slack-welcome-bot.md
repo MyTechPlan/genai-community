@@ -37,6 +37,8 @@ At <https://api.slack.com/apps> (app already created: **Botias**):
   - `chat:write` — post the welcome
   - `users:read` — required to subscribe to `team_join`
   - `users:read.email` — read the joiner's email to match the application
+  - `im:write` — DM a joiner who has no application (funnel guard) and, if no admin
+    channel is set, DM the admins
 - **Install App** (or Reinstall after adding scopes) to the workspace, then copy the
   **Bot User OAuth Token** (`xoxb-…`).
 - **Basic Information → App Credentials**, copy the **Signing Secret** (click *Show*).
@@ -51,6 +53,7 @@ Project `genai-community` → **Settings → Environment Variables**:
 | `SLACK_BOT_TOKEN` | the `xoxb-…` Bot User OAuth Token |
 | `SLACK_SIGNING_SECRET` | the app Signing Secret |
 | `SLACK_WELCOME_CHANNEL` | `C0BHM57SF5Z` (the #new-members channel id) |
+| `SLACK_ADMIN_CHANNEL` | optional — a private channel id for "joined without an application" alerts (invite the bot to it). Unset → every workspace admin/owner gets the alert as a DM |
 
 Optional: `SLACK_VERIFICATION_TOKEN` (legacy) — only a fallback verifier if signature
 verification ever fails; the signing secret is the primary and preferred check.
