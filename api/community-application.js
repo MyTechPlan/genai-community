@@ -16,7 +16,7 @@ const TO_EMAIL =
 // which renders the same link on the success screen; override both via env if it rotates.
 const SLACK_INVITE_URL =
   process.env.SLACK_INVITE_URL ||
-  'https://join.slack.com/t/genaicommunityespacio/shared_invite/zt-40tgj84ep-ON4753OHsvJYI8A0iy923Q';
+  'https://join.slack.com/t/genaicommunityeu/shared_invite/zt-4a2f2wiw4-YQu1_lF8NcMwCsEShzayGQ';
 
 const MAX = { name: 80, email: 254, url: 200, city: 80, country: 80, company: 120, choice: 120, intro: 1200 };
 const MAX_MULTI = 12;
