@@ -20,7 +20,7 @@ export const chapters = [
     country: 'Portugal',
     localName: 'Lisboa, Portugal',
     status: 'Active',
-    note: 'Meetups, workshops and study groups, led by Liliana and Julia.',
+    note: "See what's next in Lisbon and meet the chapter leads, Liliana and Julia.",
     established: 2026,
     // Hero headline is split so the last fragment can carry the iridescent gradient.
     headline: ["Where Lisbon's GenAI builders", 'actually meet'],
@@ -83,10 +83,10 @@ export const chapters = [
     ],
   },
   {
-    city: 'Berlin',
-    country: 'Germany',
+    city: 'London',
+    country: 'United Kingdom',
     status: 'Forming',
-    note: 'Looking for co-organizers.',
+    note: 'Chapter in formation. First events to be announced.',
   },
 ];
 
