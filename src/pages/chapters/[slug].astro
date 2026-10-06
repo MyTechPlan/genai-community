@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
+import UpcomingEvents from '../../components/UpcomingEvents.astro';
 import { getChapterPages } from '../../data/chapters.js';
 
 // One page per chapter that has a slug. Everything on it comes from src/data/chapters.js,
@@ -172,6 +173,9 @@ const topics = ['General', 'Speaking', 'Partnership', 'Venue'];
         </div>
         <p class="events-note">Follow to catch each meetup first.</p>
       </div>
+    </div>
+    <div class="wrap">
+      <UpcomingEvents cities={chapter.eventCities || [chapter.city]} label={`Upcoming in ${chapter.city}`} />
     </div>
   </section>
 

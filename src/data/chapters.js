@@ -19,6 +19,8 @@ export const chapters = [
     city: 'Lisbon',
     country: 'Portugal',
     localName: 'Lisboa, Portugal',
+    // Every spelling an Eventbrite venue in this city might carry (matched accent-insensitively).
+    eventCities: ['Lisbon', 'Lisboa'],
     status: 'Active',
     note: "See what's next in Lisbon and meet the chapter leads, Liliana and Julia.",
     established: 2026,

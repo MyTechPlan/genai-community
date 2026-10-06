@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Newsletter from '../components/Newsletter.astro';
+import UpcomingEvents from '../components/UpcomingEvents.astro';
 import { chapters } from '../data/chapters.js';
 
 // The path from applying to running an official chapter.
@@ -57,6 +58,8 @@ const benefits = [
       <div class="lede-cta">
         <a href="https://www.eventbrite.es/o/genai-community-121448467666?aff=ebdsshcopyurl" class="btn btn-iris" rel="noopener" target="_blank">Discover upcoming events</a>
       </div>
+
+      <UpcomingEvents />
 
       <div class="chapter-grid">
         {chapters.map((ch) => (
