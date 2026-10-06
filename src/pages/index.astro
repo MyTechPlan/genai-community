@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Newsletter from '../components/Newsletter.astro';
 import Constellation from '../components/Constellation.astro';
 import SlackCTA from '../components/SlackCTA.astro';
+import UpcomingEvents from '../components/UpcomingEvents.astro';
 ---
 <Base title="GenAI Community EU — Where Europe's GenAI builders meet">
   <!-- Hero -->
@@ -77,9 +78,11 @@ import SlackCTA from '../components/SlackCTA.astro';
         <h2>Your city, your people</h2>
         <p>Chapters are local groups of the community: meetups, hands-on workshops, and honest conversations about what's working in production. If there isn't one near you yet, that's your cue.</p>
         <div class="hero-ctas">
+          <a href="https://www.eventbrite.es/o/genai-community-121448467666?aff=ebdsshcopyurl" class="btn btn-iris" rel="noopener" target="_blank">Discover upcoming events</a>
           <a href="/chapters" class="btn btn-ghost">See active chapters</a>
         </div>
       </div>
+      <UpcomingEvents />
     </div>
   </section>
 

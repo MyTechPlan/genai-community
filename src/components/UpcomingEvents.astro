@@ -1,0 +1,234 @@
+---
+// Carousel of community events, fed by /api/events (Eventbrite, cached hourly): upcoming
+// ones in colour first, then the last year's in greyscale, marked as past.
+// Renders nothing visible until events arrive, and stays hidden when there are none for
+// this filter: every placement keeps its own "see events on Eventbrite" button beside it.
+//
+// `cities` filters by the event's city, accent- and case-insensitive, so a chapter can
+// list every spelling Eventbrite might use ("Lisbon", "Lisboa"). Omit it for all events.
+interface Props {
+  cities?: string[];
+  label?: string;
+}
+const { cities = [], label = 'Events' } = Astro.props;
+---
+<div class="upcoming" data-upcoming data-cities={cities.join('|')} hidden>
+  <div class="upcoming-head">
+    <p class="upcoming-label">{label}</p>
+    <div class="upcoming-nav" data-upcoming-nav hidden>
+      <button type="button" class="upcoming-arrow" data-dir="-1" aria-label="Previous events">←</button>
+      <button type="button" class="upcoming-arrow" data-dir="1" aria-label="Next events">→</button>
+    </div>
+  </div>
+  <ul class="upcoming-track" data-upcoming-track aria-label={label}></ul>
+</div>
+
+<script>
+  type UpcomingEvent = {
+    id: string; name: string; url: string; start: string;
+    image: string; venue: string; city: string; online: boolean; past: boolean;
+  };
+
+  const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+
+  // `start` is the event's own wall-clock time ("2026-10-13T18:00"). Format it as-is, in UTC,
+  // so a visitor in another timezone still sees the time printed on the ticket.
+  function when(start: string) {
+    const [date, time = ''] = start.split('T');
+    const [y, m, d] = date.split('-').map(Number);
+    const day = new Date(Date.UTC(y, m - 1, d));
+    const fmt = (opts: Intl.DateTimeFormatOptions) => day.toLocaleDateString('en-GB', { timeZone: 'UTC', ...opts });
+    return `${fmt({ weekday: 'short' })} ${d} ${fmt({ month: 'short' })}${time ? ` · ${time}` : ''}`;
+  }
+
+  // Built with DOM APIs, never innerHTML: names and venues come from a third party.
+  function card(event: UpcomingEvent) {
+    const li = document.createElement('li');
+    li.className = event.past ? 'upcoming-item is-past' : 'upcoming-item';
+    const a = document.createElement('a');
+    a.className = 'upcoming-card';
+    a.href = event.url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+
+    const media = document.createElement('div');
+    media.className = 'upcoming-media';
+    if (event.image) {
+      const img = document.createElement('img');
+      img.src = event.image;
+      img.alt = '';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      media.append(img);
+    }
+
+    const body = document.createElement('div');
+    body.className = 'upcoming-body';
+    const date = document.createElement('p');
+    date.className = 'upcoming-date';
+    date.textContent = when(event.start);
+    if (event.past) {
+      const chip = document.createElement('span');
+      chip.className = 'upcoming-chip';
+      chip.textContent = 'Past';
+      date.prepend(chip);
+    }
+    const title = document.createElement('h3');
+    title.className = 'upcoming-title';
+    title.textContent = event.name;
+    const place = document.createElement('p');
+    place.className = 'upcoming-place';
+    place.textContent = event.online ? 'Online' : [event.venue, event.city].filter(Boolean).join(' · ');
+    const go = document.createElement('span');
+    go.className = 'upcoming-go grad';
+    go.textContent = event.past ? 'View event →' : 'Get tickets →';
+    body.append(date, title, place, go);
+
+    a.append(media, body);
+    li.append(a);
+    return li;
+  }
+
+  let request: Promise<UpcomingEvent[]> | null = null;
+  const load = () =>
+    (request ??= fetch('/api/events')
+      .then((r) => (r.ok ? r.json() : { events: [] }))
+      .then((d) => (Array.isArray(d.events) ? d.events : []))
+      .catch(() => []));
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-upcoming]')) {
+    const track = root.querySelector<HTMLElement>('[data-upcoming-track]')!;
+    const nav = root.querySelector<HTMLElement>('[data-upcoming-nav]')!;
+    const wanted = (root.dataset.cities || '').split('|').filter(Boolean).map(fold);
+
+    load().then((events) => {
+      const shown = wanted.length ? events.filter((e) => wanted.includes(fold(e.city || ''))) : events;
+      if (!shown.length) return;
+      track.append(...shown.map(card));
+      root.hidden = false;
+
+      const step = () => (track.querySelector<HTMLElement>('.upcoming-item')?.offsetWidth || 300) + 16;
+      const sync = () => {
+        nav.hidden = track.scrollWidth <= track.clientWidth + 2;
+        const [prev, next] = nav.querySelectorAll<HTMLButtonElement>('button');
+        prev.disabled = track.scrollLeft <= 2;
+        next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+      };
+      nav.querySelectorAll<HTMLButtonElement>('button').forEach((b) =>
+        b.addEventListener('click', () => track.scrollBy({ left: Number(b.dataset.dir) * step(), behavior: 'smooth' })),
+      );
+      track.addEventListener('scroll', sync, { passive: true });
+      window.addEventListener('resize', sync);
+      sync();
+    });
+  }
+</script>
+
+<style is:global>
+  .upcoming { margin-top: 2.2rem; }
+  .upcoming-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+  }
+  .upcoming-label {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+  }
+  .upcoming-nav { display: flex; gap: 0.4rem; }
+  /* the display rule above would otherwise override the hidden attribute */
+  .upcoming[hidden], .upcoming-nav[hidden] { display: none; }
+  .upcoming-arrow {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 99px;
+    border: 1px solid var(--line-2);
+    background: transparent;
+    color: var(--text);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 140ms ease, opacity 140ms ease;
+  }
+  .upcoming-arrow:hover:not(:disabled) { background: var(--bg-3); }
+  .upcoming-arrow:disabled { opacity: 0.3; cursor: default; }
+  .upcoming-arrow:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+  .upcoming-track {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0.4rem;
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-2) transparent;
+  }
+  .upcoming-item {
+    flex: 0 0 min(300px, 82%);
+    scroll-snap-align: start;
+  }
+  .upcoming-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color 140ms ease, background 140ms ease;
+  }
+  .upcoming-card:hover { background: var(--bg-3); border-color: var(--line-2); }
+  .upcoming-card:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+  .upcoming-media {
+    aspect-ratio: 2 / 1;
+    background: var(--iris);
+  }
+  .upcoming-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 200ms ease; }
+  .is-past .upcoming-media { filter: grayscale(1); opacity: 0.75; transition: filter 200ms ease, opacity 200ms ease; }
+  .is-past .upcoming-card:hover .upcoming-media,
+  .is-past .upcoming-card:focus-visible .upcoming-media { filter: none; opacity: 1; }
+  .is-past .upcoming-title { color: var(--text-dim); }
+  .is-past .upcoming-go { background: none; -webkit-text-fill-color: currentColor; color: var(--text-dim); animation: none; }
+  .upcoming-chip {
+    display: inline-block;
+    margin-right: 0.5rem;
+    padding: 0.05rem 0.45rem;
+    border: 1px solid var(--line-2);
+    border-radius: 99px;
+    color: var(--text-dim);
+  }
+  .upcoming-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1rem 1.1rem 1.15rem;
+  }
+  .upcoming-date {
+    margin: 0 0 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+  }
+  .upcoming-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.05rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .upcoming-place { margin: 0 0 0.9rem; font-size: 0.88rem; color: var(--text-dim); }
+  .upcoming-go { margin-top: auto; font-weight: 600; font-size: 0.9rem; align-self: flex-start; }
+</style>
