@@ -1,5 +1,6 @@
 ---
-// Carousel of upcoming community events, fed by /api/events (Eventbrite, cached hourly).
+// Carousel of community events, fed by /api/events (Eventbrite, cached hourly): upcoming
+// ones in colour first, then the last year's in greyscale, marked as past.
 // Renders nothing visible until events arrive, and stays hidden when there are none for
 // this filter: every placement keeps its own "see events on Eventbrite" button beside it.
 //
@@ -9,7 +10,7 @@ interface Props {
   cities?: string[];
   label?: string;
 }
-const { cities = [], label = 'Upcoming events' } = Astro.props;
+const { cities = [], label = 'Events' } = Astro.props;
 ---
 <div class="upcoming" data-upcoming data-cities={cities.join('|')} hidden>
   <div class="upcoming-head">
@@ -25,7 +26,7 @@ const { cities = [], label = 'Upcoming events' } = Astro.props;
 <script>
   type UpcomingEvent = {
     id: string; name: string; url: string; start: string;
-    image: string; venue: string; city: string; online: boolean;
+    image: string; venue: string; city: string; online: boolean; past: boolean;
   };
 
   const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
@@ -43,7 +44,7 @@ const { cities = [], label = 'Upcoming events' } = Astro.props;
   // Built with DOM APIs, never innerHTML: names and venues come from a third party.
   function card(event: UpcomingEvent) {
     const li = document.createElement('li');
-    li.className = 'upcoming-item';
+    li.className = event.past ? 'upcoming-item is-past' : 'upcoming-item';
     const a = document.createElement('a');
     a.className = 'upcoming-card';
     a.href = event.url;
@@ -66,6 +67,12 @@ const { cities = [], label = 'Upcoming events' } = Astro.props;
     const date = document.createElement('p');
     date.className = 'upcoming-date';
     date.textContent = when(event.start);
+    if (event.past) {
+      const chip = document.createElement('span');
+      chip.className = 'upcoming-chip';
+      chip.textContent = 'Past';
+      date.prepend(chip);
+    }
     const title = document.createElement('h3');
     title.className = 'upcoming-title';
     title.textContent = event.name;
@@ -74,7 +81,7 @@ const { cities = [], label = 'Upcoming events' } = Astro.props;
     place.textContent = event.online ? 'Online' : [event.venue, event.city].filter(Boolean).join(' · ');
     const go = document.createElement('span');
     go.className = 'upcoming-go grad';
-    go.textContent = 'Get tickets →';
+    go.textContent = event.past ? 'View event →' : 'Get tickets →';
     body.append(date, title, place, go);
 
     a.append(media, body);
@@ -161,6 +168,7 @@ const { cities = [], label = 'Upcoming events' } = Astro.props;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: thin;
+    scrollbar-color: var(--line-2) transparent;
   }
   .upcoming-item {
     flex: 0 0 min(300px, 82%);
@@ -184,7 +192,20 @@ const { cities = [], label = 'Upcoming events' } = Astro.props;
     aspect-ratio: 2 / 1;
     background: var(--iris);
   }
-  .upcoming-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .upcoming-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 200ms ease; }
+  .is-past .upcoming-media { filter: grayscale(1); opacity: 0.75; transition: filter 200ms ease, opacity 200ms ease; }
+  .is-past .upcoming-card:hover .upcoming-media,
+  .is-past .upcoming-card:focus-visible .upcoming-media { filter: none; opacity: 1; }
+  .is-past .upcoming-title { color: var(--text-dim); }
+  .is-past .upcoming-go { background: none; -webkit-text-fill-color: currentColor; color: var(--text-dim); animation: none; }
+  .upcoming-chip {
+    display: inline-block;
+    margin-right: 0.5rem;
+    padding: 0.05rem 0.45rem;
+    border: 1px solid var(--line-2);
+    border-radius: 99px;
+    color: var(--text-dim);
+  }
   .upcoming-body {
     display: flex;
     flex-direction: column;

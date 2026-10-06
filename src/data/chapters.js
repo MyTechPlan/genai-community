@@ -6,13 +6,75 @@
 // and resize them at build time.
 import lilianaPhoto from '../assets/chapters/lisbon/liliana-pereira.jpg';
 import juliaPhoto from '../assets/chapters/lisbon/julia-pereira.jpg';
+import julietaPhoto from '../assets/chapters/valencia/julieta-zalduendo.jpg';
+import franPhoto from '../assets/chapters/valencia/jean-francois-gutierrez.jpg';
 
 export const chapters = [
   {
+    slug: 'valencia',
     city: 'Valencia',
     country: 'Spain',
+    localName: 'València, Spain',
+    eventCities: ['Valencia', 'València'],
     status: 'Active',
-    note: 'Home of the annual summit.',
+    note: "Home of the annual summit. See what's next in Valencia and meet the chapter leads, Julieta and Fran.",
+    // `established` is optional; the founding year is left out until it's confirmed.
+    headline: ["Where Valencia's GenAI builders", 'actually meet'],
+    lede: 'The Valencia chapter of GenAI Community EU, in the city that hosts the annual GenAI Summit EU: meetups and hands-on workshops on building with generative AI in production.',
+    map: {
+      bbox: '-0.4250,39.4300,-0.3250,39.5100',
+      lat: 39.4699,
+      lon: -0.3763,
+      coords: '39.4699° N · 0.3763° W',
+      query: 'Valencia, Spain',
+    },
+    leads: [
+      {
+        id: 'julieta',
+        name: 'Julieta Zalduendo',
+        shortName: 'Julieta',
+        kicker: 'Chapter lead · Community',
+        role: 'Founder & CEO',
+        company: 'My Tech Plan',
+        modalRole: 'Founder & CEO · My Tech Plan · Valencia',
+        photo: julietaPhoto,
+        photoAlt: 'Julieta Zalduendo',
+        photoPosition: '50% 30%',
+        linkedin: 'https://www.linkedin.com/in/julietazalduendo/',
+        summary:
+          'Founder & CEO of My Tech Plan, building events and communities that connect companies, talent and innovation. Leads GenAI Summit EU and GenAI Community EU.',
+        tags: ['Founder & CEO', 'Events & communities', 'GenAI Summit EU'],
+        bio: [
+          'Julieta Zalduendo is the Founder & CEO of My Tech Plan, where she creates events, communities and experiences that connect companies, talent and innovation in the tech ecosystem. Its work with technology companies spans hackathons, meetups, conferences, training programs and communities designed to strengthen positioning, employer branding and business opportunities.',
+          'Over the years she has collaborated with companies such as IBM, Globant, Capgemini, Deloitte, Sika and Twilio, and she is part of the team behind València Nomads Hub, an initiative by Valencia Innovation Capital.',
+          'She also leads GenAI Summit EU and GenAI Community EU, building an international ecosystem around generative AI. Her current focus is scaling GenAI Community EU across Europe and creating new partnerships at the intersection of tech, AI, communities and innovation, and she is always open to ambitious collaborations and European projects.',
+        ],
+      },
+      {
+        id: 'fran',
+        name: 'Jean-François Gutierrez',
+        shortName: 'Fran',
+        kicker: 'Chapter lead · Technology',
+        role: 'CTO',
+        company: 'My Tech Plan',
+        modalRole: 'AI Solution Architect & Consultant · CTO at My Tech Plan · Valencia',
+        photo: franPhoto,
+        photoAlt: 'Jean-François Gutierrez',
+        photoPosition: '50% 35%',
+        linkedin: 'https://www.linkedin.com/in/gutierrezfrancois/',
+        // Optional extra links, shown beside LinkedIn on the card and in the bio.
+        github: 'https://github.com/DrZuzzjen',
+        website: { url: 'https://fran-ai.dev', label: 'fran-ai.dev' },
+        summary:
+          'AI solution architect and consultant who helps teams decide what to build with AI, design the architecture and ship it. Head of AI & Technology at GenAI Summit EU.',
+        tags: ['AI architecture', 'Agents, MCP & RAG', 'GenAI Workshop Fest'],
+        bio: [
+          'Jean-François Gutierrez is an AI solution architect and consultant who helps teams decide what to build with AI, design the architecture and ship it. His work connects strategy, governance and hands-on implementation: agentic systems, MCP integrations, RAG and production software.',
+          'He is CTO at My Tech Plan and Head of AI & Technology at GenAI Summit EU, where he leads technology, including the company’s proprietary event management platform.',
+          'Alongside leading the Valencia chapter of GenAI Community EU, he is Academic Director at GenAI Workshop Fest.',
+        ],
+      },
+    ],
   },
   {
     slug: 'lisbon',

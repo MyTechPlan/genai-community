@@ -1,11 +1,13 @@
 ---
 // Stylized map of chapter cities converging on Valencia (the annual summit anchor).
+// `live` cities have a running or forming chapter and are drawn in colour; the rest are
+// where the network is headed, in grey.
 const cities = [
-  { name: 'Lisbon', x: 48, y: 330 },
-  { name: 'Madrid', x: 112, y: 295 },
+  { name: 'Lisbon', x: 48, y: 330, live: true },
+  { name: 'Madrid', x: 112, y: 295, live: true },
   { name: 'Barcelona', x: 192, y: 278 },
   { name: 'Paris', x: 192, y: 148 },
-  { name: 'London', x: 158, y: 92 },
+  { name: 'London', x: 158, y: 92, live: true },
   { name: 'Amsterdam', x: 222, y: 76 },
   { name: 'Berlin', x: 305, y: 92 },
   { name: 'Milan', x: 262, y: 198 },
@@ -19,10 +21,11 @@ const valencia = { name: 'Valencia', x: 152, y: 322 };
   class="constellation"
 >
   {cities.map((c) => (
-    <line x1={c.x} y1={c.y} x2={valencia.x} y2={valencia.y} class="link" />
+    <line x1={c.x} y1={c.y} x2={valencia.x} y2={valencia.y} class:list={['link', { 'link-live': c.live }]} />
   ))}
   {cities.map((c) => (
-    <g>
+    <g class:list={{ live: c.live }}>
+      {c.live && <circle cx={c.x} cy={c.y} r="9" class="node-glow" />}
       <circle cx={c.x} cy={c.y} r="5" class="node" />
       <text x={c.x + 10} y={c.y + 4} class="label">{c.name}</text>
     </g>
@@ -50,6 +53,13 @@ const valencia = { name: 'Valencia', x: 152, y: 322 };
       stroke-dasharray: 4 5;
     }
     .node { fill: var(--text-dim); }
+    .link-live {
+      stroke: rgba(251, 225, 239, 0.55);
+      stroke-dasharray: none;
+    }
+    .live .node { fill: url(#anchor-iris); }
+    .node-glow { fill: #fbe1ef; opacity: 0.18; }
+    .live .label { fill: var(--text); }
     .anchor { fill: url(#anchor-iris); }
     .anchor-halo {
       fill: none;
