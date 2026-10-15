@@ -210,7 +210,7 @@ export const chapters = [
           'Glauce Gomes de Lima’s career has moved through sales, technology adoption and business strategy. After relocating from Brazil to the UK she moved into tech as a Customer Success Account Manager at Microsoft, helping customers actually use the technology they had bought and get something back from it.',
           'Today she runs Digital Cocreation, a marketing strategy consultancy that helps female founders and expert-led businesses turn what they know into clear positioning and a business that grows. AI runs through that work, from research to content and the working tools she builds for clients, designed so that each client’s thinking and voice come through instead of being flattened into something generic.',
           'She has organised events and educational webinars for clients, employee resource groups and UK communities, including Empower LATAM UK’s LAMP programme, where she also volunteers as a mentor.',
-          'As GenAI Community Lead for London, Glauce wants to bring the people building AI and the people putting it to work into the same room, and to get more women on stage.',
+          'As GenAI Community Lead for London, Glauce wants to put the people building AI and the people deciding where it belongs in the same room, comparing notes on what is actually live, and to get more women on stage.',
         ],
       },
     ],
