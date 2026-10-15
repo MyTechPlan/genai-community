@@ -8,6 +8,8 @@ import lilianaPhoto from '../assets/chapters/lisbon/liliana-pereira.jpg';
 import juliaPhoto from '../assets/chapters/lisbon/julia-pereira.jpg';
 import julietaPhoto from '../assets/chapters/valencia/julieta-zalduendo.jpg';
 import franPhoto from '../assets/chapters/valencia/jean-francois-gutierrez.jpg';
+import kellyPhoto from '../assets/chapters/london/kelly-cuesta.jpg';
+import glaucePhoto from '../assets/chapters/london/glauce-gomes.jpg';
 
 export const chapters = [
   {
@@ -147,10 +149,71 @@ export const chapters = [
     ],
   },
   {
+    slug: 'london',
     city: 'London',
     country: 'United Kingdom',
+    localName: 'London, United Kingdom',
+    eventCities: ['London'],
     status: 'Forming',
-    note: 'Chapter in formation. First events to be announced.',
+    note: 'Chapter in formation, first events to be announced. Meet the chapter leads, Kelly and Glauce.',
+    headline: ['GenAI Community', 'London'],
+    lede: 'Meetups and hands-on workshops on building with generative AI, run by the London chapter of GenAI Community EU.',
+    map: {
+      bbox: '-0.2100,51.4700,-0.0500,51.5450',
+      lat: 51.5072,
+      lon: -0.1276,
+      coords: '51.5072° N · 0.1276° W',
+      query: 'London, United Kingdom',
+    },
+    leads: [
+      {
+        id: 'kelly',
+        name: 'Kelly Cuesta',
+        shortName: 'Kelly',
+        kicker: 'Chapter lead · Growth',
+        role: 'Founder',
+        company: 'BRAVA',
+        modalRole: 'Founder · BRAVA · London',
+        photo: kellyPhoto,
+        photoAlt: 'Kelly Cuesta',
+        photoPosition: '50% 30%',
+        linkedin: 'https://www.linkedin.com/in/kellycuesta/',
+        summary:
+          'Marketing and growth strategist, community builder and educator with 12+ years helping technology companies scale across EMEA. Founder of BRAVA.',
+        tags: ['Growth & GTM', 'Community builder', 'Applied AI'],
+        quote: 'Be the change you want to see in the world.',
+        bio: [
+          'Kelly Cuesta is a marketing and growth strategist, community builder and educator with over 12 years of experience helping technology companies scale across EMEA. She has led GTM, field marketing, demand generation, partnerships and employer brand initiatives for global technology organisations, and has taught marketing and digital strategy at university level.',
+          'Over the last two years she has focused on the practical application of generative AI, using it daily across marketing strategy, content creation, research, workflow automation and product validation. She has built several AI-powered MVPs with no-code and vibe-coding tools to validate new business ideas.',
+          'She founded and led one of Spain’s fastest-growing communities for women in technology, and is now building BRAVA, a platform designed to help Latina and Spanish-speaking women accelerate their careers, businesses and influence across Europe. More recently she has launched AI-focused buildathons, workshops and founder events that help professionals move from learning about AI to building with it.',
+          'As GenAI Community Lead for London, Kelly wants to build an inclusive, curated community where technical and non-technical practitioners connect through practical sessions, case studies, product demos and meaningful networking, so that conversations lead to collaborations, projects and new innovation.',
+        ],
+      },
+      {
+        id: 'glauce',
+        name: 'Glauce Gomes de Lima',
+        shortName: 'Glauce',
+        kicker: 'Chapter lead · Strategy',
+        role: 'Founder',
+        company: 'Digital Cocreation',
+        modalRole: 'Marketing Strategy Consultant · Founder of Digital Cocreation · UK',
+        photo: glaucePhoto,
+        photoAlt: 'Glauce Gomes de Lima',
+        photoPosition: '50% 30%',
+        linkedin: 'https://www.linkedin.com/in/glauce-gomes/',
+        summary:
+          'Marketing strategy consultant and founder of Digital Cocreation, helping founders build AI into their work without losing their voice. Former Customer Success Account Manager at Microsoft.',
+        tags: ['Marketing strategy', 'Applied AI', 'Ex-Microsoft'],
+        quote:
+          'AI is changing how we work, and the people closest to real problems should help shape how we use it. Whether they build the technology, lead a team or run a business, their experience belongs in the conversation and in the solutions we create.',
+        bio: [
+          'Glauce Gomes de Lima’s career has moved through sales, technology adoption and business strategy. After relocating from Brazil to the UK she moved into tech as a Customer Success Account Manager at Microsoft, helping customers actually use the technology they had bought and get something back from it.',
+          'Today she runs Digital Cocreation, a marketing strategy consultancy that helps female founders and expert-led businesses turn what they know into clear positioning and a business that grows. AI runs through that work, from research to content and the working tools she builds for clients, designed so that each client’s thinking and voice come through instead of being flattened into something generic.',
+          'She has organised events and educational webinars for clients, employee resource groups and UK communities, including Empower LATAM UK’s LAMP programme, where she also volunteers as a mentor.',
+          'As GenAI Community Lead for London, Glauce wants to bring the people building AI and the people putting it to work into the same room, and to get more women on stage.',
+        ],
+      },
+    ],
   },
 ];
 
