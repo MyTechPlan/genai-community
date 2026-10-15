@@ -154,8 +154,8 @@ export const chapters = [
     country: 'United Kingdom',
     localName: 'London, United Kingdom',
     eventCities: ['London'],
-    status: 'Forming',
-    note: 'Chapter in formation, first events to be announced. Meet the chapter leads, Kelly and Glauce.',
+    status: 'Active',
+    note: 'Meet the chapter leads, Kelly and Glauce.',
     headline: ['GenAI Community', 'London'],
     lede: 'Meetups and hands-on workshops on building with generative AI, run by the London chapter of GenAI Community EU.',
     map: {
