@@ -12,7 +12,10 @@ const {
   ogImage = '/og-image.png',
   ogType = 'website',
   noindex = false,
+  // Extra JSON-LD for this page (one object or a list), emitted after the site-wide ones.
+  schema = [],
 } = Astro.props;
+const pageSchemas = Array.isArray(schema) ? schema : [schema];
 
 // SEO — derived per page from props + the site URL set in astro.config.mjs.
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -99,6 +102,7 @@ const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '6Lfjpl4
     <!-- Structured data -->
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    {pageSchemas.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

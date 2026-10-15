@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import UpcomingEvents from '../../components/UpcomingEvents.astro';
 import { getChapterPages } from '../../data/chapters.js';
@@ -22,10 +22,52 @@ const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURI
 // assessment rejects a token whose action doesn't match the one the endpoint expects.
 const formId = `${chapter.slug}-contact-form`;
 const topics = ['General', 'Speaking', 'Partnership', 'Venue'];
+
+// Structured data: the chapter as a sub-organisation of the site's Organization, and each
+// lead as a Person tied to it, so search engines and LLMs can tell who leads which chapter.
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const leadPeople = await Promise.all(
+  chapter.leads.map(async (lead) => {
+    const photo = await getImage({ src: lead.photo, width: 800, height: 800, format: 'jpg' });
+    return {
+      '@type': 'Person',
+      '@id': `${pageUrl}#${lead.id}`,
+      name: lead.name,
+      jobTitle: lead.role,
+      worksFor: { '@type': 'Organization', name: lead.company },
+      description: lead.summary,
+      image: new URL(photo.src, Astro.site).toString(),
+      sameAs: [lead.linkedin, lead.github, lead.website?.url].filter(Boolean),
+      memberOf: { '@id': `${pageUrl}#chapter` },
+    };
+  }),
+);
+const chapterSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${pageUrl}#chapter`,
+  name: `GenAI Community EU — ${chapter.city} chapter`,
+  url: pageUrl,
+  description: chapter.lede,
+  parentOrganization: { '@id': new URL('/#organization', Astro.site).toString() },
+  areaServed: { '@type': 'City', name: chapter.city },
+  location: {
+    '@type': 'Place',
+    name: `${chapter.city}, ${chapter.country}`,
+    geo: { '@type': 'GeoCoordinates', latitude: chapter.map.lat, longitude: chapter.map.lon },
+  },
+  ...(chapter.established ? { foundingDate: String(chapter.established) } : {}),
+  member: leadPeople.map((p) => ({
+    '@type': 'OrganizationRole',
+    roleName: 'Chapter lead',
+    member: p,
+  })),
+};
 ---
 <Base
   title={`${chapter.city} chapter - GenAI Community EU`}
   description={chapter.lede}
+  schema={chapterSchema}
 >
   <section class="hero">
     <div class="wrap hero-grid">
