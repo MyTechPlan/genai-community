@@ -17,7 +17,7 @@ const valencia = { name: 'Valencia', x: 152, y: 322 };
 <svg
   viewBox="0 0 420 400"
   role="img"
-  aria-label="Map of GenAI Community chapters across Europe converging on Valencia"
+  aria-label="Map of GenAI Community chapters across Europe converging on Valencia. Active chapters: Valencia, Lisbon, Madrid and London. Looking for a lead: Barcelona, Paris, Amsterdam, Berlin and Milan."
   class="constellation"
 >
   {cities.map((c) => (
@@ -41,6 +41,13 @@ const valencia = { name: 'Valencia', x: 152, y: 322 };
   <circle cx={valencia.x} cy={valencia.y} r="7" class="anchor" />
   <text x={valencia.x - 8} y={valencia.y + 28} class="label label-anchor">Valencia</text>
 
+  <g class="legend" aria-hidden="true">
+    <circle cx="14" cy="388" r="5" class="node legend-live" />
+    <text x="26" y="392" class="label legend-label">Active chapter</text>
+    <circle cx="150" cy="388" r="5" class="node" />
+    <text x="162" y="392" class="label legend-label">Looking for a lead</text>
+  </g>
+
   <style>
     .constellation {
       width: 100%;
@@ -60,6 +67,8 @@ const valencia = { name: 'Valencia', x: 152, y: 322 };
     .live .node { fill: url(#anchor-iris); }
     .node-glow { fill: #fbe1ef; opacity: 0.18; }
     .live .label { fill: var(--text); }
+    .legend-live { fill: url(#anchor-iris); }
+    .legend-label { fill: var(--text-dim); }
     .anchor { fill: url(#anchor-iris); }
     .anchor-halo {
       fill: none;

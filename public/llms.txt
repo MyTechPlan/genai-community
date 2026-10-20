@@ -1,8 +1,8 @@
 # GenAI Community EU
 
-> Where Europe's GenAI builders actually meet — the European community of generative AI builders and practitioners, with local chapters across Europe, an expert blog, a weekly newsletter, and one annual summit in Valencia.
+> Where Europe's GenAI builders actually meet — the European community of generative AI builders and practitioners, with local chapters across Europe, an expert blog, a newsletter, and one annual summit in Valencia.
 
-GenAI Community EU connects practitioners working with generative AI across Europe through local chapters (city meetups and hands-on workshops), an expert-written blog, a weekly newsletter, and one annual in-person gathering — GenAI Summit EU in Valencia, Spain. The focus is real production work: agentic architectures, evaluations, infrastructure, and deployment, not hype. The site is operated by My Tech Plan, S.L. The blog is published on Beehiiv (https://genaicommunity.beehiiv.com/).
+GenAI Community EU connects practitioners working with generative AI across Europe through local chapters (city meetups and hands-on workshops), an expert-written blog, a newsletter, and one annual in-person gathering — GenAI Summit EU in Valencia, Spain. The focus is real production work: agentic architectures, evaluations, infrastructure, and deployment, not hype. The site is operated by My Tech Plan, S.L. The blog is published on Beehiiv (https://genaicommunity.beehiiv.com/).
 
 ## Pages
 
@@ -23,7 +23,7 @@ GenAI Community EU connects practitioners working with generative AI across Euro
 ## Community
 
 - [Community Slack](https://www.genaicommunity.eu/join): Access to the community Slack is granted after completing the membership application at /join.
-- [Newsletter](https://www.genaicommunity.eu/#newsletter): Subscribe to the weekly newsletter.
+- [Newsletter](https://www.genaicommunity.eu/#newsletter): Subscribe to the newsletter.
 - [Write for the blog](https://docs.google.com/forms/d/e/1FAIpQLScjPwZeHfBJEtiYv3nDJd6emPq6e8gh2rtjBft5ElBTxHaV4Q/viewform): Community experts can apply to write for the blog.
 
 ## Optional
