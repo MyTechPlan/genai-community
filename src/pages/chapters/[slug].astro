@@ -28,7 +28,9 @@ const topics = ['General', 'Speaking', 'Partnership', 'Venue'];
 const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const leadPeople = await Promise.all(
   chapter.leads.map(async (lead) => {
-    const photo = await getImage({ src: lead.photo, width: 800, height: 800, format: 'jpg' });
+    // Never larger than the source: getImage would otherwise upscale a small photo.
+    const side = Math.min(800, lead.photo.width, lead.photo.height);
+    const photo = await getImage({ src: lead.photo, width: side, height: side, format: 'jpg' });
     return {
       '@type': 'Person',
       '@id': `${pageUrl}#${lead.id}`,
