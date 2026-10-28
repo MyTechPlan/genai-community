@@ -21,9 +21,9 @@
   /* iridescent brand accent (from the logo swatch) */
   --iris: linear-gradient(110deg, #cdeede 0%, #e8e4f7 30%, #fbe1ef 55%, #fdf4d6 78%, #d6ecf6 100%);
 
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'Instrument Sans', sans-serif;
-  --font-mono: 'Spline Sans Mono', monospace;
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk', sans-serif;
+  --font-body: 'Instrument Sans Variable', 'Instrument Sans', sans-serif;
+  --font-mono: 'Spline Sans Mono Variable', 'Spline Sans Mono', monospace;
 
   --max-w: 1100px;
 }

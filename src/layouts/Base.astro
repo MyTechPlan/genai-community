@@ -1,4 +1,9 @@
 ---
+// Fonts are self-hosted (bundled from @fontsource) instead of loaded from Google Fonts,
+// which would send every visitor's IP address to Google before any consent.
+import '@fontsource-variable/space-grotesk/wght.css';
+import '@fontsource-variable/instrument-sans/wght.css';
+import '@fontsource-variable/spline-sans-mono/wght.css';
 import '../styles/global.css';
 import Logo from '../components/Logo.astro';
 import CookieBanner from '../components/CookieBanner.astro';
@@ -103,13 +108,6 @@ const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '6Lfjpl4
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
     {pageSchemas.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
 
     <!-- Google Consent Mode v2 — MUST run before any Google tags -->
     <script is:inline>
