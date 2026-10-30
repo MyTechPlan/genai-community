@@ -1,12 +1,15 @@
 // Slack Events endpoint for the community welcome bot.
 // When someone joins the workspace (`team_join`), look up their application by email in
-// the Google Sheet and post a personalised welcome to #new-members. No match → a warm
-// generic welcome, plus the funnel guard: DM the joiner the /join link and alert the admins,
-// so a forwarded invite link never lets someone in unnoticed. Everything the bot says is
-// fixed text; it never reads or answers messages. See docs/slack-welcome-bot.md for setup.
+// the Google Sheet, then in GenAI-ID (people who signed up through ID's community join),
+// and post a personalised welcome to #new-members. An ID member who opted out of being
+// introduced gets the generic welcome instead. No match anywhere → the generic welcome,
+// plus the funnel guard: DM the joiner the /join link and alert the admins, so a forwarded
+// invite link never lets someone in unnoticed. Everything the bot says is fixed text; it
+// never reads or answers messages. See docs/slack-welcome-bot.md for setup.
 
 import { verifySlackSignature, slackEscape, slackPostMessage, slackGetUserEmail, slackListAdmins } from './_lib/slack.js';
 import { lookupApplication } from './_lib/application-store.js';
+import { lookupCommunityMember, getChapterName } from './_lib/genai-id.js';
 import { waitUntil } from '@vercel/functions';
 
 const SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET || '';
@@ -61,6 +64,7 @@ function buildWelcome({ userId, application }) {
     application.role,
     application.company,
     [application.city, application.country].filter(Boolean).join(', '),
+    application.chapter ? `${application.chapter} chapter` : '',
   ]
     .map((x) => slackEscape(x))
     .filter(Boolean)
@@ -99,30 +103,60 @@ async function handleTeamJoin(event) {
   if (!email) email = await slackGetUserEmail({ token: BOT_TOKEN, userId });
 
   let application = null;
+  let member = false; // found in GenAI-ID, introduced or not
+  let idUnavailable = false;
   if (email) {
     const result = await lookupApplication(email);
     if (result.found) application = result.application;
+    else {
+      const fromId = await lookupCommunityMember(email);
+      if (fromId.found) {
+        member = true;
+        if (fromId.member.introduce) application = await fromGenaiIdMember(fromId.member);
+      } else if (fromId.error) idUnavailable = true;
+    }
   }
 
   const { text, blocks } = buildWelcome({ userId, application });
   await slackPostMessage({ token: BOT_TOKEN, channel: WELCOME_CHANNEL, text, blocks });
 
-  if (!application) await guardFunnel({ userId, email });
+  if (!application && !member) await guardFunnel({ userId, email, idUnavailable });
+}
+
+// GenAI-ID's member profile, in the shape buildWelcome reads from a Sheet row. The chapter
+// comes as a slug; use the catalogue's name, or capitalise the slug if ID can't say.
+async function fromGenaiIdMember(member) {
+  const chapter = member.chapter
+    ? (await getChapterName(member.chapter)) ||
+      member.chapter.replace(/(^|-)([a-z])/g, (_, dash, c) => (dash ? ' ' : '') + c.toUpperCase())
+    : null;
+  return {
+    firstName: member.name,
+    role: member.role,
+    intro: member.intro,
+    linkedin: member.linkedin,
+    chapter,
+  };
 }
 
 // The membership form is the only intended way in. Someone arriving without an application
 // got the invite link second-hand, so point them at the form and tell the admins. Both
 // messages are best-effort and independent: one failing must not suppress the other.
-async function guardFunnel({ userId, email }) {
+// When GenAI-ID could not be asked, the joiner may well be a member: tell only the admins.
+async function guardFunnel({ userId, email, idUnavailable = false }) {
   const shownEmail = email ? slackEscape(email) : 'unknown';
 
-  const dm = slackPostMessage({
-    token: BOT_TOKEN,
-    channel: userId, // a user id as channel = direct message (needs the im:write scope)
-    text: `Welcome to GenAI Community! We could not find a membership application for this account, and the form is how we get to know every member. Please take two minutes to complete it: ${JOIN_URL} — This is an automated message; replies are not read.`,
-  });
+  const dm = idUnavailable
+    ? Promise.resolve()
+    : slackPostMessage({
+        token: BOT_TOKEN,
+        channel: userId, // a user id as channel = direct message (needs the im:write scope)
+        text: `Welcome to GenAI Community! We could not find a membership application for this account, and the form is how we get to know every member. Please take two minutes to complete it: ${JOIN_URL} — This is an automated message; replies are not read.`,
+      });
 
-  const alertText = `:mag: <@${userId}> joined the workspace without a membership application (email: ${shownEmail}). They were sent the ${JOIN_URL} link.`;
+  const alertText = idUnavailable
+    ? `:warning: <@${userId}> joined the workspace (email: ${shownEmail}). No application in the Sheet, and GenAI-ID could not be checked, so they were not sent the ${JOIN_URL} link. Please check them by hand.`
+    : `:mag: <@${userId}> joined the workspace without a membership application (email: ${shownEmail}). They were sent the ${JOIN_URL} link.`;
   const alert = (async () => {
     if (ADMIN_CHANNEL) {
       await slackPostMessage({ token: BOT_TOKEN, channel: ADMIN_CHANNEL, text: alertText });
