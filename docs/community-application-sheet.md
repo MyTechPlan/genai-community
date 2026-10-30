@@ -1,5 +1,11 @@
 # Community applications → Google Sheet
 
+> **Historical.** Since the switch to GenAI-ID, `/join` redirects to the community signup at
+> `id.genaicommunity.eu/<locale>/join` and the on-site form (`api/community-application.js`)
+> is gone. The Sheet is no longer written to; the Slack welcome bot still reads it (the
+> `lookup` action) for members who applied before the switch, until its history is imported
+> into GenAI-ID.
+
 The `/join` form (`api/community-application.js`) writes each application to a Google Sheet
 using a **Google Apps Script Web App webhook** — the same mechanism a Google Form uses to
 write responses into its linked Sheet. No OAuth, no service account: the serverless function
