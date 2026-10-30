@@ -10,7 +10,7 @@
         {
           "type": "header",
           "key": "accept-language",
-          "value": "^es"
+          "value": "^es.*"
         }
       ],
       "destination": "https://id.genaicommunity.eu/es/join",
@@ -22,7 +22,7 @@
         {
           "type": "header",
           "key": "accept-language",
-          "value": "^fr"
+          "value": "^fr.*"
         }
       ],
       "destination": "https://id.genaicommunity.eu/fr/join",
@@ -34,7 +34,7 @@
         {
           "type": "header",
           "key": "accept-language",
-          "value": "^pt"
+          "value": "^pt.*"
         }
       ],
       "destination": "https://id.genaicommunity.eu/pt/join",
@@ -51,7 +51,7 @@
         {
           "type": "header",
           "key": "accept-language",
-          "value": "^es"
+          "value": "^es.*"
         }
       ],
       "destination": "https://id.genaicommunity.eu/es/join",
@@ -63,7 +63,7 @@
         {
           "type": "header",
           "key": "accept-language",
-          "value": "^fr"
+          "value": "^fr.*"
         }
       ],
       "destination": "https://id.genaicommunity.eu/fr/join",
@@ -75,7 +75,7 @@
         {
           "type": "header",
           "key": "accept-language",
-          "value": "^pt"
+          "value": "^pt.*"
         }
       ],
       "destination": "https://id.genaicommunity.eu/pt/join",
