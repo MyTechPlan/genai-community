@@ -3,6 +3,9 @@
   "framework": "astro",
   "buildCommand": "astro build",
   "outputDirectory": "dist",
+  "regions": [
+    "fra1"
+  ],
   "functions": {
     "api/community-application.js": {
       "maxDuration": 30
