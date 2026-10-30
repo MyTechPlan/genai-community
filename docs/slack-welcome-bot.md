@@ -2,14 +2,18 @@
 
 When someone joins the GenAI Community Slack workspace, a Slack app fires a `team_join`
 event to `https://genaicommunity.eu/api/slack-events`. The endpoint looks up the new
-member's application **by email** in the Google Sheet and posts a personalised welcome to
-**#new-members**. No email match → a warm generic welcome (nothing breaks).
+member's application **by email** in the Google Sheet, then in GenAI-ID (people who
+signed up through `id.genaicommunity.eu/<locale>/join`), and posts a personalised welcome to
+**#new-members**. An ID member who opted out of being introduced gets the generic welcome.
+No email match anywhere → a warm generic welcome plus the funnel guard (DM to the joiner,
+alert to the admins). If GenAI-ID cannot be reached, only the admins are alerted.
 
 ```
 member joins Slack
   └─▶ team_join → api/slack-events.js
         ├─ verify Slack signature (SLACK_SIGNING_SECRET)
         ├─ email from event (or users.info) → lookup in the Sheet (Apps Script `lookup` action)
+        ├─ not in the Sheet → GET /api/v1/community/members?email= on GenAI-ID (GENAI_ID_API_KEY)
         └─ chat.postMessage to #new-members  (Block Kit, @mentions the member, LinkedIn button)
 ```
 
@@ -54,6 +58,7 @@ Project `genai-community` → **Settings → Environment Variables**:
 | `SLACK_SIGNING_SECRET` | the app Signing Secret |
 | `SLACK_WELCOME_CHANNEL` | `C0BHM57SF5Z` (the #new-members channel id) |
 | `SLACK_ADMIN_CHANNEL` | optional — a private channel id for "joined without an application" alerts (invite the bot to it). Unset → every workspace admin/owner gets the alert as a DM |
+| `GENAI_ID_API_KEY` | the GenAI-ID community product key (`Sensitive`, server-only; never a `PUBLIC_` variable). Unset → the bot only checks the Sheet, as before |
 
 Optional: `SLACK_VERIFICATION_TOKEN` (legacy) — only a fallback verifier if signature
 verification ever fails; the signing secret is the primary and preferred check.
