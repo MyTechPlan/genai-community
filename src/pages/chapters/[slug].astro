@@ -81,7 +81,7 @@ const chapterSchema = {
         <h1>{headlineLead} <span class="grad">{headlineAccent}</span></h1>
         <p class="lede">{chapter.lede}</p>
         <div class="hero-cta">
-          <a href="/join" class="btn btn-iris">Join the chapter</a>
+          <a href={`/join?chapter=${chapter.slug}`} class="btn btn-iris">Join the chapter</a>
           <a href="#leads" class="btn btn-outline">Meet the leads</a>
         </div>
         <p class="coords">{chapter.map.coords}{chapter.established && ` · EST. ${chapter.established}`}</p>
