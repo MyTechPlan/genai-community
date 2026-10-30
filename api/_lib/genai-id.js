@@ -44,3 +44,21 @@ export async function lookupCommunityMember(email) {
     return { found: false, error: true };
   }
 }
+
+// The member profile carries the chapter as a slug ("valencia"); the catalogue has its
+// display name. Returns the English name, or null when it can't be fetched. Never throws.
+export async function getChapterName(slug) {
+  if (!API_KEY || !slug) return null;
+
+  try {
+    const response = await fetch(`${API_URL}/chapters/${encodeURIComponent(slug)}`, {
+      headers: { Authorization: `Bearer ${API_KEY}`, Accept: 'application/json' },
+      signal: AbortSignal.timeout(LOOKUP_TIMEOUT_MS),
+    });
+    if (!response.ok) return null;
+    const data = await response.json().catch(() => null);
+    return (data && data.name && typeof data.name.en === 'string' && data.name.en) || null;
+  } catch {
+    return null;
+  }
+}

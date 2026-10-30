@@ -9,7 +9,7 @@
 
 import { verifySlackSignature, slackEscape, slackPostMessage, slackGetUserEmail, slackListAdmins } from './_lib/slack.js';
 import { lookupApplication } from './_lib/application-store.js';
-import { lookupCommunityMember } from './_lib/genai-id.js';
+import { lookupCommunityMember, getChapterName } from './_lib/genai-id.js';
 import { waitUntil } from '@vercel/functions';
 
 const SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET || '';
@@ -112,7 +112,7 @@ async function handleTeamJoin(event) {
       const fromId = await lookupCommunityMember(email);
       if (fromId.found) {
         member = true;
-        if (fromId.member.introduce) application = fromGenaiIdMember(fromId.member);
+        if (fromId.member.introduce) application = await fromGenaiIdMember(fromId.member);
       } else if (fromId.error) idUnavailable = true;
     }
   }
@@ -123,11 +123,13 @@ async function handleTeamJoin(event) {
   if (!application && !member) await guardFunnel({ userId, email, idUnavailable });
 }
 
-// GenAI-ID's member profile, in the shape buildWelcome reads from a Sheet row.
-function fromGenaiIdMember(member) {
-  const chapter = member.chapter && /^[a-z0-9-]+$/.test(member.chapter)
-    ? member.chapter.replace(/(^|-)([a-z])/g, (_, dash, c) => (dash ? ' ' : '') + c.toUpperCase())
-    : member.chapter;
+// GenAI-ID's member profile, in the shape buildWelcome reads from a Sheet row. The chapter
+// comes as a slug; use the catalogue's name, or capitalise the slug if ID can't say.
+async function fromGenaiIdMember(member) {
+  const chapter = member.chapter
+    ? (await getChapterName(member.chapter)) ||
+      member.chapter.replace(/(^|-)([a-z])/g, (_, dash, c) => (dash ? ' ' : '') + c.toUpperCase())
+    : null;
   return {
     firstName: member.name,
     role: member.role,
