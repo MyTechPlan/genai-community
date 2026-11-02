@@ -1,222 +1,86 @@
-// Single source of truth for chapters, shared by /chapters and /chapters/[slug].
-// A chapter only gets its own page once it has a `slug` plus the detail fields
-// (hero, map, leads). Cities without one render as a card on the index only.
+// Chapters and their leads, shared by /chapters and /chapters/[slug].
+//
+// The content lives in GenAI-ID and is edited there (leads edit their own card from ID's
+// console). scripts/sync-chapters.mjs refreshes chapters.snapshot.json from
+// GET /api/v1/chapters before every build; this module maps that response to the shape the
+// pages render. The site is English-only, so it reads the `en` texts.
 
-// Lead photos are imported (not referenced from public/) so <Image> can transcode
-// and resize them at build time.
-import lilianaPhoto from '../assets/chapters/lisbon/liliana-pereira.jpg';
-import juliaPhoto from '../assets/chapters/lisbon/julia-pereira.jpg';
-import julietaPhoto from '../assets/chapters/valencia/julieta-zalduendo.jpg';
-import franPhoto from '../assets/chapters/valencia/jean-francois-gutierrez.jpg';
-import kellyPhoto from '../assets/chapters/london/kelly-cuesta.jpg';
-import glaucePhoto from '../assets/chapters/london/glauce-gomes.jpg';
+import snapshot from './chapters.snapshot.json';
 
-export const chapters = [
-  {
-    slug: 'valencia',
-    city: 'Valencia',
-    country: 'Spain',
-    localName: 'València, Spain',
-    eventCities: ['Valencia', 'València'],
-    status: 'Active',
-    note: "Home of the annual summit. See what's next in Valencia and meet the chapter leads, Julieta and Fran.",
-    // `established` is optional; the founding year is left out until it's confirmed.
-    headline: ["Where Valencia's GenAI builders", 'actually meet'],
-    lede: 'The Valencia chapter of GenAI Community EU, in the city that hosts the annual GenAI Summit EU: meetups and hands-on workshops on building with generative AI in production.',
+// ID's chapter states. Recruiting and backlog chapters have no page or card yet.
+const STATUS = { active: 'Active', onboarding: 'Forming' };
+
+const countryName = new Intl.DisplayNames(['en'], { type: 'region' });
+
+const coord = (value, positive, negative) =>
+  `${Math.abs(value).toFixed(4)}° ${value >= 0 ? positive : negative}`;
+
+// Stable, readable ids for the bio dialogs and the JSON-LD @id (ID's own ids are uuids).
+const leadId = (lead) =>
+  lead.shortName
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+
+function toLead(lead) {
+  return {
+    id: leadId(lead),
+    name: lead.name,
+    shortName: lead.shortName,
+    kicker: `Chapter lead · ${lead.kickerArea}`,
+    role: lead.role,
+    company: lead.company,
+    modalRole: lead.modalRole,
+    photo: lead.photo,
+    photoAlt: lead.photoAlt || lead.name,
+    photoPosition: lead.photoPosition || '50% 30%',
+    linkedin: lead.linkedin,
+    github: lead.github || null,
+    website: lead.website?.url ? lead.website : null,
+    summary: lead.summary,
+    tags: lead.tags,
+    quote: lead.quote || null,
+    // Leads' own line breaks are kept (the bio renders with white-space: pre-line).
+    bio: lead.bio.map((paragraph) => paragraph.replace(/\r\n?/g, '\n')),
+  };
+}
+
+function toChapter(c) {
+  const country = countryName.of(c.country) || c.country;
+  return {
+    slug: c.slug,
+    city: c.city,
+    country,
+    localName: c.localName || `${c.city}, ${country}`,
+    eventCities: c.eventCities?.length ? c.eventCities : [c.city],
+    status: STATUS[c.status],
+    note: c.note.en,
+    established: c.established || null,
+    headline: c.headline.en,
+    lede: c.lede.en,
     map: {
-      bbox: '-0.4250,39.4300,-0.3250,39.5100',
-      lat: 39.4699,
-      lon: -0.3763,
-      coords: '39.4699° N · 0.3763° W',
-      query: 'Valencia, Spain',
+      // west,south,east,north for the OpenStreetMap embed.
+      bbox: c.bbox.map((n) => n.toFixed(4)).join(','),
+      lat: c.lat,
+      lon: c.lon,
+      coords: `${coord(c.lat, 'N', 'S')} · ${coord(c.lon, 'E', 'W')}`,
+      query: `${c.city}, ${country}`,
     },
-    leads: [
-      {
-        id: 'julieta',
-        name: 'Julieta Zalduendo',
-        shortName: 'Julieta',
-        kicker: 'Chapter lead · Community',
-        role: 'Founder & CEO',
-        company: 'My Tech Plan',
-        modalRole: 'Founder & CEO · My Tech Plan · Valencia',
-        photo: julietaPhoto,
-        photoAlt: 'Julieta Zalduendo',
-        photoPosition: '50% 30%',
-        linkedin: 'https://www.linkedin.com/in/julietazalduendo/',
-        summary:
-          'Founder & CEO of My Tech Plan, building events and communities that connect companies, talent and innovation. Leads GenAI Summit EU and GenAI Community EU.',
-        tags: ['Founder & CEO', 'Events & communities', 'GenAI Summit EU'],
-        bio: [
-          'Julieta Zalduendo is the Founder & CEO of My Tech Plan, where she creates events, communities and experiences that connect companies, talent and innovation in the tech ecosystem. Its work with technology companies spans hackathons, meetups, conferences, training programs and communities designed to strengthen positioning, employer branding and business opportunities.',
-          'Over the years she has collaborated with companies such as IBM, Globant, Capgemini, Deloitte, Sika and Twilio, and she is part of the team behind València Nomads Hub, an initiative by Valencia Innovation Capital.',
-          'She also leads GenAI Summit EU and GenAI Community EU, building an international ecosystem around generative AI. Her current focus is scaling GenAI Community EU across Europe and creating new partnerships at the intersection of tech, AI, communities and innovation, and she is always open to ambitious collaborations and European projects.',
-        ],
-      },
-      {
-        id: 'fran',
-        name: 'Jean-François Gutierrez',
-        shortName: 'Fran',
-        kicker: 'Chapter lead · Technology',
-        role: 'CTO',
-        company: 'My Tech Plan',
-        modalRole: 'AI Solution Architect & Consultant · CTO at My Tech Plan · Valencia',
-        photo: franPhoto,
-        photoAlt: 'Jean-François Gutierrez',
-        photoPosition: '50% 35%',
-        linkedin: 'https://www.linkedin.com/in/gutierrezfrancois/',
-        // Optional extra links, shown beside LinkedIn on the card and in the bio.
-        github: 'https://github.com/DrZuzzjen',
-        website: { url: 'https://fran-ai.dev', label: 'fran-ai.dev' },
-        summary:
-          'AI solution architect and consultant who helps teams decide what to build with AI, design the architecture and ship it. Head of AI & Technology at GenAI Summit EU.',
-        tags: ['AI architecture', 'Agents, MCP & RAG', 'GenAI Workshop Fest'],
-        bio: [
-          'Jean-François Gutierrez is an AI solution architect and consultant who helps teams decide what to build with AI, design the architecture and ship it. His work connects strategy, governance and hands-on implementation: agentic systems, MCP integrations, RAG and production software.',
-          'He is CTO at My Tech Plan and Head of AI & Technology at GenAI Summit EU, where he leads technology, including the company’s proprietary event management platform.',
-          'Alongside leading the Valencia chapter of GenAI Community EU, he is Academic Director at GenAI Workshop Fest.',
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'lisbon',
-    city: 'Lisbon',
-    country: 'Portugal',
-    localName: 'Lisboa, Portugal',
-    // Every spelling an Eventbrite venue in this city might carry (matched accent-insensitively).
-    eventCities: ['Lisbon', 'Lisboa'],
-    status: 'Active',
-    note: "See what's next in Lisbon and meet the chapter leads, Liliana and Julia.",
-    established: 2026,
-    // Hero headline is split so the last fragment can carry the iridescent gradient.
-    headline: ["Where Lisbon's GenAI builders", 'actually meet'],
-    lede: 'The Lisbon chapter of GenAI Community EU: meetups, hands-on workshops and honest conversations about building with generative AI in production.',
-    map: {
-      // bbox is west,south,east,north for the OpenStreetMap embed.
-      bbox: '-9.2300,38.6800,-9.0900,38.7700',
-      lat: 38.7223,
-      lon: -9.1393,
-      coords: '38.7223° N · 9.1393° W',
-      query: 'Lisbon, Portugal',
-    },
-    leads: [
-      {
-        id: 'liliana',
-        name: 'Liliana Catarina Freire Pereira',
-        shortName: 'Liliana',
-        kicker: 'Chapter lead · Engineering',
-        role: 'Software Engineer',
-        company: 'Coverflex',
-        modalRole: 'Software Engineer · Coverflex · Lisbon',
-        photo: lilianaPhoto,
-        photoAlt: 'Liliana Pereira speaking at a conference',
-        photoPosition: '68% 18%',
-        linkedin: 'https://www.linkedin.com/in/lcfpereira/',
-        summary:
-          'Elixir specialist, mentor and speaker on AI-powered development workflows. Geek Girls Portugal ambassador, 2025 Portuguese Women in Tech Award winner for Best Engineer.',
-        tags: ['Elixir', 'Mentor & speaker', 'WiT award 2025'],
-        // `quote` is optional and rendered only when set. Leave it out unless the lead
-        // has actually given us a line to attribute to them.
-        bio: [
-          'Liliana Catarina Freire Pereira is a software engineer, mentor and speaker based in Lisbon, currently specialising in Elixir at Coverflex. Over her career she has worked across a diverse technology stack, including PHP, TypeScript, Elixir, Docker, Kubernetes, Google Cloud, Kafka and Neo4j, applying patterns such as Event Sourcing, CQRS and microservices architectures, and collaborating with multidisciplinary, multicultural teams across the United Kingdom, the Netherlands and Germany.',
-          'Alongside her engineering work, Liliana is passionate about sharing knowledge. She mentors engineers, speaks at conferences and community events, and serves as Ambassador for the Lisbon chapter of the Google Developer Group and Geek Girls Portugal, promoting diversity in technology. In 2025, she was honoured with the Portuguese Women in Tech Award for Best Engineer.',
-          'Her current work in generative AI focuses on helping software engineers adopt AI effectively in their daily work. She regularly delivers talks and workshops on AI-powered development workflows, covering topics like integrating AI into the software development lifecycle, engineering productivity, code quality, testing, architecture discussions and practical AI tooling for developers.',
-          'As GenAI Community Lead for Lisbon, Liliana wants to create spaces where experienced engineers, tech leaders and founders can openly share what’s actually working in practice, not just the latest trends. Her vision for the chapter’s first meetup, “One Year of GenAI in Engineering: What Actually Changed?”, brings together engineering leaders for an honest panel conversation about where AI has delivered real value in engineering teams and where it hasn’t, followed by open Q&A and networking over food and drinks.',
-        ],
-      },
-      {
-        id: 'julia',
-        name: 'Julia Mariá Pereira',
-        shortName: 'Julia',
-        kicker: 'Chapter lead · Product',
-        role: 'Product Owner',
-        company: 'Portobello America',
-        modalRole: 'Product Owner · Portobello America · Lisbon',
-        photo: juliaPhoto,
-        photoAlt: 'Julia Mariá Pereira',
-        photoPosition: '50% 32%',
-        linkedin: 'https://www.linkedin.com/in/juliamariap/',
-        summary:
-          'Product leader across startups, ecommerce, SaaS and digital transformation, ex-VTEX. Generative AI runs through nearly everything she does, from prototyping to problem-solving.',
-        tags: ['Product', 'Ex-VTEX', 'Ecommerce & SaaS'],
-        bio: [
-          'Julia Mariá is a product leader who has spent most of her career in fast-paced technology and startup environments, working across product, ecommerce, SaaS and digital transformation. Today she works as a Product Owner at Portobello America.',
-          'Generative AI has become part of almost everything Julia does: how she learns, explores ideas, prototypes, automates small tasks, and challenges her own approach to problem-solving. She’s drawn to the idea of becoming more of a builder, experimenting hands-on with new tools and figuring out where AI genuinely makes a difference beyond the hype.',
-          'What fascinates her most is what comes next: how these technologies will change the way we work, create, relate to one another and live five or ten years from now, and how we make sure we build those new spaces collaboratively, in ways that strengthen human connection rather than replace it.',
-          'As GenAI Community Lead for Lisbon, Julia wants to create an open, thoughtful and generous space for people. A community where people leave with a new idea, a different perspective, or a connection they wouldn’t have made otherwise. She sees Lisbon’s strong tech ecosystem, international mix of talent as fertile ground for connecting tech experts who don’t always end up in the same room. Her goal for every meetup: a warm, casual atmosphere where the content matters, but people come back because of how it made them feel.',
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'london',
-    city: 'London',
-    country: 'United Kingdom',
-    localName: 'London, United Kingdom',
-    eventCities: ['London'],
-    status: 'Active',
-    note: 'Meet the chapter leads, Kelly and Glauce.',
-    headline: ['GenAI Community', 'London'],
-    lede: 'Meetups and hands-on workshops on building with generative AI, run by the London chapter of GenAI Community EU.',
-    map: {
-      bbox: '-0.2100,51.4700,-0.0500,51.5450',
-      lat: 51.5072,
-      lon: -0.1276,
-      coords: '51.5072° N · 0.1276° W',
-      query: 'London, United Kingdom',
-    },
-    leads: [
-      {
-        id: 'kelly',
-        name: 'Kelly Cuesta',
-        shortName: 'Kelly',
-        kicker: 'Chapter lead · Growth',
-        role: 'Founder',
-        company: 'BRAVA',
-        modalRole: 'Founder · BRAVA · London',
-        photo: kellyPhoto,
-        photoAlt: 'Kelly Cuesta',
-        photoPosition: '50% 30%',
-        linkedin: 'https://www.linkedin.com/in/kellycuesta/',
-        summary:
-          'Marketing and growth strategist, community builder and educator with 12+ years helping technology companies scale across EMEA. Founder of BRAVA.',
-        tags: ['Growth & GTM', 'Community builder', 'Applied AI'],
-        quote: 'Be the change you want to see in the world.',
-        bio: [
-          'Kelly Cuesta is a marketing and growth strategist, community builder and educator with over 12 years of experience helping technology companies scale across EMEA. She has led GTM, field marketing, demand generation, partnerships and employer brand initiatives for global technology organisations, and has taught marketing and digital strategy at university level.',
-          'Over the last two years she has focused on the practical application of generative AI, using it daily across marketing strategy, content creation, research, workflow automation and product validation. She has built several AI-powered MVPs with no-code and vibe-coding tools to validate new business ideas.',
-          'She founded and led one of Spain’s fastest-growing communities for women in technology, and is now building BRAVA, a platform designed to help Latina and Spanish-speaking women accelerate their careers, businesses and influence across Europe. More recently she has launched AI-focused buildathons, workshops and founder events that help professionals move from learning about AI to building with it.',
-          'As GenAI Community Lead for London, Kelly wants to build an inclusive, curated community where technical and non-technical practitioners connect through practical sessions, case studies, product demos and meaningful networking, so that conversations lead to collaborations, projects and new innovation.',
-        ],
-      },
-      {
-        id: 'glauce',
-        name: 'Glauce Gomes de Lima',
-        shortName: 'Glauce',
-        kicker: 'Chapter lead · Strategy',
-        role: 'Founder',
-        company: 'Digital Cocreation',
-        modalRole: 'Marketing Strategy Consultant · Founder of Digital Cocreation · UK',
-        photo: glaucePhoto,
-        photoAlt: 'Glauce Gomes de Lima',
-        photoPosition: '50% 30%',
-        linkedin: 'https://www.linkedin.com/in/glauce-gomes/',
-        summary:
-          'Marketing strategy consultant and founder of Digital Cocreation, helping founders build AI into their work without losing their voice. Former Customer Success Account Manager at Microsoft.',
-        tags: ['Marketing strategy', 'Applied AI', 'Ex-Microsoft'],
-        quote:
-          'AI is changing how we work, and the people closest to real problems should help shape how we use it. Whether they build the technology, lead a team or run a business, their experience belongs in the conversation and in the solutions we create.',
-        bio: [
-          'Glauce Gomes de Lima’s career has moved through sales, technology adoption and business strategy. After relocating from Brazil to the UK she moved into tech as a Customer Success Account Manager at Microsoft, helping customers actually use the technology they had bought and get something back from it.',
-          'Today she runs Digital Cocreation, a marketing strategy consultancy that helps female founders and expert-led businesses turn what they know into clear positioning and a business that grows. AI runs through that work, from research to content and the working tools she builds for clients, designed so that each client’s thinking and voice come through instead of being flattened into something generic.',
-          'She has organised events and educational webinars for clients, employee resource groups and UK communities, including Empower LATAM UK’s LAMP programme, where she also volunteers as a mentor.',
-          'As GenAI Community Lead for London, Glauce wants to put the people building AI and the people deciding where it belongs in the same room, comparing notes on what is actually live, and to get more women on stage.',
-        ],
-      },
-    ],
-  },
-];
+    leads: [...c.leads].sort((a, b) => a.position - b.position).map(toLead),
+  };
+}
+
+// A chapter is shown once it has its page content: a headline, a lede and at least one lead.
+const hasPage = (c) =>
+  STATUS[c.status] && c.headline.en.every(Boolean) && c.lede.en && c.leads.length > 0;
+
+export const chapters = [...snapshot.chapters]
+  .sort((a, b) => a.position - b.position)
+  .filter(hasPage)
+  .map(toChapter);
 
 export function getChapterPages() {
-  return chapters.filter((chapter) => chapter.slug);
+  return chapters;
 }
