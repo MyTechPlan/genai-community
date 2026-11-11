@@ -1,6 +1,6 @@
 // Shared Beehiiv subscription helper.
-// Used by both the newsletter endpoint and the community-application endpoint so the
-// double-opt-in behaviour (GDPR confirmation email) stays identical across forms.
+// Used by the newsletter endpoint; kept separate so the double-opt-in behaviour (GDPR
+// confirmation email) stays in one place.
 
 const BEEHIIV_API_KEY = process.env.BEEHIIV_API_KEY;
 const RAW_PUBLICATION_ID =

@@ -3,12 +3,89 @@
   "framework": "astro",
   "buildCommand": "astro build",
   "outputDirectory": "dist",
-  "functions": {
-    "api/community-application.js": {
-      "maxDuration": 30
-    }
-  },
   "redirects": [
+    {
+      "source": "/join",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept-language",
+          "value": "^es.*"
+        }
+      ],
+      "destination": "https://id.genaicommunity.eu/es/join",
+      "statusCode": 302
+    },
+    {
+      "source": "/join",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept-language",
+          "value": "^fr.*"
+        }
+      ],
+      "destination": "https://id.genaicommunity.eu/fr/join",
+      "statusCode": 302
+    },
+    {
+      "source": "/join",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept-language",
+          "value": "^pt.*"
+        }
+      ],
+      "destination": "https://id.genaicommunity.eu/pt/join",
+      "statusCode": 302
+    },
+    {
+      "source": "/join",
+      "destination": "https://id.genaicommunity.eu/en/join",
+      "statusCode": 302
+    },
+    {
+      "source": "/join/",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept-language",
+          "value": "^es.*"
+        }
+      ],
+      "destination": "https://id.genaicommunity.eu/es/join",
+      "statusCode": 302
+    },
+    {
+      "source": "/join/",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept-language",
+          "value": "^fr.*"
+        }
+      ],
+      "destination": "https://id.genaicommunity.eu/fr/join",
+      "statusCode": 302
+    },
+    {
+      "source": "/join/",
+      "has": [
+        {
+          "type": "header",
+          "key": "accept-language",
+          "value": "^pt.*"
+        }
+      ],
+      "destination": "https://id.genaicommunity.eu/pt/join",
+      "statusCode": 302
+    },
+    {
+      "source": "/join/",
+      "destination": "https://id.genaicommunity.eu/en/join",
+      "statusCode": 302
+    },
     {
       "source": "/rgpd",
       "destination": "/privacy",
