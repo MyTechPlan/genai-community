@@ -11,10 +11,15 @@ Leé primero `/Users/drzuzz/code/MTP/genai-community/docs/COMO-TRABAJAMOS.md`.
 ## Cómo trabajás un ticket
 1. Leé el ticket y el comentario «Aprobado por JF». Eso te autoriza para todo lo descrito. No le vuelvas a pedir permiso a JF por eso.
 2. Rama propia que empiece con la referencia del ticket. Un ticket, una rama, un PR.
-3. Codex implementa. Vos revisás el diff.
-4. Codex gate (skill `codex-gate`) antes de proponer el merge.
-5. Merge: **merge a `main` = deploy a producción.** Mergeá solo si el comentario de aprobación dice «Incluye merge a producción: sí». Si dice no, dejá el PR listo y el ticket en Revisión.
-6. «Solution:» en el ticket (PR, qué se verificó, en qué URL) y a Revisión.
+3. **Vos no escribís el código: lo escribe Codex.** Le encargás la implementación a Codex CLI con el modelo `gpt-6.1-sol` (Sol 6.1), que es el modelo por defecto de `~/.codex/config.toml`:
+   - `codex exec -m gpt-6.1-sol "<encargo>"`, desde la rama del ticket.
+   - El encargo lleva: la referencia y el objetivo del ticket, el alcance y lo que queda afuera, los archivos a tocar, las reglas del repo de este brief, y cómo se verifica (`npx astro build`).
+   - Codex commitea en la rama (con la referencia del ticket al principio del mensaje) y abre el PR.
+4. **Revisás el PR de Codex**: leé el diff completo contra lo que pide el ticket. Lo que haya que corregir se lo volvés a encargar a Codex en la misma rama, con el problema concreto; repetí hasta que esté bien. Un ajuste de una o dos líneas lo podés hacer vos.
+5. Codex gate (skill `codex-gate`) antes de aprobar: tiene que haber corrido al menos un revisor de otra familia de modelos, y queda escrito cuál corrió.
+6. **Aprobás el PR** cuando el diff cumple el ticket, el build pasa y el gate está limpio.
+7. Merge: **merge a `main` = deploy a producción.** Mergeá solo si el comentario de aprobación dice «Incluye merge a producción: sí». Si dice no, dejá el PR aprobado y el ticket en Revisión.
+8. «Solution:» en el ticket (PR, qué encargaste a Codex, qué corregiste, qué se verificó y en qué URL) y a Revisión.
 
 ## Reglas del repo
 - Dominio canónico `https://www.genaicommunity.eu`, **con www**. El sitio está solo en inglés.
