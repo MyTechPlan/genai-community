@@ -36,3 +36,7 @@ newsletter-success*.png
 # stray local screenshots (saved to repo root during verification)
 prod-blog-*.png
 mobile-blog-*.png
+
+# [epiq]: local hydrated state is never committed
+.epiq/events/
+.epiq/log/
