@@ -1,6 +1,6 @@
 # GenAI Community EU
 
-> The community of GenAI builders in Europe — a members' Slack, local chapters with AI meetups across Europe, member discounts at our events, and one annual summit in Valencia.
+> Free community for Europe's generative AI builders — AI meetups in local chapters across Europe, a members' Slack, member discounts at GenAI Summit EU, and one annual summit in Valencia.
 
 GenAI Community EU connects practitioners working with generative AI across Europe through a members' Slack, local chapters (city meetups and hands-on workshops), member discounts at community events, a newsletter, and one annual in-person gathering — GenAI Summit EU in Valencia, Spain. The focus is real production work: agentic architectures, evaluations, infrastructure, and deployment, not hype. The site is operated by My Tech Plan, S.L. The blog is coming soon.
 
