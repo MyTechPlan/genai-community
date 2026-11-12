@@ -23,7 +23,7 @@ GenAI Community EU connects practitioners working with generative AI across Euro
 ## Community
 
 - [Community Slack](https://www.genaicommunity.eu/join): Access to the community Slack is granted at the end of the community signup in GenAI-ID.
-- [Newsletter](https://www.genaicommunity.eu/#newsletter): Subscribe to the newsletter.
+- [Join the community](https://www.genaicommunity.eu/join): Create a GenAI-ID account to join the community and its Slack.
 - [Write for the blog](https://docs.google.com/forms/d/e/1FAIpQLScjPwZeHfBJEtiYv3nDJd6emPq6e8gh2rtjBft5ElBTxHaV4Q/viewform): Community experts can apply to write for the blog.
 
 ## Optional

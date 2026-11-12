@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Newsletter from '../../components/Newsletter.astro';
 import PostCover from '../../components/PostCover.astro';
 import { getCollection, render } from 'astro:content';
 
@@ -33,7 +32,6 @@ const coverVariant = post.id.length % 5;
       <a href="/blog" class="back">← All posts</a>
     </div>
   </article>
-  <Newsletter />
 
   <style>
     .article-wrap { max-width: 720px; }
