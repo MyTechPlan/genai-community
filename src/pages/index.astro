@@ -1,247 +1,319 @@
 ---
 import Base from '../layouts/Base.astro';
-import Constellation from '../components/Constellation.astro';
-import SlackCTA from '../components/SlackCTA.astro';
 import UpcomingEvents from '../components/UpcomingEvents.astro';
+import { Image } from 'astro:assets';
+import '../styles/home.css';
+import imgWorkshopFestTables from '../assets/home/workshop-fest-tables.jpg';
+import imgWorkshopFestRoom from '../assets/home/workshop-fest-room.jpg';
+import imgGlauceGomes from '../assets/chapters/london/glauce-gomes.jpg';
+import imgJeanFrancoisGutierrez from '../assets/chapters/valencia/jean-francois-gutierrez.jpg';
+import imgJuliaPereira from '../assets/chapters/lisbon/julia-pereira.jpg';
+import imgJulietaZalduendo from '../assets/chapters/valencia/julieta-zalduendo.jpg';
+import imgKellyCuesta from '../assets/chapters/london/kelly-cuesta.jpg';
+import imgLilianaPereira from '../assets/chapters/lisbon/liliana-pereira.jpg';
+import imgLisbonAudience from '../assets/home/lisbon-audience.jpg';
+import imgLisbonPizza from '../assets/home/lisbon-pizza.jpg';
+import imgLisbonSpeaker from '../assets/home/lisbon-speaker.jpg';
+import imgLisbonTalk from '../assets/home/lisbon-talk.jpg';
+import imgLisbonTeam from '../assets/home/lisbon-team.jpg';
+import imgSummit2027Poster from '../assets/home/summit-2027-poster.jpg';
+import imgValenciaDinner from '../assets/home/valencia-dinner.jpg';
+import imgValenciaGroup from '../assets/home/valencia-group.jpg';
 ---
 <Base title="GenAI Community EU — Where Europe's GenAI builders meet">
-  <!-- Hero -->
-  <section class="hero">
-    <div class="wrap hero-grid">
+  <div class="hm">
+<section class="hero intro" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
       <div>
-        <span class="eyebrow">A community senior by design</span>
-        <h1>Where Europe's <span class="grad">GenAI builders</span> actually meet</h1>
-        <p class="lede">
-          GenAI Community EU connects practitioners working with generative AI across
-          Europe - through local chapters, an expert-written blog, a newsletter,
-          and one annual summit by the Mediterranean.
-        </p>
-        <div class="hero-ctas">
-          <a href="/join" class="btn btn-iris">Join the community</a>
-          <a href="/chapters" class="btn btn-ghost">Find your chapter</a>
+        <p class="eyebrow fade" style="--i:0">Valencia · Lisbon · London · Madrid</p>
+        <h1 class="h1"><span class="ln" style="--i:0"><span>The community </span></span><span class="ln" style="--i:1"><span>of GenAI builders </span></span><span class="ln" style="--i:2"><span>in <em class="iris-t">Europe</em></span></span></h1>
+        <p class="lede fade" style="--i:2">Join the Slack, go to meetups in your city and get member discounts at our events.</p>
+        <div class="cta fade" style="--i:3">
+          <a class="b1" href="/join">Join the community <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="b3" href="#chapters">Find your chapter</a>
         </div>
+        <p class="small fade" style="--i:4">Free. Takes two minutes, then you're in the Slack.</p>
       </div>
-      <div class="hero-map">
-        <Constellation />
-      </div>
-    </div>
-  </section>
-
-  <!-- What is it -->
-  <section class="section">
-    <div class="wrap">
-      <span class="eyebrow">What this is</span>
-      <h2>Built by practitioners, for practitioners</h2>
-      <div class="pillars">
-        <div class="pillar">
-          <h3>Real work, not hype</h3>
-          <p>Production systems, agentic architectures, evals, deployment. The stuff you can't learn from a thread of hot takes.</p>
-        </div>
-        <div class="pillar">
-          <h3>Global vision, local impact</h3>
-          <p>Chapters in cities across Europe run their own meetups and workshops. Same community, your timezone.</p>
-        </div>
-        <div class="pillar">
-          <h3>One annual meeting point</h3>
-          <p>Every year the whole network converges at the GenAI Summit EU in Valencia. Two days, face to face.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Blog -->
-  <section class="section section-alt">
-    <div class="wrap">
-      <div class="section-head">
-        <div>
-          <span class="eyebrow">From the blog</span>
-          <h2>Written by people who ship</h2>
-        </div>
-        <a href="/blog" class="btn btn-ghost">Visit the blog</a>
-      </div>
-      <div class="blog-soon">
-        <p>An expert-written blog on building with generative AI in production — agents, evals, infra, and the lessons that only show up at scale, written by practitioners across Europe.</p>
-        <div class="write-cta-inline">
-          <p><strong>Working on something worth sharing?</strong> The blog is open to community experts.</p>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLScjPwZeHfBJEtiYv3nDJd6emPq6e8gh2rtjBft5ElBTxHaV4Q/viewform" target="_blank" rel="noopener" class="btn btn-iris">Apply to be a writer</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Chapters -->
-  <section class="section">
-    <div class="wrap chapters-band">
       <div>
-        <span class="eyebrow">Chapters</span>
-        <h2>Your city, your people</h2>
-        <p>Chapters are local groups of the community: meetups, hands-on workshops, and honest conversations about what's working in production. If there isn't one near you yet, that's your cue.</p>
-        <div class="hero-ctas">
-          <a href="https://www.eventbrite.es/o/genai-community-121448467666?aff=ebdsshcopyurl" class="btn btn-iris" rel="noopener" target="_blank">Discover upcoming events</a>
-          <a href="/chapters" class="btn btn-ghost">See active chapters</a>
+        <div class="map" id="map">
+          <canvas id="mapc" role="img" aria-label="Map of western Europe with the chapters in Valencia, Lisbon and London, and Madrid forming. Lines of light travel between the chapters."></canvas>
+          <a class="city" data-city="london" data-pos="r" style="--i:0" href="/chapters/london">London <span class="avs"><Image src={imgKellyCuesta} width={480} alt="" /><Image src={imgGlauceGomes} width={480} alt="" style="object-position:50% 30%" /></span></a>
+          <a class="city" data-city="madrid" data-pos="t" style="--i:1" href="/chapters">Madrid <small>forming</small></a>
+          <a class="city" data-city="valencia" data-pos="r" style="--i:2" href="/chapters/valencia">Valencia <span class="avs"><Image src={imgJulietaZalduendo} width={480} alt="" /><Image src={imgJeanFrancoisGutierrez} width={480} alt="" /></span></a>
+          <a class="city" data-city="lisbon" data-pos="b" style="--i:3" href="/chapters/lisbon">Lisbon <span class="avs"><Image src={imgLilianaPereira} width={480} alt="" /><Image src={imgJuliaPereira} width={480} alt="" /></span></a>
         </div>
+        <p class="legend"><span><i class="on"></i>Active chapter</span><span><i class="off"></i>Forming</span><span><i class="msg"></i>The Slack, between cities</span></p>
       </div>
-      <UpcomingEvents />
     </div>
-  </section>
+    <div style="height:clamp(40px,6vw,72px)"></div>
+  </div>
+</section>
 
-  <SlackCTA />
-
-  <!-- Summit -->
-  <section id="summit" class="summit">
-    <div class="wrap summit-grid">
-      <div>
-        <span class="eyebrow eyebrow-light">The annual meeting point</span>
-        <h2 class="grad">GenAI Summit EU</h2>
-        <p>
-          Once a year, the whole community meets in person in Valencia, Spain - two days
-          of technical talks, workshops and networking by the Mediterranean. The 2026
-          edition sold out. Don't sleep on the next one.
-        </p>
-        <a href="https://genaisummit.eu" rel="noopener" class="btn btn-light">Discover the summit</a>
+<section class="band" id="join">
+  <div class="wrap sec">
+    <div class="jhead" data-r>
+      <div class="head">
+        <p class="eyebrow">Free membership</p>
+        <h2 class="h2">One account. All of this is yours.</h2>
       </div>
-      <dl class="summit-stats">
-        <div><dt>Attendees</dt><dd>+350</dd></div>
-        <div><dt>Countries</dt><dd>13</dd></div>
-        <div><dt>Speakers</dt><dd>32</dd></div>
-        <div><dt>International</dt><dd>47%</dd></div>
-      </dl>
+      <div class="jact"><a class="b1" href="/join">Join the community</a><p class="small">Free. One GenAI-ID account.</p></div>
     </div>
-  </section>
+    <div class="panels" id="how" data-r>
+      <div class="pn on">
+        <div class="chan" aria-hidden="true">
+          <div class="rail"><b>GenAI Community</b><div># introductions</div><div class="a"># ask-the-community</div><div># jobs</div><div># events<i></i></div><div># valencia</div><div># lisbon</div><div># london</div></div>
+          <div class="top"># ask-the-community <span>GenAI builders across Europe</span></div>
+        </div>
+        <div class="fx slk" aria-hidden="true">
+          <div class="bb l" style="--i:0;--c:var(--mint);--p:#1f9d63;top:15%"><small>ML engineer · Lisbon</small>Anyone running evals on agent traces in production?</div>
+          <div class="bb r" style="--i:1;--c:var(--lav);--p:#7a63e6;top:33%"><small>Data lead · Valencia</small>We do. Happy to share our setup on a call.</div>
+          <div class="bb l" style="--i:2;--c:var(--rose);--p:#e0559a;top:50%"><small>Founder · London</small>Bring it to the next meetup?</div>
+          <div class="typ"><i></i><i></i><i></i></div>
+        </div>
+        <div class="scrim"></div><span class="bar"><i></i></span>
+        <div class="tx"><h3>The Slack</h3><div class="d"><div><p>Talk with GenAI builders across Europe every day. Questions, jobs, and every event announced there first.</p></div></div></div>
+        <button class="hit" type="button" aria-expanded="true" aria-label="The Slack"></button>
+      </div>
+      <div class="pn">
+        <div class="wall">
+          <div class="pc ph" style="--i:0;--rot:-6deg;--tx:-33%;--ty:-12%"><Image src={imgLisbonSpeaker} width={1000} alt="A speaker pointing at a slide, next to the GenAI Community banner" /><span class="cap">Lisbon meetup</span></div>
+          <div class="pc ph" style="--i:1;--rot:5deg;--tx:31%;--ty:-18%"><Image src={imgValenciaGroup} width={1000} alt="A group of people standing on a stage in front of the slide for a Valencia meetup on AI governance" style="object-position:50% 45%" /><span class="cap">Valencia meetup</span></div>
+          <div class="pc po" style="--i:2;--rot:-2deg;--ty:52%" data-next-poster hidden><img alt="" loading="lazy" decoding="async"></div>
+          <span class="nxt" data-next-chip hidden><i></i><span></span></span>
+        </div>
+        <div class="scrim"></div><span class="bar"><i></i></span>
+        <div class="tx"><h3>Meetups near you</h3><div class="d"><div><p>Talks, workshops and networking run by the chapter in your city.</p></div></div></div>
+        <button class="hit" type="button" aria-expanded="false" aria-label="Meetups near you"></button>
+      </div>
+      <div class="pn">
+        <Image class="bg" src={imgWorkshopFestTables} width={1000} alt="People working on laptops at shared tables" style="object-position:55% 80%" />
+        <div class="fx" aria-hidden="true">
+          <div class="lan"><span class="strap"></span><span class="clip"></span><div class="bdg"><span class="k">GenAI-ID · Member</span><b>Member<br>discount</b><p>GenAI Summit EU<br>GenAI Workshop Fest</p><div class="holo"></div><span class="pct">%</span></div></div>
+        </div>
+        <div class="scrim"></div><span class="bar"><i></i></span>
+        <div class="tx"><h3>Member discounts</h3><div class="d"><div><p>Members pay less for tickets to GenAI Summit EU and GenAI Workshop Fest.</p></div></div></div>
+        <button class="hit" type="button" aria-expanded="false" aria-label="Member discounts"></button>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <style>
-    .hero { padding: 6rem 0 4.5rem; }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 3rem;
-      align-items: center;
-    }
-    .lede {
-      font-size: 1.2rem;
-      color: var(--text-dim);
-      max-width: 34rem;
-    }
-    .hero-ctas {
-      display: flex;
-      gap: 0.8rem;
-      margin-top: 1.8rem;
-      flex-wrap: wrap;
-    }
-    .hero-map { padding: 1rem; }
+<section id="chapters">
+  <div class="wrap sec">
+    <div class="row-head" data-r>
+      <div class="head">
+        <p class="eyebrow">Chapters</p>
+        <h2 class="h2">Meet the community in your city</h2>
+        <p class="dim">Each chapter runs its own meetups and workshops. Come to one, give a talk, or start a chapter where there isn't one yet.</p>
+      </div>
+      <a class="b3" href="/chapters">All chapters</a>
+    </div>
+    <div class="chs">
+      <a class="card ch" data-r style="--i:0" href="/chapters/valencia"><div class="ph2"><Image src={imgJulietaZalduendo} width={480} alt="Julieta Zalduendo" style="object-position:50% 30%" /><Image src={imgJeanFrancoisGutierrez} width={480} alt="Jean-François Gutierrez" style="object-position:50% 35%" /></div><div class="tx"><span class="status"><i></i>Active</span><h3 class="h3">Valencia</h3><p class="dim" style="font-size:15px">Spain</p></div></a>
+      <a class="card ch" data-r style="--i:1" href="/chapters/lisbon"><div class="ph2"><Image src={imgLilianaPereira} width={480} alt="Liliana Catarina Freire Pereira" /><Image src={imgJuliaPereira} width={480} alt="Julia Mariá Pereira" /></div><div class="tx"><span class="status"><i></i>Active</span><h3 class="h3">Lisbon</h3><p class="dim" style="font-size:15px">Portugal</p></div></a>
+      <a class="card ch" data-r style="--i:2" href="/chapters/london"><div class="ph2"><Image src={imgKellyCuesta} width={480} alt="Kelly Cuesta" /><Image src={imgGlauceGomes} width={480} alt="Glauce Gomes de Lima" style="object-position:50% 30%" /></div><div class="tx"><span class="status"><i></i>Active</span><h3 class="h3">London</h3><p class="dim" style="font-size:15px">United Kingdom</p></div></a>
+      <a class="card ch" data-r style="--i:3" href="/chapters"><div class="forming" aria-hidden="true"><i></i><i></i><i></i><b></b><span>40.42° N · 3.70° W</span></div><div class="tx"><span class="status f"><i></i>Forming</span><h3 class="h3">Madrid</h3><p class="dim" style="font-size:15px">Spain</p></div></a>
+    </div>
+    <div class="evs" data-r>
+      <UpcomingEvents label="Upcoming events" />
+      <a class="b3" href="https://www.eventbrite.es/o/genai-community-121448467666?aff=ebdsshcopyurl" target="_blank" rel="noopener">All events on Eventbrite</a>
+    </div>
+    <div class="take">
+      <a class="card spot act" data-r style="--i:0" href="https://forms.gle/uS2tiZ87TjJTAgq59" target="_blank" rel="noopener">
+        <span class="ico" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-10.4a6.5 6.5 0 0 1 13 0C18.500 15.400 12 21 12 21z"/><path d="M12 8v5M9.5 10.500h5"/></svg></span>
+        <span class="at"><b>Start a chapter in your city</b><span class="dim">No chapter near you? Lead one. We help with the playbook, the brand kit and your first speakers.</span></span>
+        <span class="go">Apply <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+      <div class="card spot act" data-r style="--i:1">
+        <span class="ico r" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.500 11a6.500 6.500 0 0 0 13 0M12 17.500V21"/></svg></span>
+        <span class="at"><span class="cfp">Call for papers · <span id="days">closes 31 Jan 2027</span></span><b>Give a talk</b><span class="dim">Built something with GenAI? Share it at GenAI Summit EU 2027.</span></span>
+        <a class="go" href="https://genaisummit.eu/cfp" target="_blank" rel="noopener">Submit a talk <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
 
-    .section-alt {
-      background: var(--bg-1);
-      border-block: 1px solid var(--line);
-    }
+<section aria-label="Photos from our events">
+  <div class="wrap" style="padding-bottom:16px"><p class="eyebrow">From our events</p></div>
+  <div class="ribbon" id="ribbon">
+    <div class="rrow" data-dir="-1">
+      <div class="t w"><Image src={imgLisbonTalk} width={1000} alt="A speaker presenting next to a screen, seen from behind the audience" /><span class="cap">Lisbon meetup</span></div>
+      <div class="t"><Image src={imgJulietaZalduendo} width={480} alt="Julieta Zalduendo" style="object-position:50% 30%" /><span class="cap">Julieta · Valencia</span></div>
+      <div class="t w"><Image src={imgWorkshopFestRoom} width={1000} alt="People listening at a workshop, laptops on shared tables" /><span class="cap">GenAI Workshop Fest</span></div>
+      <div class="t w"><Image src={imgValenciaGroup} width={1000} alt="A group of people standing on a stage in front of the slide for a Valencia meetup on AI governance" style="object-position:50% 45%" /><span class="cap">Valencia meetup</span></div>
+      <div class="t"><Image src={imgGlauceGomes} width={480} alt="Glauce Gomes de Lima" style="object-position:50% 30%" /><span class="cap">Glauce · London</span></div>
+      <div class="t"><Image src={imgLisbonPizza} width={1000} alt="People opening pizza boxes on a long table after the talks" /><span class="cap">Lisbon meetup</span></div>
+      <div class="t"><Image src={imgLilianaPereira} width={480} alt="Liliana Catarina Freire Pereira" /><span class="cap">Liliana · Lisbon</span></div>
+    </div>
+    <div class="rrow" data-dir="1">
+      <div class="t"><Image src={imgKellyCuesta} width={480} alt="Kelly Cuesta" /><span class="cap">Kelly · London</span></div>
+      <div class="t w"><Image src={imgLisbonAudience} width={1000} alt="People seated in rows listening to a talk" /><span class="cap">Lisbon meetup</span></div>
+      <div class="t w"><Image src={imgWorkshopFestTables} width={1000} alt="People working on laptops at shared tables" /><span class="cap">GenAI Workshop Fest</span></div>
+      <div class="t"><Image src={imgJuliaPereira} width={480} alt="Julia Mariá Pereira" /><span class="cap">Julia · Lisbon</span></div>
+      <div class="t w"><Image src={imgLisbonTeam} width={1000} alt="Four people standing together next to the GenAI Community banner" style="object-position:50% 30%" /><span class="cap">Lisbon meetup</span></div>
+      <div class="t"><Image src={imgJeanFrancoisGutierrez} width={480} alt="Jean-François Gutierrez" style="object-position:50% 35%" /><span class="cap">Jean-François · Valencia</span></div>
+      <div class="t"><Image src={imgValenciaDinner} width={1000} alt="People around a long table raising their drinks, a GenAI cap on the table" style="object-position:50% 40%" /><span class="cap">Valencia</span></div>
+    </div>
+  </div>
+</section>
 
-    .pillars {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-      margin-top: 2.8rem;
-    }
-    .pillar {
-      position: relative;
-      padding-top: 1.3rem;
-      border-top: 1px solid var(--line);
-    }
-    .pillar::before {
-      content: "";
-      position: absolute;
-      top: -1px;
-      left: 0;
-      width: 44px;
-      height: 2px;
-      background: var(--iris);
-    }
-    .pillar p { color: var(--text-dim); }
+<section class="band" id="more">
+  <div class="wrap sec">
+    <div class="head" data-r>
+      <p class="eyebrow">More from the community</p>
+      <h2 class="h2">Events and reading</h2>
+    </div>
+    <div class="more">
+      <a class="card mc" id="summit" data-r style="--i:0" href="https://genaisummit.eu" rel="noopener"><div class="top"><Image src={imgSummit2027Poster} width={1000} alt="GenAI Summit 2027 poster: the logo and 2027 over the City of Arts and Sciences in Valencia at night" /><span class="when"><i></i>13–14 April 2027 · Valencia</span></div><div class="tx"><h3 class="h3">GenAI Summit EU 2027</h3><p class="dim">Two days of talks, workshops and networking. The 2026 edition sold out.</p></div></a>
+      <a class="card mc" data-r style="--i:1" href="https://genaiworkshopfest.com" target="_blank" rel="noopener"><div class="top"><Image src={imgWorkshopFestTables} width={1000} alt="People working on laptops at shared tables" /><span class="shade"></span><span class="lg" role="img" aria-label="GenAI Workshop Fest logo"><b>GenAI</b><span>workshop<br>fest</span></span></div><div class="tx"><h3 class="h3">GenAI Workshop Fest</h3><p class="dim">Hands-on workshops led by practitioners.</p></div></a>
+      <div class="card mc off" data-r style="--i:2"><div class="top cover"><span class="when"><i></i>Coming soon</span></div><div class="tx"><h3 class="h3">The blog</h3><p class="dim">Articles on building with generative AI, written by community members.</p></div></div>
+    </div>
+  </div>
+</section>
 
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 1rem;
-      margin-bottom: 2.4rem;
-      flex-wrap: wrap;
-    }
-    .blog-soon {
-      background: var(--bg-2);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 2.2rem;
-    }
-    .blog-soon-badge {
-      display: inline-block;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: #14131a;
-      background-image: var(--iris);
-      padding: 0.3rem 0.7rem;
-      border-radius: 6px;
-      margin-bottom: 1rem;
-    }
-    .blog-soon > p { color: var(--text-dim); max-width: 44rem; }
-    .write-cta-inline {
-      margin-top: 1.8rem;
-      padding-top: 1.6rem;
-      border-top: 1px solid var(--line);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .write-cta-inline p { margin: 0; color: var(--text-dim); }
-    .write-cta-inline strong { color: var(--text); }
+<section>
+  <div class="wrap writers" data-r>
+    <div><h3 class="h3" style="font-size:24px">Write for the blog</h3><p class="dim" style="margin-top:6px">Writing about GenAI in production? Pitch an article.</p></div>
+    <a class="b2" href="https://docs.google.com/forms/d/e/1FAIpQLScjPwZeHfBJEtiYv3nDJd6emPq6e8gh2rtjBft5ElBTxHaV4Q/viewform" target="_blank" rel="noopener">Pitch an article</a>
+  </div>
+</section>
 
-    .summit {
-      position: relative;
-      padding: 5.5rem 0;
-      border-block: 1px solid var(--line);
-      background:
-        radial-gradient(700px 380px at 82% 30%, rgba(232, 228, 247, 0.07), transparent 60%),
-        var(--bg-1);
-    }
-    .summit p { color: var(--text-dim); }
-    .summit-grid {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 3rem;
-      align-items: center;
-    }
-    .summit-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.4rem;
-      margin: 0;
-    }
-    .summit-stats div {
-      border-left: 1px solid var(--line-2);
-      padding-left: 1rem;
-    }
-    .summit-stats dt {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--text-faint);
-    }
-    .summit-stats dd {
-      margin: 0.25rem 0 0;
-      font-family: var(--font-display);
-      font-size: 1.9rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: var(--text);
-    }
+<section class="band" id="newsletter">
+  <div class="wrap sec">
+    <div class="jhead" data-r>
+      <div class="head">
+        <h2 class="h2">Join the community</h2>
+        <p class="dim">Free. One GenAI-ID account for the Slack, the meetups and the member discounts.</p>
+      </div>
+      <a class="b1" href="/join">Join the community <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+</section>
+  </div>
 
-    @media (max-width: 860px) {
-      .hero-grid, .summit-grid { grid-template-columns: 1fr; }
-      .pillars, .post-grid { grid-template-columns: 1fr; }
-      .hero { padding-top: 3.5rem; }
-    }
-  </style>
+  <script>
+(function(){
+var root=document.documentElement, mq=window.matchMedia('(prefers-reduced-motion: reduce)');
+var motion=!mq.matches;
+function applyMotion(){root.classList.toggle('motion',motion);root.classList.toggle('motion-off',!motion);
+}
+applyMotion();
+
+/* ---------- map ---------- */
+var LAND={59:[[6,18]],58:[[-5,-3],[7,8],[12,16]],57:[[-6,-2],[9,10],[12,16]],56:[[-5,-3],[8,10],[12,15]],55:[[-8,-6],[-4,-2],[9,10]],54:[[-10,-6],[-3,-1],[9,19]],53:[[-9,-6],[-4,1],[5,19]],52:[[-10,-7],[-5,1],[4,19]],51:[[-4,1],[3,19]],50:[[-5,-5],[2,19]],49:[[-1,19]],48:[[-4,19]],47:[[-2,19]],46:[[-1,19]],45:[[-1,12],[14,19]],44:[[-1,7],[10,12],[16,19]],43:[[-9,6],[11,13],[17,19]],42:[[-9,3],[9,9],[12,14],[19,19]],41:[[-8,2],[9,9],[13,16],[19,19]],40:[[-8,0],[9,9],[15,18]],39:[[-9,0],[3,3],[9,9],[16,16]],38:[[-8,-1],[13,16]],37:[[-8,-2],[14,15]],36:[[-6,-5]]};
+function cell(lon,lat){var r=LAND[lat];if(!r)return 0;for(var i=0;i<r.length;i++)if(lon>=r[i][0]&&lon<=r[i][1])return 1;return 0;}
+function land(lon,lat){var i=Math.floor(lon),j=Math.floor(lat),fx=lon-i,fy=lat-j;
+  return cell(i,j)*(1-fx)*(1-fy)+cell(i+1,j)*fx*(1-fy)+cell(i,j+1)*(1-fx)*fy+cell(i+1,j+1)*fx*fy;}
+var LON0=-11.5,LATT=59.5,KX=.669,UW=31*KX,UH=24;
+var CITIES=[{id:'valencia',lon:-.38,lat:39.47,on:1},{id:'lisbon',lon:-9.14,lat:38.72,on:1},{id:'london',lon:-.13,lat:51.51,on:1},{id:'madrid',lon:-3.70,lat:40.42,on:0}];
+var LINKS=[[0,1,.22],[0,2,-.18],[1,2,.2],[3,0,.3]];
+var COL=['#cdeede','#e8e4f7','#fbe1ef','#fdf4d6','#d6ecf6'];
+var box=document.getElementById('map'),cv=document.getElementById('mapc'),ctx=cv.getContext('2d');
+var W=0,H=0,u=1,dots=[],t0=performance.now(),comets=[],ripples=[],nextSpawn=2.4,ptr=null,visible=true,raf=0;
+function px(c){return{x:(c.lon-LON0)*KX*u,y:(LATT-c.lat)*u};}
+function layout(){
+  var r=box.getBoundingClientRect();if(!r.width)return;W=r.width;H=r.height;u=W/UW;
+  var d=Math.min(window.devicePixelRatio||1,2);cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);
+  CITIES.forEach(function(c){var p=px(c);c.x=p.x;c.y=p.y;var el=box.querySelector('[data-city='+c.id+']');if(el){el.style.left=p.x+'px';el.style.top=p.y+'px';}});
+  dots=[];var s=H/56,o=CITIES[0],row=0;
+  for(var y=s/2;y<H;y+=s,row++)for(var x=(row%2?s/2:0)+s/2;x<W;x+=s){
+    var lon=x/u/KX+LON0,lat=LATT-y/u;if(land(lon,lat)<.48)continue;
+    var near=0;CITIES.forEach(function(c){if(!c.on)return;var dd=Math.hypot(x-c.x,y-c.y);near=Math.max(near,1-dd/(u*2.6));});
+    dots.push({x:x,y:y,d:Math.hypot(x-o.x,y-o.y),a:.17+Math.random()*.1+Math.max(0,near)*.3});}
+  LINKS.forEach(function(l){var a=CITIES[l[0]],b=CITIES[l[1]],mx=(a.x+b.x)/2,my=(a.y+b.y)/2,dx=b.x-a.x,dy=b.y-a.y;l.cx=mx-dy*l[2];l.cy=my+dx*l[2];});
+  if(!motion||!visible)draw(1e3);
+}
+function pt(l,t){var a=CITIES[l[0]],b=CITIES[l[1]],m=1-t;return{x:m*m*a.x+2*m*t*l.cx+t*t*b.x,y:m*m*a.y+2*m*t*l.cy+t*t*b.y};}
+function cl(v){return v<0?0:v>1?1:v;}
+function eo(v){return 1-Math.pow(1-v,3);}
+function eio(v){return v<.5?4*v*v*v:1-Math.pow(-2*v+2,3)/2;}
+function back(v){var c=1.70158;return 1+(c+1)*Math.pow(v-1,3)+c*Math.pow(v-1,2);}
+function draw(t){
+  ctx.clearRect(0,0,W,H);
+  var r=Math.max(1,u*.075),i,k;
+  ctx.fillStyle='#f4f4f3';
+  for(i=0;i<dots.length;i++){var d=dots[i],a=d.a*cl((t-d.d/(H*1.1))/.5);
+    if(a<=0)continue;
+    for(k=0;k<ripples.length;k++){var rp=ripples[k],age=t-rp.t;var w=Math.abs(Math.hypot(d.x-rp.x,d.y-rp.y)-age*u*3.2);if(w<u*.9)a+=.55*(1-w/(u*.9))*(1-age/1.5);}
+    if(ptr){var pd=Math.hypot(d.x-ptr.x,d.y-ptr.y);if(pd<u*3.2)a+=.5*(1-pd/(u*3.2));}
+    ctx.globalAlpha=a>1?1:a;ctx.beginPath();ctx.arc(d.x,d.y,r,0,6.2832);ctx.fill();}
+  // links
+  var lp=eio(cl((t-1.5)/.9));
+  LINKS.forEach(function(l){if(lp<=0)return;var on=CITIES[l[0]].on&&CITIES[l[1]].on;
+    ctx.globalAlpha=on?.2:.16;ctx.strokeStyle=on?'#e8e4f7':'#fdf4d6';ctx.lineWidth=1;ctx.setLineDash(on?[]:[3,5]);
+    ctx.beginPath();for(var s=0;s<=28;s++){var p=pt(l,s/28*lp);s?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y);}ctx.stroke();});
+  ctx.setLineDash([]);
+  // comets
+  if(t<900){
+    if(t>nextSpawn){var li=Math.floor(Math.random()*3);comets.push({l:LINKS[li],rev:Math.random()<.5,t:t,dur:1.5+Math.random()*.8,c:COL[Math.floor(Math.random()*5)]});nextSpawn=t+.6+Math.random()*1.2;}
+    for(i=comets.length-1;i>=0;i--){var c=comets[i],q=(t-c.t)/c.dur;
+      if(q>=1){var dest=CITIES[c.rev?c.l[0]:c.l[1]];ripples.push({x:dest.x,y:dest.y,t:t});dest.ping=t;comets.splice(i,1);continue;}
+      var e=eio(q);ctx.strokeStyle=c.c;ctx.lineCap='round';ctx.lineWidth=Math.max(1.4,u*.09);
+      for(k=0;k<12;k++){var t1=cl(e-k*.014),t2=cl(e-(k+1)*.014);var p1=pt(c.l,c.rev?1-t1:t1),p2=pt(c.l,c.rev?1-t2:t2);
+        ctx.globalAlpha=(1-k/12)*.95;ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();}
+      var h=pt(c.l,c.rev?1-e:e);ctx.globalAlpha=1;ctx.fillStyle=c.c;ctx.beginPath();ctx.arc(h.x,h.y,Math.max(2,u*.12),0,6.2832);ctx.fill();}
+    for(i=ripples.length-1;i>=0;i--)if(t-ripples[i].t>1.5)ripples.splice(i,1);
+  }
+  // nodes
+  CITIES.forEach(function(c,n){var s=cl((t-.9-n*.12)/.55);if(s<=0)return;s=back(s);var nr=Math.max(4,u*.26)*s;
+    if(c.on){ctx.globalAlpha=.22;ctx.fillStyle='#e8e4f7';ctx.beginPath();ctx.arc(c.x,c.y,nr*2.3,0,6.2832);ctx.fill();
+      if(c.ping!=null){var pa=(t-c.ping)/1.1;if(pa<1){ctx.globalAlpha=(1-pa)*.7;ctx.strokeStyle='#e8e4f7';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(c.x,c.y,nr*(2.3+pa*3),0,6.2832);ctx.stroke();}}
+      ctx.globalAlpha=1;ctx.fillStyle='#ffffff';ctx.beginPath();ctx.arc(c.x,c.y,nr,0,6.2832);ctx.fill();}
+    else{ctx.globalAlpha=1;ctx.fillStyle='#0b0b0c';ctx.beginPath();ctx.arc(c.x,c.y,nr,0,6.2832);ctx.fill();ctx.strokeStyle='#fdf4d6';ctx.lineWidth=1.3;ctx.setLineDash([2.5,2.5]);ctx.stroke();ctx.setLineDash([]);}});
+  ctx.globalAlpha=1;
+}
+function loop(now){raf=0;if(!motion||!visible)return;draw((now-t0)/1000);raf=requestAnimationFrame(loop);}
+function kick(){if(motion&&visible&&!raf)raf=requestAnimationFrame(loop);else if(!motion)draw(1e3);}
+function restart(){t0=performance.now();comets=[];ripples=[];nextSpawn=2.4;CITIES.forEach(function(c){c.ping=null;});kick();}
+if('ResizeObserver' in window)new ResizeObserver(layout).observe(box);else window.addEventListener('resize',layout);
+layout();
+if('IntersectionObserver' in window)new IntersectionObserver(function(e){visible=e[0].isIntersecting;kick();}).observe(box);
+box.addEventListener('pointermove',function(e){var r=box.getBoundingClientRect();ptr={x:e.clientX-r.left,y:e.clientY-r.top};});
+box.addEventListener('pointerleave',function(){ptr=null;});
+kick();
+
+/* ---------- reveal ---------- */
+var io=('IntersectionObserver' in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{rootMargin:'0px 0px -8% 0px'}):null;
+document.querySelectorAll('[data-r]').forEach(function(el){io?io.observe(el):el.classList.add('in');});
+
+/* ---------- what you get ---------- */
+var how=document.getElementById('how'),pns=[].slice.call(how.querySelectorAll('.pn')),cur=0,canHover=window.matchMedia('(hover:hover)').matches;
+function go(i){cur=i;pns.forEach(function(p){p.classList.remove('on');p.querySelector('.hit').setAttribute('aria-expanded','false');});
+  void how.offsetWidth;pns[i].classList.add('on');pns[i].querySelector('.hit').setAttribute('aria-expanded','true');}
+pns.forEach(function(p,i){p.querySelector('.hit').addEventListener('click',function(){if(i!==cur)go(i);});
+  if(canHover)p.addEventListener('pointerenter',function(){if(i!==cur)go(i);});
+  p.querySelector('.bar i').addEventListener('animationend',function(){if(motion&&i===cur)go((cur+1)%pns.length);});});
+var hov=false,seen=true;function pz(){how.classList.toggle('paused',hov||!seen);}
+how.addEventListener('pointerenter',function(){hov=true;pz();});how.addEventListener('pointerleave',function(){hov=false;pz();});
+how.addEventListener('focusin',function(){hov=true;pz();});how.addEventListener('focusout',function(){hov=false;pz();});
+if('IntersectionObserver' in window)new IntersectionObserver(function(e){seen=e[0].isIntersecting;pz();},{threshold:.35}).observe(how);
+
+/* ---------- ribbon ---------- */
+var rib=document.getElementById('ribbon'),rows=[].slice.call(rib.querySelectorAll('.rrow')),tick=false;
+function slide(){tick=false;if(!motion){rows.forEach(function(r){r.style.transform='';});return;}
+  var b=rib.getBoundingClientRect(),vh=window.innerHeight,p=cl((vh-b.top)/(vh+b.height));
+  rows.forEach(function(r){var over=Math.max(0,r.scrollWidth-rib.clientWidth),dir=+r.dataset.dir;r.style.transform='translate3d('+(-(dir<0?p:1-p)*over)+'px,0,0)';});}
+function onScroll(){if(!tick){tick=true;requestAnimationFrame(slide);}}
+window.addEventListener('scroll',onScroll,{passive:true});window.addEventListener('resize',onScroll);slide();
+
+/* ---------- small things ---------- */
+document.querySelectorAll('.spot').forEach(function(c){c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px');});});
+var left=Math.ceil((new Date(2027,0,31,23,59,59)-new Date())/864e5);
+if(left>0)document.getElementById('days').textContent=left+(left===1?' day left':' days left');
+
+var hero=document.getElementById('top');
+
+/* ---------- next meetup, from the site's own events feed ---------- */
+fetch('/api/events').then(function(r){return r.ok?r.json():null;}).then(function(d){
+  var ev=d&&d.events&&d.events.filter(function(e){return !e.past;})[0];if(!ev||!ev.image)return;
+  var box=document.querySelector('[data-next-poster]'),chip=document.querySelector('[data-next-chip]');if(!box||!chip)return;
+  var p=ev.start.split('T')[0].split('-').map(Number),day=new Date(Date.UTC(p[0],p[1]-1,p[2]));
+  var month=day.toLocaleDateString('en-GB',{timeZone:'UTC',month:'short'});
+  var im=box.querySelector('img');im.alt='Poster of the next meetup: '+ev.name;
+  im.addEventListener('load',function(){box.hidden=false;chip.hidden=false;});im.src=ev.image;
+  chip.querySelector('span').textContent='Next · '+p[2]+' '+month+[ev.venue,ev.city].filter(Boolean).map(function(x){return ' · '+x;}).join('').replace(/ · ([^·]+) · ([^·]+)$/,' · $1, $2');
+}).catch(function(){});
+})();
+  </script>
 </Base>
