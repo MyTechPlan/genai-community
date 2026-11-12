@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Newsletter from '../components/Newsletter.astro';
 import Constellation from '../components/Constellation.astro';
 import SlackCTA from '../components/SlackCTA.astro';
 import UpcomingEvents from '../components/UpcomingEvents.astro';
@@ -18,7 +17,7 @@ import UpcomingEvents from '../components/UpcomingEvents.astro';
           and one annual summit by the Mediterranean.
         </p>
         <div class="hero-ctas">
-          <a href="/#newsletter" class="btn btn-iris">Join the newsletter</a>
+          <a href="/join" class="btn btn-iris">Join the community</a>
           <a href="/chapters" class="btn btn-ghost">Find your chapter</a>
         </div>
       </div>
@@ -109,8 +108,6 @@ import UpcomingEvents from '../components/UpcomingEvents.astro';
       </dl>
     </div>
   </section>
-
-  <Newsletter />
 
   <style>
     .hero { padding: 6rem 0 4.5rem; }

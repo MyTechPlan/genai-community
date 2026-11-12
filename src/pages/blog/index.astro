@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Newsletter from '../../components/Newsletter.astro';
 ---
 <Base title="Blog - GenAI Community EU" description="Insights from Europe's GenAI community — practical lessons, technical perspectives and strategic analysis on building, applying and governing generative AI across Europe.">
   <!-- Hero -->
@@ -10,9 +9,7 @@ import Newsletter from '../../components/Newsletter.astro';
         <span class="eyebrow">Blog</span>
         <h1>Insights from Europe's <span class="grad">GenAI community</span></h1>
         <p class="lede">Explore practical lessons, technical perspectives and strategic analysis on how generative AI is being built, applied and governed across Europe. Written by experts doing the work.</p>
-        <div class="blog-ctas">
-          <a href="https://genaicommunity.beehiiv.com/" target="_blank" rel="noopener" class="btn btn-iris">Take me to the blog</a>
-        </div>
+        <p class="soon">Coming soon</p>
       </div>
     </div>
   </section>
@@ -32,12 +29,21 @@ import Newsletter from '../../components/Newsletter.astro';
     </div>
   </section>
 
-  <Newsletter />
-
   <style>
     .blog-hero { padding: 5rem 0 3.5rem; }
     .blog-hero-inner { max-width: 42rem; }
     .lede { font-size: 1.2rem; color: var(--text-dim); margin-top: 0.5rem; }
+    .soon {
+      display: inline-block;
+      margin-top: 1.6rem;
+      padding: 0.45rem 0.9rem;
+      border: 1px solid var(--line-2);
+      border-radius: 999px;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
     .blog-ctas {
       display: flex;
       gap: 0.8rem;
