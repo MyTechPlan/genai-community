@@ -1,6 +1,7 @@
 ---
-import { Image, getImage, inferRemoteSize } from 'astro:assets';
+import { getImage, inferRemoteSize } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
+import LeadPhoto from '../../components/LeadPhoto.astro';
 import UpcomingEvents from '../../components/UpcomingEvents.astro';
 import { getChapterPages } from '../../data/chapters.js';
 
@@ -28,10 +29,14 @@ const topics = ['General', 'Speaking', 'Partnership', 'Venue'];
 const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
 const leadPeople = await Promise.all(
   chapter.leads.map(async (lead) => {
-    // Never larger than the source: getImage would otherwise upscale a small photo.
-    const size = await inferRemoteSize(lead.photo);
-    const side = Math.min(800, size.width, size.height);
-    const photo = await getImage({ src: lead.photo, width: side, height: side, format: 'jpg' });
+    let image;
+    if (lead.photo) {
+      // Never larger than the source: getImage would otherwise upscale a small photo.
+      const size = await inferRemoteSize(lead.photo);
+      const side = Math.min(800, size.width, size.height);
+      const photo = await getImage({ src: lead.photo, width: side, height: side, format: 'jpg' });
+      image = new URL(photo.src, Astro.site).toString();
+    }
     return {
       '@type': 'Person',
       '@id': `${pageUrl}#${lead.id}`,
@@ -39,7 +44,7 @@ const leadPeople = await Promise.all(
       jobTitle: lead.role,
       worksFor: { '@type': 'Organization', name: lead.company },
       description: lead.summary,
-      image: new URL(photo.src, Astro.site).toString(),
+      ...(image ? { image } : {}),
       sameAs: [lead.linkedin, lead.github, lead.website?.url].filter(Boolean),
       memberOf: { '@id': `${pageUrl}#chapter` },
     };
@@ -112,7 +117,8 @@ const chapterSchema = {
       <div class="leads-grid">
         {chapter.leads.map((lead) => (
           <article class="lead-card" data-bio-open={`bio-${lead.id}`}>
-            <Image
+            <LeadPhoto
+              name={lead.name}
               class="lead-photo"
               src={lead.photo}
               alt={lead.photoAlt}
@@ -169,7 +175,8 @@ const chapterSchema = {
       </button>
       <div class="bio-inner">
         <div class="bio-head">
-          <Image
+          <LeadPhoto
+            name={lead.name}
             class="bio-photo"
             src={lead.photo}
             alt=""
