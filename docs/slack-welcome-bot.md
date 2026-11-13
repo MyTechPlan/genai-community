@@ -5,8 +5,9 @@ event to `https://genaicommunity.eu/api/slack-events`. The endpoint looks up the
 member's application **by email** in the Google Sheet, then in GenAI-ID (people who
 signed up through `id.genaicommunity.eu/<locale>/join`), and posts a personalised welcome to
 **#new-members**. An ID member who opted out of being introduced gets the generic welcome.
-No email match anywhere → a warm generic welcome plus the funnel guard (DM to the joiner,
-alert to the admins). If GenAI-ID cannot be reached, only the admins are alerted.
+No email match anywhere → a warm generic welcome plus an alert to the admins, who check by
+hand (the joiner may have signed up in GenAI-ID with another email). The joiner gets a DM with
+the /join link only when GenAI-ID isn't configured or Slack gives no email.
 
 ```
 member joins Slack
