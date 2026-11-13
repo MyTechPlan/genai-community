@@ -65,25 +65,23 @@ ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
   <div class="wrap">
     <div class="hero-grid">
       <div>
-        <p class="eyebrow fade" style="--i:0">Valencia · Lisbon · London · Madrid</p>
         <h1 class="h1"><span class="ln" style="--i:0"><span>The community </span></span><span class="ln" style="--i:1"><span>of GenAI builders </span></span><span class="ln" style="--i:2"><span>in <em class="iris-t">Europe</em></span></span></h1>
         <p class="lede fade" style="--i:2">Join the Slack, go to meetups in your city and get member discounts at our events.</p>
         <div class="cta fade" style="--i:3">
           <a class="b1" href="/join">Join the community <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           <a class="b3" href="#chapters">Find your chapter</a>
         </div>
-        <p class="small fade" style="--i:4">Free. Takes two minutes, then you're in the Slack.</p>
       </div>
       <div>
         <div class="map" id="map">
-          <canvas id="mapc" role="img" aria-label={madridIsForming ? 'Map of western Europe with the chapters in Valencia, Lisbon and London, and Madrid forming. Lines of light travel between the chapters.' : 'Map of western Europe with the chapters in Valencia, Lisbon, London and Madrid. Lines of light travel between the chapters.'}></canvas>
+          <canvas id="mapc" role="img" aria-label="Map of western Europe with chapters in Valencia, Lisbon, London and Madrid. Lines of light travel between the chapters."></canvas>
           {mapCities.map(({ slug, pos, chapter }, index) => slug === 'madrid' && madridIsForming ? (
-            <a class="city" data-city="madrid" data-pos="t" style="--i:1" href={chapter ? '/chapters/madrid' : '/chapters'}>Madrid <small>forming</small></a>
+            <a class="city" data-city="madrid" data-pos="t" style="--i:1" href={chapter ? '/chapters/madrid' : '/chapters'}>Madrid</a>
           ) : chapter && (
             <a class="city" data-city={slug} data-pos={pos} style={`--i:${index}`} href={`/chapters/${slug}`}>{chapter.city} <span class="avs">{chapter.leads.map((lead) => <Image src={lead.photo} width={480} inferSize alt="" style={`object-position:${lead.photoPosition}`} />)}</span></a>
           ))}
         </div>
-        <p class="legend"><span><i class="on"></i>Active chapter</span><span><i class="off"></i>Forming</span><span><i class="msg"></i>The Slack, between cities</span></p>
+        <p class="legend"><span><i class="on"></i>Active chapter</span><span><i class="off"></i>Forming</span></p>
       </div>
     </div>
     <div style="height:clamp(40px,6vw,72px)"></div>
@@ -97,7 +95,7 @@ ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
         <p class="eyebrow">Free membership</p>
         <h2 class="h2">One account. All of this is yours.</h2>
       </div>
-      <div class="jact"><a class="b1" href="/join">Join the community</a><p class="small">Free. One GenAI-ID account.</p></div>
+      <div class="jact"><a class="b1" href="/join">Join the community</a></div>
     </div>
     <div class="panels" id="how" data-r>
       <div class="pn on">
@@ -129,10 +127,10 @@ ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
       <div class="pn">
         <Image class="bg" src={imgWorkshopFestTables} width={1000} alt="People working on laptops at shared tables" style="object-position:55% 80%" />
         <div class="fx" aria-hidden="true">
-          <div class="lan"><span class="strap"></span><span class="clip"></span><div class="bdg"><span class="k">GenAI-ID · Member</span><b>Member<br>discount</b><p>GenAI Summit EU<br>GenAI Workshop Fest</p><div class="holo"></div><span class="pct">%</span></div></div>
+          <div class="lan"><span class="strap"></span><span class="clip"></span><div class="bdg"><span class="k">GenAI Community · Member</span><b>Member<br>discount</b><p>GenAI Summit EU<br>GenAI Workshop Fest</p><div class="holo"></div><span class="pct">%</span></div></div>
         </div>
         <div class="scrim"></div><span class="bar"><i></i></span>
-        <div class="tx"><h3>Member discounts</h3><div class="d"><div><p>Members pay less for tickets to GenAI Summit EU and GenAI Workshop Fest.</p></div></div></div>
+        <div class="tx"><h3>Member discounts</h3><div class="d"><div><p>Members get discounts and free tickets for our events, plus offers on partners' events, products and services.</p></div></div></div>
         <button class="hit" type="button" aria-expanded="false" aria-label="Member discounts"></button>
       </div>
     </div>
@@ -198,7 +196,7 @@ ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
       <h2 class="h2">Events and reading</h2>
     </div>
     <div class="more">
-      <a class="card mc" id="summit" data-r style="--i:0" href="https://genaisummit.eu" rel="noopener"><div class="top"><Image src={imgSummit2027Poster} width={1000} alt="GenAI Summit 2027 poster: the logo and 2027 over the City of Arts and Sciences in Valencia at night" /><span class="when"><i></i>13–14 April 2027 · Valencia</span></div><div class="tx"><h3 class="h3">GenAI Summit EU 2027</h3><p class="dim">Two days of talks, workshops and networking. The 2026 edition sold out.</p></div></a>
+      <a class="card mc" id="summit" data-r style="--i:0" href="https://genaisummit.eu" rel="noopener"><div class="top"><Image src={imgSummit2027Poster} width={1000} alt="GenAI Summit 2027 poster: the logo and 2027 over the City of Arts and Sciences in Valencia at night" /><span class="when"><i></i>13–14 April 2027 · Valencia</span></div><div class="tx"><h3 class="h3">GenAI Summit EU 2027</h3><p class="dim">Two days of talks, workshops and networking. +400 senior IT profiles in one place.</p></div></a>
       <a class="card mc" data-r style="--i:1" href="https://genaiworkshopfest.com" target="_blank" rel="noopener"><div class="top"><Image src={imgWorkshopFestTables} width={1000} alt="People working on laptops at shared tables" /><span class="shade"></span><span class="lg" role="img" aria-label="GenAI Workshop Fest logo"><b>GenAI</b><span>workshop<br>fest</span></span></div><div class="tx"><h3 class="h3">GenAI Workshop Fest</h3><p class="dim">Hands-on workshops led by practitioners.</p></div></a>
       <div class="card mc off" data-r style="--i:2"><div class="top cover"><span class="when"><i></i>Coming soon</span></div><div class="tx"><h3 class="h3">The blog</h3><p class="dim">Articles on building with generative AI, written by community members.</p></div></div>
     </div>
@@ -217,7 +215,7 @@ ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
     <div class="jhead" data-r>
       <div class="head">
         <h2 class="h2">Join the community</h2>
-        <p class="dim">Free. One GenAI-ID account for the Slack, the meetups and the member discounts.</p>
+        <p class="dim">Free. Join the community for the Slack, the meetups and the member discounts.</p>
       </div>
       <a class="b1" href="/join">Join the community <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
