@@ -59,6 +59,8 @@ Project `genai-community` → **Settings → Environment Variables**:
 | `SLACK_WELCOME_CHANNEL` | `C0BHM57SF5Z` (the #new-members channel id) |
 | `SLACK_ADMIN_CHANNEL` | optional — a private channel id for "joined without an application" alerts (invite the bot to it). Unset → every workspace admin/owner gets the alert as a DM |
 | `GENAI_ID_API_KEY` | the GenAI-ID community product key (`Sensitive`, server-only; never a `PUBLIC_` variable). Unset → the bot only checks the Sheet, as before |
+| `CRON_SECRET` | server-only bearer secret used by Vercel cron to authenticate the nightly `/api/rebuild` request |
+| `DEPLOY_HOOK_URL` | server-only Vercel deploy hook URL called by `/api/rebuild` nightly at 03:00 UTC to refresh chapter data |
 
 Optional: `SLACK_VERIFICATION_TOKEN` (legacy) — only a fallback verifier if signature
 verification ever fails; the signing secret is the primary and preferred check.
