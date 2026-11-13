@@ -283,11 +283,8 @@
 .hm .mc .when{position:absolute;left:12px;bottom:12px;display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background-image:var(--iris);background-size:200% 100%;color:var(--ink);font:600 12px var(--mono);letter-spacing:.02em;box-shadow:0 10px 24px -8px rgba(0,0,0,.8)}
 .hm .mc .when i{width:7px;height:7px;border-radius:50%;background:var(--ink)}
 .motion .hm .mc .when{animation:hm-shift 7s ease-in-out infinite}
-.hm .mc .shade{position:absolute;inset:40% 0 0 0;background:linear-gradient(180deg,transparent,rgba(11,11,12,.75))}
-.hm .mc .lg{position:absolute;left:12px;bottom:12px;--k:clamp(.5px,.055vw,.66px);display:inline-flex;align-items:stretch;border:1px solid rgba(244,243,239,.55);background:#0b0b0c;box-shadow:0 12px 28px -8px rgba(0,0,0,.85);transition:transform .6s var(--out)}
-.hm .mc .lg b{display:flex;align-items:center;padding:calc(18*var(--k)) calc(22*var(--k));font:700 calc(52*var(--k))/.84 var(--display);letter-spacing:-.055em;color:#f4f3ef;border-right:1px solid rgba(244,243,239,.55)}
-.hm .mc .lg span{display:flex;flex-direction:column;justify-content:center;padding:calc(17*var(--k)) calc(19*var(--k));background:linear-gradient(45deg,#b6f2c4,#8fe9c4 35%,#8ce0e0 70%,#bfeafc);font:600 calc(20*var(--k))/.98 var(--display);letter-spacing:-.005em;color:#0b0b0c;white-space:nowrap}
-.hm .mc:hover .lg{transform:translateY(-3px)}
+.hm .mc .top img.workshop-logo,.hm .mc:hover .top img.workshop-logo{position:absolute;left:12px;top:12px;width:64px;height:auto;border-radius:0;transform:none;transition:none}
+.hm .mc .ai-caption{position:absolute;right:12px;bottom:12px;padding:5px 8px;border-radius:6px;background:#0b0b0c;color:var(--text);font:400 11px/1.4 var(--mono)}
 .hm .mc.off:hover{transform:none;border-color:var(--line)}
 .hm .mc .tx{padding:20px 24px 24px;display:flex;flex-direction:column;gap:8px}
 .hm .mc p{font-size:15px}
