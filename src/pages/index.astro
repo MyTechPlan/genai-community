@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import UpcomingEvents from '../components/UpcomingEvents.astro';
+import LeadPhoto from '../components/LeadPhoto.astro';
 import { Image } from 'astro:assets';
 import { chapters } from '../data/chapters.js';
 import '../styles/home.css';
@@ -80,7 +81,7 @@ ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
           {mapCities.map(({ slug, pos, chapter }, index) => slug === 'madrid' && madridIsForming ? (
             <a class="city" data-city="madrid" data-pos="t" style="--i:1" href={chapter ? '/chapters/madrid' : '/chapters'}>Madrid</a>
           ) : chapter && (
-            <a class="city" data-city={slug} data-pos={pos} style={`--i:${index}`} href={`/chapters/${slug}`}>{chapter.city} <span class="avs">{chapter.leads.map((lead) => <Image src={lead.photo} width={480} inferSize alt="" style={`object-position:${lead.photoPosition}`} />)}</span></a>
+            <a class="city" data-city={slug} data-pos={pos} style={`--i:${index}`} href={`/chapters/${slug}`}>{chapter.city} <span class="avs">{chapter.leads.map((lead) => <LeadPhoto name={lead.name} src={lead.photo} width={480} inferSize alt="" style={`object-position:${lead.photoPosition}`} />)}</span></a>
           ))}
         </div>
         <p class="legend"><span><i class="on"></i>Active chapter</span><span><i class="off"></i>Forming</span></p>
@@ -151,7 +152,7 @@ ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
     </div>
     <div class="chs">
       {chapters.map((chapter, index) => (
-        <a class="card ch" data-r style={`--i:${index}`} href={`/chapters/${chapter.slug}`}><div class="ph2">{chapter.leads.map((lead) => <Image src={lead.photo} width={480} inferSize alt={lead.name} style={`object-position:${lead.photoPosition}`} />)}</div><div class="tx"><span class={chapter.status === 'Forming' ? 'status f' : 'status'}><i></i>{chapter.status}</span><h3 class="h3">{chapter.city}</h3><p class="dim" style="font-size:15px">{chapter.country}</p></div></a>
+        <a class="card ch" data-r style={`--i:${index}`} href={`/chapters/${chapter.slug}`}><div class="ph2">{chapter.leads.map((lead) => <LeadPhoto name={lead.name} src={lead.photo} width={480} inferSize alt={lead.name} style={`object-position:${lead.photoPosition}`} />)}</div><div class="tx"><span class={chapter.status === 'Forming' ? 'status f' : 'status'}><i></i>{chapter.status}</span><h3 class="h3">{chapter.city}</h3><p class="dim" style="font-size:15px">{chapter.country}</p></div></a>
       ))}
       {!madrid && (
         <a class="card ch" data-r style={`--i:${chapters.length}`} href="/chapters"><div class="forming" aria-hidden="true"><i></i><i></i><i></i><b></b><span>40.42° N · 3.70° W</span></div><div class="tx"><span class="status f"><i></i>Forming</span><h3 class="h3">Madrid</h3><p class="dim" style="font-size:15px">Spain</p></div></a>
@@ -182,7 +183,7 @@ ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
     {ribbonRows.map((row, rowIndex) => (
       <div class="rrow" data-dir={rowIndex === 0 ? '-1' : '1'}>
         {row.map((tile) => 'lead' in tile ? (
-          <div class="t"><Image src={tile.lead.photo} width={480} inferSize alt={tile.lead.name} style={`object-position:${tile.lead.photoPosition}`} /><span class="cap">{tile.lead.shortName} · {tile.city}</span></div>
+          <div class="t"><LeadPhoto name={tile.lead.name} src={tile.lead.photo} width={480} inferSize alt={tile.lead.name} style={`object-position:${tile.lead.photoPosition}`} /><span class="cap">{tile.lead.shortName} · {tile.city}</span></div>
         ) : (
           <div class={tile.wide ? 't w' : 't'}><Image src={tile.src} width={1000} alt={tile.alt} style={tile.position ? `object-position:${tile.position}` : undefined} /><span class="cap">{tile.caption}</span></div>
         ))}

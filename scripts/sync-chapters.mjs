@@ -10,7 +10,7 @@
 // a refreshed snapshot from time to time so the fallback stays recent.
 
 import { readFile, writeFile } from 'node:fs/promises';
-import { chapterOmissionReason, leadOmissionReason } from '../src/data/chapter-visibility.js';
+import { chapterOmissionReason, leadPlaceholderReason } from '../src/data/chapter-visibility.js';
 
 const SNAPSHOT = new URL('../src/data/chapters.snapshot.json', import.meta.url);
 const API_URL = (process.env.GENAI_ID_API_URL || 'https://id.genaicommunity.eu/api/v1').replace(/\/+$/, '');
@@ -82,8 +82,8 @@ async function main() {
     const reason = chapterOmissionReason(chapter);
     if (reason) console.warn(`[chapters] omitted chapter ${chapter.slug}: ${reason}`);
     for (const lead of chapter.leads) {
-      const reason = leadOmissionReason(lead);
-      if (reason) console.warn(`[chapters] omitted chapter ${chapter.slug} lead ${lead.id}: ${reason}`);
+      const reason = leadPlaceholderReason(lead);
+      if (reason) console.warn(`[chapters] chapter ${chapter.slug} lead ${lead.id} shown with a placeholder: ${reason}`);
     }
   }
 }

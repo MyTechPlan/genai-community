@@ -6,7 +6,7 @@
 // pages render. The site is English-only, so it reads the `en` texts.
 
 import snapshot from './chapters.snapshot.json';
-import { chapterStatus, chapterOmissionReason, leadOmissionReason } from './chapter-visibility.js';
+import { chapterStatus, chapterOmissionReason, leadPlaceholderReason } from './chapter-visibility.js';
 
 const countryName = new Intl.DisplayNames(['en'], { type: 'region' });
 
@@ -40,7 +40,7 @@ function toLead(lead, usedIds) {
     role: lead.role,
     company: lead.company,
     modalRole: lead.modalRole,
-    photo: lead.photo,
+    photo: leadPlaceholderReason(lead) ? null : lead.photo,
     photoAlt: lead.photoAlt || lead.name,
     photoPosition: lead.photoPosition || '50% 30%',
     linkedin: lead.linkedin,
@@ -76,12 +76,12 @@ function toChapter(c) {
       coords: `${coord(c.lat, 'N', 'S')} · ${coord(c.lon, 'E', 'W')}`,
       query: `${c.city}, ${country}`,
     },
-    leads: c.leads.filter((lead) => !leadOmissionReason(lead))
+    leads: [...c.leads]
       .sort((a, b) => a.position - b.position).map((lead) => toLead(lead, usedIds)),
   };
 }
 
-// A public page needs content, map coordinates and at least one lead with an allowed photo.
+// A public page needs content, map coordinates and at least one lead.
 export const chapters = [...snapshot.chapters]
   .sort((a, b) => a.position - b.position)
   .filter((chapter) => !chapterOmissionReason(chapter))
