@@ -105,22 +105,37 @@ async function handleTeamJoin(event) {
   let application = null;
   let member = false; // found in GenAI-ID, introduced or not
   let idUnavailable = false;
+  let sheetStatus = email ? 'miss' : 'no_email';
+  let idStatus = 'skipped';
   if (email) {
     const result = await lookupApplication(email);
-    if (result.found) application = result.application;
-    else {
+    if (result.found) {
+      sheetStatus = 'found';
+      application = result.application;
+    } else {
       const fromId = await lookupCommunityMember(email);
       if (fromId.found) {
         member = true;
+        idStatus = fromId.member.introduce ? 'found' : 'found_no_intro';
         if (fromId.member.introduce) application = await fromGenaiIdMember(fromId.member);
-      } else if (fromId.error) idUnavailable = true;
+      } else if (fromId.error) {
+        idStatus = 'error';
+        idUnavailable = true;
+      } else {
+        idStatus = fromId.notConfigured ? 'not_configured' : 'not_found';
+      }
     }
   }
+
+  const result = application
+    ? 'welcome_with_intro'
+    : member ? 'welcome_plain' : idUnavailable ? 'funnel_guard_id_unavailable' : 'funnel_guard';
+  console.info(`[team_join] sheet=${sheetStatus} id=${idStatus} result=${result}`);
 
   const { text, blocks } = buildWelcome({ userId, application });
   await slackPostMessage({ token: BOT_TOKEN, channel: WELCOME_CHANNEL, text, blocks });
 
-  if (!application && !member) await guardFunnel({ userId, email, idUnavailable });
+  if (!application && !member) await guardFunnel({ userId, email, idUnavailable, idNotFound: idStatus === 'not_found' });
 }
 
 // GenAI-ID's member profile, in the shape buildWelcome reads from a Sheet row. The chapter
@@ -143,7 +158,7 @@ async function fromGenaiIdMember(member) {
 // got the invite link second-hand, so point them at the form and tell the admins. Both
 // messages are best-effort and independent: one failing must not suppress the other.
 // When GenAI-ID could not be asked, the joiner may well be a member: tell only the admins.
-async function guardFunnel({ userId, email, idUnavailable = false }) {
+async function guardFunnel({ userId, email, idUnavailable = false, idNotFound = false }) {
   const shownEmail = email ? slackEscape(email) : 'unknown';
 
   const dm = idUnavailable
@@ -156,7 +171,9 @@ async function guardFunnel({ userId, email, idUnavailable = false }) {
 
   const alertText = idUnavailable
     ? `:warning: <@${userId}> joined the workspace (email: ${shownEmail}). No application in the Sheet, and GenAI-ID could not be checked, so they were not sent the ${JOIN_URL} link. Please check them by hand.`
-    : `:mag: <@${userId}> joined the workspace without a membership application (email: ${shownEmail}). They were sent the ${JOIN_URL} link.`;
+    : idNotFound
+      ? `:mag: <@${userId}> joined the workspace (email: ${shownEmail}) with no application in the Sheet, and GenAI ID has no community member with their Slack email. They were sent the ${JOIN_URL} link, but may have signed up in GenAI ID with a different email; please check before following up.`
+      : `:mag: <@${userId}> joined the workspace without a membership application (email: ${shownEmail}). They were sent the ${JOIN_URL} link.`;
   const alert = (async () => {
     if (ADMIN_CHANNEL) {
       await slackPostMessage({ token: BOT_TOKEN, channel: ADMIN_CHANNEL, text: alertText });
