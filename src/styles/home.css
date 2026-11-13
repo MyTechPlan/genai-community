@@ -43,7 +43,6 @@
 .hm .lede{font-size:clamp(1.05rem,1.5vw,1.25rem);color:var(--dim);max-width:30rem}
 .hm .cta{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:30px}
 .hm .cta .b1{min-height:54px;padding:0 28px;font-size:17px}
-.hm .hero .small{margin-top:16px}
 .hm .intro .ln>span{animation:hm-rise 1s var(--out) both;animation-delay:calc(var(--i)*.09s + .05s)}
 .hm .intro .fade{animation:hm-up .8s var(--out) both;animation-delay:calc(var(--i)*.08s + .35s)}
 @keyframes hm-rise{from{transform:translateY(105%)}to{transform:none}}
@@ -58,14 +57,12 @@
 .hm .city .avs{display:flex}
 .hm .city img{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1.5px solid var(--card);margin-left:-6px}
 .hm .city img:first-child{margin-left:0}
-.hm .city small{font:400 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--butter);padding-right:5px}
 .hm .intro .city{animation:hm-pop .6s var(--out) both;animation-delay:calc(var(--i)*.12s + 1.05s)}
 @keyframes hm-pop{from{opacity:0;scale:.8}to{opacity:1;scale:1}}
 .hm .legend{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font:400 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:6px}
 .hm .legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:middle}
 .hm .legend .on{background:var(--lav)}
 .hm .legend .off{border:1px dashed var(--butter)}
-.hm .legend .msg{width:16px;height:2px;border-radius:2px;background:var(--iris)}
 @media(max-width:860px){
   .hm .hero-grid{grid-template-columns:minmax(0,1fr)}
   .hm .map{max-width:400px}
