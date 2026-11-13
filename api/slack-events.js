@@ -3,8 +3,8 @@
 // the Google Sheet, then in GenAI-ID (people who signed up through ID's community join),
 // and post a personalised welcome to #new-members. An ID member who opted out of being
 // introduced gets the generic welcome instead. No match anywhere → the generic welcome,
-// plus the funnel guard: DM the joiner the /join link and alert the admins, so a forwarded
-// invite link never lets someone in unnoticed. Everything the bot says is fixed text; it
+// plus the funnel guard: alert the admins, and DM the /join link only if ID isn't configured
+// or the email is unavailable. Everything the bot says is fixed text; it
 // never reads or answers messages. See docs/slack-welcome-bot.md for setup.
 
 import { verifySlackSignature, slackEscape, slackPostMessage, slackGetUserEmail, slackListAdmins } from './_lib/slack.js';
@@ -129,7 +129,7 @@ async function handleTeamJoin(event) {
 
   const result = application
     ? 'welcome_with_intro'
-    : member ? 'welcome_plain' : idUnavailable ? 'funnel_guard_id_unavailable' : 'funnel_guard';
+    : member ? 'welcome_plain' : idUnavailable ? 'funnel_guard_id_unavailable' : idStatus === 'not_found' ? 'admin_check' : 'funnel_guard';
   console.info(`[team_join] sheet=${sheetStatus} id=${idStatus} result=${result}`);
 
   const { text, blocks } = buildWelcome({ userId, application });
@@ -154,14 +154,14 @@ async function fromGenaiIdMember(member) {
   };
 }
 
-// The membership form is the only intended way in. Someone arriving without an application
-// got the invite link second-hand, so point them at the form and tell the admins. Both
-// messages are best-effort and independent: one failing must not suppress the other.
-// When GenAI-ID could not be asked, the joiner may well be a member: tell only the admins.
+// Someone arriving without an application triggers an admin alert. When GenAI-ID reports
+// no match or returns an error, tell only the admins so they can check by hand.
+// Otherwise, also DM the joiner the form link. Both messages are best-effort and
+// independent: one failing must not suppress the other.
 async function guardFunnel({ userId, email, idUnavailable = false, idNotFound = false }) {
   const shownEmail = email ? slackEscape(email) : 'unknown';
 
-  const dm = idUnavailable
+  const dm = idUnavailable || idNotFound
     ? Promise.resolve()
     : slackPostMessage({
         token: BOT_TOKEN,
@@ -172,7 +172,7 @@ async function guardFunnel({ userId, email, idUnavailable = false, idNotFound = 
   const alertText = idUnavailable
     ? `:warning: <@${userId}> joined the workspace (email: ${shownEmail}). No application in the Sheet, and GenAI-ID could not be checked, so they were not sent the ${JOIN_URL} link. Please check them by hand.`
     : idNotFound
-      ? `:mag: <@${userId}> joined the workspace (email: ${shownEmail}) with no application in the Sheet, and GenAI ID has no community member with their Slack email. They were sent the ${JOIN_URL} link, but may have signed up in GenAI ID with a different email; please check before following up.`
+      ? `:mag: <@${userId}> joined the workspace (email: ${shownEmail}) with no application in the Sheet, and GenAI ID has no community member with their Slack email. They were not sent any message; they may have signed up in GenAI ID with a different email, so please check before following up.`
       : `:mag: <@${userId}> joined the workspace without a membership application (email: ${shownEmail}). They were sent the ${JOIN_URL} link.`;
   const alert = (async () => {
     if (ADMIN_CHANNEL) {
