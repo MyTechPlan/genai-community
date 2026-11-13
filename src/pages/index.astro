@@ -2,15 +2,10 @@
 import Base from '../layouts/Base.astro';
 import UpcomingEvents from '../components/UpcomingEvents.astro';
 import { Image } from 'astro:assets';
+import { chapters } from '../data/chapters.js';
 import '../styles/home.css';
 import imgWorkshopFestTables from '../assets/home/workshop-fest-tables.jpg';
 import imgWorkshopFestRoom from '../assets/home/workshop-fest-room.jpg';
-import imgGlauceGomes from '../assets/chapters/london/glauce-gomes.jpg';
-import imgJeanFrancoisGutierrez from '../assets/chapters/valencia/jean-francois-gutierrez.jpg';
-import imgJuliaPereira from '../assets/chapters/lisbon/julia-pereira.jpg';
-import imgJulietaZalduendo from '../assets/chapters/valencia/julieta-zalduendo.jpg';
-import imgKellyCuesta from '../assets/chapters/london/kelly-cuesta.jpg';
-import imgLilianaPereira from '../assets/chapters/lisbon/liliana-pereira.jpg';
 import imgLisbonAudience from '../assets/home/lisbon-audience.jpg';
 import imgLisbonPizza from '../assets/home/lisbon-pizza.jpg';
 import imgLisbonSpeaker from '../assets/home/lisbon-speaker.jpg';
@@ -19,6 +14,25 @@ import imgLisbonTeam from '../assets/home/lisbon-team.jpg';
 import imgSummit2027Poster from '../assets/home/summit-2027-poster.jpg';
 import imgValenciaDinner from '../assets/home/valencia-dinner.jpg';
 import imgValenciaGroup from '../assets/home/valencia-group.jpg';
+
+// Keep the map's existing placement and animation order; Madrid is still forming.
+const mapCities = [
+  { slug: 'london', pos: 'r' },
+  { slug: 'madrid', pos: 't' },
+  { slug: 'valencia', pos: 'r' },
+  { slug: 'lisbon', pos: 'b' },
+].map((city) => ({ ...city, chapter: chapters.find((chapter) => chapter.slug === city.slug) }));
+
+// Preserve the ribbon's editorial order without storing lead names or photos here.
+// Any additional leads follow in chapter order; missing leads simply leave the list.
+const ribbonOrder = ['valencia:0', 'london:1', 'lisbon:0', 'london:0', 'lisbon:1', 'valencia:1'];
+const ribbonLeads = chapters.flatMap((chapter) => chapter.leads.map((lead, index) => ({
+  lead,
+  city: chapter.city,
+  order: ribbonOrder.indexOf(`${chapter.slug}:${index}`),
+}))).sort((a, b) => (a.order < 0 ? Infinity : a.order) - (b.order < 0 ? Infinity : b.order));
+const ribbonMidpoint = Math.ceil(ribbonLeads.length / 2);
+const ribbonLeadRows = [ribbonLeads.slice(0, ribbonMidpoint), ribbonLeads.slice(ribbonMidpoint)];
 ---
 <Base title="GenAI Community EU — Where Europe's GenAI builders meet">
   <div class="hm">
@@ -38,10 +52,11 @@ import imgValenciaGroup from '../assets/home/valencia-group.jpg';
       <div>
         <div class="map" id="map">
           <canvas id="mapc" role="img" aria-label="Map of western Europe with the chapters in Valencia, Lisbon and London, and Madrid forming. Lines of light travel between the chapters."></canvas>
-          <a class="city" data-city="london" data-pos="r" style="--i:0" href="/chapters/london">London <span class="avs"><Image src={imgKellyCuesta} width={480} alt="" /><Image src={imgGlauceGomes} width={480} alt="" style="object-position:50% 30%" /></span></a>
-          <a class="city" data-city="madrid" data-pos="t" style="--i:1" href="/chapters">Madrid <small>forming</small></a>
-          <a class="city" data-city="valencia" data-pos="r" style="--i:2" href="/chapters/valencia">Valencia <span class="avs"><Image src={imgJulietaZalduendo} width={480} alt="" /><Image src={imgJeanFrancoisGutierrez} width={480} alt="" /></span></a>
-          <a class="city" data-city="lisbon" data-pos="b" style="--i:3" href="/chapters/lisbon">Lisbon <span class="avs"><Image src={imgLilianaPereira} width={480} alt="" /><Image src={imgJuliaPereira} width={480} alt="" /></span></a>
+          {mapCities.map(({ slug, pos, chapter }, index) => slug === 'madrid' ? (
+            <a class="city" data-city="madrid" data-pos="t" style="--i:1" href="/chapters">Madrid <small>forming</small></a>
+          ) : chapter && (
+            <a class="city" data-city={slug} data-pos={pos} style={`--i:${index}`} href={`/chapters/${slug}`}>{chapter.city} <span class="avs">{chapter.leads.map((lead) => <Image src={lead.photo} width={480} inferSize alt="" style={`object-position:${lead.photoPosition}`} />)}</span></a>
+          ))}
         </div>
         <p class="legend"><span><i class="on"></i>Active chapter</span><span><i class="off"></i>Forming</span><span><i class="msg"></i>The Slack, between cities</span></p>
       </div>
@@ -110,10 +125,10 @@ import imgValenciaGroup from '../assets/home/valencia-group.jpg';
       <a class="b3" href="/chapters">All chapters</a>
     </div>
     <div class="chs">
-      <a class="card ch" data-r style="--i:0" href="/chapters/valencia"><div class="ph2"><Image src={imgJulietaZalduendo} width={480} alt="Julieta Zalduendo" style="object-position:50% 30%" /><Image src={imgJeanFrancoisGutierrez} width={480} alt="Jean-François Gutierrez" style="object-position:50% 35%" /></div><div class="tx"><span class="status"><i></i>Active</span><h3 class="h3">Valencia</h3><p class="dim" style="font-size:15px">Spain</p></div></a>
-      <a class="card ch" data-r style="--i:1" href="/chapters/lisbon"><div class="ph2"><Image src={imgLilianaPereira} width={480} alt="Liliana Catarina Freire Pereira" /><Image src={imgJuliaPereira} width={480} alt="Julia Mariá Pereira" /></div><div class="tx"><span class="status"><i></i>Active</span><h3 class="h3">Lisbon</h3><p class="dim" style="font-size:15px">Portugal</p></div></a>
-      <a class="card ch" data-r style="--i:2" href="/chapters/london"><div class="ph2"><Image src={imgKellyCuesta} width={480} alt="Kelly Cuesta" /><Image src={imgGlauceGomes} width={480} alt="Glauce Gomes de Lima" style="object-position:50% 30%" /></div><div class="tx"><span class="status"><i></i>Active</span><h3 class="h3">London</h3><p class="dim" style="font-size:15px">United Kingdom</p></div></a>
-      <a class="card ch" data-r style="--i:3" href="/chapters"><div class="forming" aria-hidden="true"><i></i><i></i><i></i><b></b><span>40.42° N · 3.70° W</span></div><div class="tx"><span class="status f"><i></i>Forming</span><h3 class="h3">Madrid</h3><p class="dim" style="font-size:15px">Spain</p></div></a>
+      {chapters.map((chapter, index) => (
+        <a class="card ch" data-r style={`--i:${index}`} href={`/chapters/${chapter.slug}`}><div class="ph2">{chapter.leads.map((lead) => <Image src={lead.photo} width={480} inferSize alt={lead.name} style={`object-position:${lead.photoPosition}`} />)}</div><div class="tx"><span class="status"><i></i>Active</span><h3 class="h3">{chapter.city}</h3><p class="dim" style="font-size:15px">{chapter.country}</p></div></a>
+      ))}
+      <a class="card ch" data-r style={`--i:${chapters.length}`} href="/chapters"><div class="forming" aria-hidden="true"><i></i><i></i><i></i><b></b><span>40.42° N · 3.70° W</span></div><div class="tx"><span class="status f"><i></i>Forming</span><h3 class="h3">Madrid</h3><p class="dim" style="font-size:15px">Spain</p></div></a>
     </div>
     <div class="evs" data-r>
       <UpcomingEvents label="Upcoming events" />
@@ -137,24 +152,25 @@ import imgValenciaGroup from '../assets/home/valencia-group.jpg';
 <section aria-label="Photos from our events">
   <div class="wrap" style="padding-bottom:16px"><p class="eyebrow">From our events</p></div>
   <div class="ribbon" id="ribbon">
-    <div class="rrow" data-dir="-1">
-      <div class="t w"><Image src={imgLisbonTalk} width={1000} alt="A speaker presenting next to a screen, seen from behind the audience" /><span class="cap">Lisbon meetup</span></div>
-      <div class="t"><Image src={imgJulietaZalduendo} width={480} alt="Julieta Zalduendo" style="object-position:50% 30%" /><span class="cap">Julieta · Valencia</span></div>
-      <div class="t w"><Image src={imgWorkshopFestRoom} width={1000} alt="People listening at a workshop, laptops on shared tables" /><span class="cap">GenAI Workshop Fest</span></div>
-      <div class="t w"><Image src={imgValenciaGroup} width={1000} alt="A group of people standing on a stage in front of the slide for a Valencia meetup on AI governance" style="object-position:50% 45%" /><span class="cap">Valencia meetup</span></div>
-      <div class="t"><Image src={imgGlauceGomes} width={480} alt="Glauce Gomes de Lima" style="object-position:50% 30%" /><span class="cap">Glauce · London</span></div>
-      <div class="t"><Image src={imgLisbonPizza} width={1000} alt="People opening pizza boxes on a long table after the talks" /><span class="cap">Lisbon meetup</span></div>
-      <div class="t"><Image src={imgLilianaPereira} width={480} alt="Liliana Catarina Freire Pereira" /><span class="cap">Liliana · Lisbon</span></div>
-    </div>
-    <div class="rrow" data-dir="1">
-      <div class="t"><Image src={imgKellyCuesta} width={480} alt="Kelly Cuesta" /><span class="cap">Kelly · London</span></div>
-      <div class="t w"><Image src={imgLisbonAudience} width={1000} alt="People seated in rows listening to a talk" /><span class="cap">Lisbon meetup</span></div>
-      <div class="t w"><Image src={imgWorkshopFestTables} width={1000} alt="People working on laptops at shared tables" /><span class="cap">GenAI Workshop Fest</span></div>
-      <div class="t"><Image src={imgJuliaPereira} width={480} alt="Julia Mariá Pereira" /><span class="cap">Julia · Lisbon</span></div>
-      <div class="t w"><Image src={imgLisbonTeam} width={1000} alt="Four people standing together next to the GenAI Community banner" style="object-position:50% 30%" /><span class="cap">Lisbon meetup</span></div>
-      <div class="t"><Image src={imgJeanFrancoisGutierrez} width={480} alt="Jean-François Gutierrez" style="object-position:50% 35%" /><span class="cap">Jean-François · Valencia</span></div>
-      <div class="t"><Image src={imgValenciaDinner} width={1000} alt="People around a long table raising their drinks, a GenAI cap on the table" style="object-position:50% 40%" /><span class="cap">Valencia</span></div>
-    </div>
+    {ribbonLeadRows.map((leads, rowIndex) => (
+      <div class="rrow" data-dir={rowIndex === 0 ? '-1' : '1'}>
+        {Array.from({ length: Math.max(4, leads.length) }, (_, index) => (
+          <>
+            {rowIndex === 0 && index === 0 && (<div class="t w"><Image src={imgLisbonTalk} width={1000} alt="A speaker presenting next to a screen, seen from behind the audience" /><span class="cap">Lisbon meetup</span></div>)}
+            {rowIndex === 0 && index === 1 && (<div class="t w"><Image src={imgWorkshopFestRoom} width={1000} alt="People listening at a workshop, laptops on shared tables" /><span class="cap">GenAI Workshop Fest</span></div>)}
+            {rowIndex === 0 && index === 1 && (<div class="t w"><Image src={imgValenciaGroup} width={1000} alt="A group of people standing on a stage in front of the slide for a Valencia meetup on AI governance" style="object-position:50% 45%" /><span class="cap">Valencia meetup</span></div>)}
+            {rowIndex === 0 && index === 2 && (<div class="t"><Image src={imgLisbonPizza} width={1000} alt="People opening pizza boxes on a long table after the talks" /><span class="cap">Lisbon meetup</span></div>)}
+            {rowIndex === 1 && index === 1 && (<div class="t w"><Image src={imgLisbonAudience} width={1000} alt="People seated in rows listening to a talk" /><span class="cap">Lisbon meetup</span></div>)}
+            {rowIndex === 1 && index === 1 && (<div class="t w"><Image src={imgWorkshopFestTables} width={1000} alt="People working on laptops at shared tables" /><span class="cap">GenAI Workshop Fest</span></div>)}
+            {rowIndex === 1 && index === 2 && (<div class="t w"><Image src={imgLisbonTeam} width={1000} alt="Four people standing together next to the GenAI Community banner" style="object-position:50% 30%" /><span class="cap">Lisbon meetup</span></div>)}
+            {rowIndex === 1 && index === 3 && (<div class="t"><Image src={imgValenciaDinner} width={1000} alt="People around a long table raising their drinks, a GenAI cap on the table" style="object-position:50% 40%" /><span class="cap">Valencia</span></div>)}
+            {leads[index] && (
+              <div class="t"><Image src={leads[index].lead.photo} width={480} inferSize alt={leads[index].lead.name} style={`object-position:${leads[index].lead.photoPosition}`} /><span class="cap">{leads[index].lead.shortName || leads[index].lead.name.split(' ')[0]} · {leads[index].city}</span></div>
+            )}
+          </>
+        ))}
+      </div>
+    ))}
   </div>
 </section>
 
