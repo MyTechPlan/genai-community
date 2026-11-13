@@ -36,6 +36,7 @@ function problems(data) {
     if (!isUuid(person?.id) || !['name', 'role', 'company'].every((field) => isText(person?.[field])) || !isTextArray(person?.bio)) {
       found.push(`${where}: id/name/role/company/bio`);
     }
+    if (!isText(person?.name) || !person.name.trim()) found.push(`${where}: name`);
     if (!isText(person?.title) || !person.title.trim() || person.title.length > 120) found.push(`${where}: title`);
     if (person?.photo !== null && !isText(person?.photo)) found.push(`${where}: photo`);
     if (!Number.isFinite(person?.position)) found.push(`${where}: position`);
