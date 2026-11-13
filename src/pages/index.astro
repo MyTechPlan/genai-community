@@ -5,6 +5,8 @@ import { Image } from 'astro:assets';
 import { chapters } from '../data/chapters.js';
 import '../styles/home.css';
 import imgWorkshopFestTables from '../assets/home/workshop-fest-tables.jpg';
+import imgWorkshopFestAI from '../assets/home/workshop-fest-ai.png';
+import imgWorkshopFestLogo from '../assets/home/workshop-fest-logo.png';
 import imgWorkshopFestRoom from '../assets/home/workshop-fest-room.jpg';
 import imgLisbonAudience from '../assets/home/lisbon-audience.jpg';
 import imgLisbonPizza from '../assets/home/lisbon-pizza.jpg';
@@ -197,7 +199,7 @@ ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
     </div>
     <div class="more">
       <a class="card mc" id="summit" data-r style="--i:0" href="https://genaisummit.eu" rel="noopener"><div class="top"><Image src={imgSummit2027Poster} width={1000} alt="GenAI Summit 2027 poster: the logo and 2027 over the City of Arts and Sciences in Valencia at night" /><span class="when"><i></i>13–14 April 2027 · Valencia</span></div><div class="tx"><h3 class="h3">GenAI Summit EU 2027</h3><p class="dim">Two days of talks, workshops and networking. +400 senior IT profiles in one place.</p></div></a>
-      <a class="card mc" data-r style="--i:1" href="https://genaiworkshopfest.com" target="_blank" rel="noopener"><div class="top"><Image src={imgWorkshopFestTables} width={1000} alt="People working on laptops at shared tables" /><span class="shade"></span><span class="lg" role="img" aria-label="GenAI Workshop Fest logo"><b>GenAI</b><span>workshop<br>fest</span></span></div><div class="tx"><h3 class="h3">GenAI Workshop Fest</h3><p class="dim">Hands-on workshops led by practitioners.</p></div></a>
+      <a class="card mc" data-r style="--i:1" href="https://genaiworkshopfest.com" target="_blank" rel="noopener"><div class="top"><Image src={imgWorkshopFestAI} width={1000} alt="A presenter leading a workshop with attendees using laptops at shared tables" /><Image class="workshop-logo" src={imgWorkshopFestLogo} width={128} alt="GenAI Workshop Fest" /><span class="ai-caption">Image recreated with AI</span></div><div class="tx"><h3 class="h3">GenAI Workshop Fest</h3><p class="dim">Hands-on workshops led by practitioners.</p></div></a>
       <div class="card mc off" data-r style="--i:2"><div class="top cover"><span class="when"><i></i>Coming soon</span></div><div class="tx"><h3 class="h3">The blog</h3><p class="dim">Articles on building with generative AI, written by community members.</p></div></div>
     </div>
   </div>
