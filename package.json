@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/sync-chapters.mjs && astro build",
+    "build": "node scripts/sync-chapters.mjs && node scripts/sync-team.mjs && astro build",
     "preview": "astro preview"
   },
   "dependencies": {

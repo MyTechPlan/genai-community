@@ -4,6 +4,7 @@ import UpcomingEvents from '../components/UpcomingEvents.astro';
 import LeadPhoto from '../components/LeadPhoto.astro';
 import { Image } from 'astro:assets';
 import { chapters } from '../data/chapters.js';
+import { team } from '../data/team.js';
 import '../styles/home.css';
 import imgWorkshopFestTables from '../assets/home/workshop-fest-tables.jpg';
 import imgWorkshopFestAI from '../assets/home/workshop-fest-ai.png';
@@ -182,7 +183,9 @@ ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
   <div class="ribbon" id="ribbon">
     {ribbonRows.map((row, rowIndex) => (
       <div class="rrow" data-dir={rowIndex === 0 ? '-1' : '1'}>
-        {row.map((tile) => 'lead' in tile ? (
+        {rowIndex === 0 && team.map((person) => (
+          <div class="t"><LeadPhoto name={person.name} src={person.photo} width={480} inferSize alt={person.name} style={`object-position:${person.photoPosition}`} /><span class="cap">{person.firstName} · {person.title}</span></div>
+        ))}{row.map((tile) => 'lead' in tile ? (
           <div class="t"><LeadPhoto name={tile.lead.name} src={tile.lead.photo} width={480} inferSize alt={tile.lead.name} style={`object-position:${tile.lead.photoPosition}`} /><span class="cap">{tile.lead.shortName} · {tile.city}</span></div>
         ) : (
           <div class={tile.wide ? 't w' : 't'}><Image src={tile.src} width={1000} alt={tile.alt} style={tile.position ? `object-position:${tile.position}` : undefined} /><span class="cap">{tile.caption}</span></div>
