@@ -18,10 +18,11 @@ export function hasGenaiId() {
 }
 
 // Returns { found: true, member: { name, chapter, role, intro, linkedin, introduce } },
-// { found: false } on a clean 404, or { found: false, error: true } when ID could not be
-// asked (not configured counts as a clean miss). Never throws.
+// { found: false } on a clean 404 or missing email, { found: false, notConfigured: true }
+// without an API key, or { found: false, error: true } when ID could not be asked. Never throws.
 export async function lookupCommunityMember(email) {
-  if (!API_KEY || !email) return { found: false };
+  if (!API_KEY) return { found: false, notConfigured: true };
+  if (!email) return { found: false };
 
   try {
     const response = await fetch(`${API_URL}/community/members?email=${encodeURIComponent(email)}`, {
