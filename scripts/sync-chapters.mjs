@@ -18,6 +18,7 @@ const PHOTO_PREFIX = 'https://f003.backblazeb2.com/file/genai-id-media/';
 const TIMEOUT_MS = 15000;
 
 const isText = (v) => typeof v === 'string';
+const isTextArray = (v) => Array.isArray(v) && v.every(isText);
 const isLocalised = (v) => v && typeof v === 'object' && isText(v.en);
 
 // The fields the site renders. Anything missing means the contract changed under us, and a
@@ -28,11 +29,12 @@ function problems(data) {
   for (const c of data.chapters) {
     const where = c?.slug || '(no slug)';
     if (!isText(c?.slug) || !isText(c.city) || !isText(c.country) || !isText(c.status)) found.push(`${where}: slug/city/country/status`);
-    if (!isLocalised(c?.note) || !isLocalised(c?.lede) || !Array.isArray(c?.headline?.en)) found.push(`${where}: note/lede/headline`);
-    if (typeof c?.lat !== 'number' || typeof c?.lon !== 'number' || !Array.isArray(c?.bbox) || c.bbox.length !== 4) found.push(`${where}: lat/lon/bbox`);
+    if (!isLocalised(c?.note) || !isLocalised(c?.lede) || !isTextArray(c?.headline?.en)) found.push(`${where}: note/lede/headline`);
+    if (!Number.isFinite(c?.lat) || !Number.isFinite(c?.lon) || !Array.isArray(c?.bbox) || c.bbox.length !== 4 || !c.bbox.every(Number.isFinite)) found.push(`${where}: lat/lon/bbox`);
+    if (!Number.isFinite(c?.position)) found.push(`${where}: position`);
     if (!Array.isArray(c?.leads)) { found.push(`${where}: leads`); continue; }
     for (const l of c.leads) {
-      if (!isText(l?.name) || !isText(l.shortName) || !isText(l.role) || !isText(l.company) || !Array.isArray(l.bio) || !Array.isArray(l.tags)) {
+      if (!isText(l?.id) || !l.id || !isText(l.name) || !isText(l.shortName) || !isText(l.role) || !isText(l.company) || !isTextArray(l.bio) || !isTextArray(l.tags) || !Number.isFinite(l.position)) {
         found.push(`${where}: lead ${l?.name || '?'}`);
       }
       if (!isText(l?.photo) || !l.photo.startsWith(PHOTO_PREFIX)) found.push(`${where}: lead ${l?.name || '?'} photo`);

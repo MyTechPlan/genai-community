@@ -24,9 +24,18 @@ const leadId = (lead) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
 
-function toLead(lead) {
+function toLead(lead, usedIds) {
+  const baseId = leadId(lead);
+  let id = baseId;
+  if (!id || usedIds.has(id)) {
+    const fallback = `${baseId || 'lead'}-${lead.id.slice(0, 8)}`;
+    id = fallback;
+    let suffix = 2;
+    while (usedIds.has(id)) id = `${fallback}-${suffix++}`;
+  }
+  usedIds.add(id);
   return {
-    id: leadId(lead),
+    id,
     name: lead.name,
     shortName: lead.shortName,
     kicker: `Chapter lead · ${lead.kickerArea}`,
@@ -49,6 +58,7 @@ function toLead(lead) {
 
 function toChapter(c) {
   const country = countryName.of(c.country) || c.country;
+  const usedIds = new Set();
   return {
     slug: c.slug,
     city: c.city,
@@ -68,7 +78,7 @@ function toChapter(c) {
       coords: `${coord(c.lat, 'N', 'S')} · ${coord(c.lon, 'E', 'W')}`,
       query: `${c.city}, ${country}`,
     },
-    leads: [...c.leads].sort((a, b) => a.position - b.position).map(toLead),
+    leads: [...c.leads].sort((a, b) => a.position - b.position).map((lead) => toLead(lead, usedIds)),
   };
 }
 

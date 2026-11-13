@@ -15,7 +15,9 @@ import imgSummit2027Poster from '../assets/home/summit-2027-poster.jpg';
 import imgValenciaDinner from '../assets/home/valencia-dinner.jpg';
 import imgValenciaGroup from '../assets/home/valencia-group.jpg';
 
-// Keep the map's existing placement and animation order; Madrid is still forming.
+const madridIsForming = !chapters.some((chapter) => chapter.slug === 'madrid');
+
+// Keep the map's existing placement and animation order.
 const mapCities = [
   { slug: 'london', pos: 'r' },
   { slug: 'madrid', pos: 't' },
@@ -23,16 +25,38 @@ const mapCities = [
   { slug: 'lisbon', pos: 'b' },
 ].map((city) => ({ ...city, chapter: chapters.find((chapter) => chapter.slug === city.slug) }));
 
-// Preserve the ribbon's editorial order without storing lead names or photos here.
-// Any additional leads follow in chapter order; missing leads simply leave the list.
-const ribbonOrder = ['valencia:0', 'london:1', 'lisbon:0', 'london:0', 'lisbon:1', 'valencia:1'];
-const ribbonLeads = chapters.flatMap((chapter) => chapter.leads.map((lead, index) => ({
-  lead,
-  city: chapter.city,
-  order: ribbonOrder.indexOf(`${chapter.slug}:${index}`),
-}))).sort((a, b) => (a.order < 0 ? Infinity : a.order) - (b.order < 0 ? Infinity : b.order));
-const ribbonMidpoint = Math.ceil(ribbonLeads.length / 2);
-const ribbonLeadRows = [ribbonLeads.slice(0, ribbonMidpoint), ribbonLeads.slice(ribbonMidpoint)];
+// Editorial order: event photos and slots resolved from the shared chapter leads.
+const ribbonRowOne = [
+  { src: imgLisbonTalk, wide: true, alt: 'A speaker presenting next to a screen, seen from behind the audience', caption: 'Lisbon meetup' },
+  { lead: 'valencia:0' },
+  { src: imgWorkshopFestRoom, wide: true, alt: 'People listening at a workshop, laptops on shared tables', caption: 'GenAI Workshop Fest' },
+  { src: imgValenciaGroup, wide: true, alt: 'A group of people standing on a stage in front of the slide for a Valencia meetup on AI governance', position: '50% 45%', caption: 'Valencia meetup' },
+  { lead: 'london:1' },
+  { src: imgLisbonPizza, alt: 'People opening pizza boxes on a long table after the talks', caption: 'Lisbon meetup' },
+  { lead: 'lisbon:0' },
+];
+const ribbonRowTwo = [
+  { lead: 'london:0' },
+  { src: imgLisbonAudience, wide: true, alt: 'People seated in rows listening to a talk', caption: 'Lisbon meetup' },
+  { src: imgWorkshopFestTables, wide: true, alt: 'People working on laptops at shared tables', caption: 'GenAI Workshop Fest' },
+  { lead: 'lisbon:1' },
+  { src: imgLisbonTeam, wide: true, alt: 'Four people standing together next to the GenAI Community banner', position: '50% 30%', caption: 'Lisbon meetup' },
+  { lead: 'valencia:1' },
+  { src: imgValenciaDinner, alt: 'People around a long table raising their drinks, a GenAI cap on the table', position: '50% 40%', caption: 'Valencia' },
+];
+const ribbonSlots = new Set([ ...ribbonRowOne, ...ribbonRowTwo ]
+  .filter((tile) => 'lead' in tile).map((tile) => tile.lead));
+const ribbonRows = [ribbonRowOne, ribbonRowTwo].map((row) => row.map((tile) => {
+  if (!('lead' in tile)) return tile;
+  const [slug, index] = tile.lead.split(':');
+  const chapter = chapters.find((chapter) => chapter.slug === slug);
+  const lead = chapter?.leads[Number(index)];
+  return lead ? { lead, city: chapter.city } : null;
+}).filter(Boolean));
+// Leads without an editorial slot follow at the end of row two, in chapter order.
+ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
+  .filter((_, index) => !ribbonSlots.has(`${chapter.slug}:${index}`))
+  .map((lead) => ({ lead, city: chapter.city }))));
 ---
 <Base title="GenAI Community EU — Where Europe's GenAI builders meet">
   <div class="hm">
@@ -51,8 +75,8 @@ const ribbonLeadRows = [ribbonLeads.slice(0, ribbonMidpoint), ribbonLeads.slice(
       </div>
       <div>
         <div class="map" id="map">
-          <canvas id="mapc" role="img" aria-label="Map of western Europe with the chapters in Valencia, Lisbon and London, and Madrid forming. Lines of light travel between the chapters."></canvas>
-          {mapCities.map(({ slug, pos, chapter }, index) => slug === 'madrid' ? (
+          <canvas id="mapc" role="img" aria-label={madridIsForming ? 'Map of western Europe with the chapters in Valencia, Lisbon and London, and Madrid forming. Lines of light travel between the chapters.' : 'Map of western Europe with the chapters in Valencia, Lisbon, London and Madrid. Lines of light travel between the chapters.'}></canvas>
+          {mapCities.map(({ slug, pos, chapter }, index) => slug === 'madrid' && madridIsForming ? (
             <a class="city" data-city="madrid" data-pos="t" style="--i:1" href="/chapters">Madrid <small>forming</small></a>
           ) : chapter && (
             <a class="city" data-city={slug} data-pos={pos} style={`--i:${index}`} href={`/chapters/${slug}`}>{chapter.city} <span class="avs">{chapter.leads.map((lead) => <Image src={lead.photo} width={480} inferSize alt="" style={`object-position:${lead.photoPosition}`} />)}</span></a>
@@ -126,9 +150,11 @@ const ribbonLeadRows = [ribbonLeads.slice(0, ribbonMidpoint), ribbonLeads.slice(
     </div>
     <div class="chs">
       {chapters.map((chapter, index) => (
-        <a class="card ch" data-r style={`--i:${index}`} href={`/chapters/${chapter.slug}`}><div class="ph2">{chapter.leads.map((lead) => <Image src={lead.photo} width={480} inferSize alt={lead.name} style={`object-position:${lead.photoPosition}`} />)}</div><div class="tx"><span class="status"><i></i>Active</span><h3 class="h3">{chapter.city}</h3><p class="dim" style="font-size:15px">{chapter.country}</p></div></a>
+        <a class="card ch" data-r style={`--i:${index}`} href={`/chapters/${chapter.slug}`}><div class="ph2">{chapter.leads.map((lead) => <Image src={lead.photo} width={480} inferSize alt={lead.name} style={`object-position:${lead.photoPosition}`} />)}</div><div class="tx"><span class={chapter.status === 'Forming' ? 'status f' : 'status'}><i></i>{chapter.status}</span><h3 class="h3">{chapter.city}</h3><p class="dim" style="font-size:15px">{chapter.country}</p></div></a>
       ))}
-      <a class="card ch" data-r style={`--i:${chapters.length}`} href="/chapters"><div class="forming" aria-hidden="true"><i></i><i></i><i></i><b></b><span>40.42° N · 3.70° W</span></div><div class="tx"><span class="status f"><i></i>Forming</span><h3 class="h3">Madrid</h3><p class="dim" style="font-size:15px">Spain</p></div></a>
+      {madridIsForming && (
+        <a class="card ch" data-r style={`--i:${chapters.length}`} href="/chapters"><div class="forming" aria-hidden="true"><i></i><i></i><i></i><b></b><span>40.42° N · 3.70° W</span></div><div class="tx"><span class="status f"><i></i>Forming</span><h3 class="h3">Madrid</h3><p class="dim" style="font-size:15px">Spain</p></div></a>
+      )}
     </div>
     <div class="evs" data-r>
       <UpcomingEvents label="Upcoming events" />
@@ -152,22 +178,12 @@ const ribbonLeadRows = [ribbonLeads.slice(0, ribbonMidpoint), ribbonLeads.slice(
 <section aria-label="Photos from our events">
   <div class="wrap" style="padding-bottom:16px"><p class="eyebrow">From our events</p></div>
   <div class="ribbon" id="ribbon">
-    {ribbonLeadRows.map((leads, rowIndex) => (
+    {ribbonRows.map((row, rowIndex) => (
       <div class="rrow" data-dir={rowIndex === 0 ? '-1' : '1'}>
-        {Array.from({ length: Math.max(4, leads.length) }, (_, index) => (
-          <>
-            {rowIndex === 0 && index === 0 && (<div class="t w"><Image src={imgLisbonTalk} width={1000} alt="A speaker presenting next to a screen, seen from behind the audience" /><span class="cap">Lisbon meetup</span></div>)}
-            {rowIndex === 0 && index === 1 && (<div class="t w"><Image src={imgWorkshopFestRoom} width={1000} alt="People listening at a workshop, laptops on shared tables" /><span class="cap">GenAI Workshop Fest</span></div>)}
-            {rowIndex === 0 && index === 1 && (<div class="t w"><Image src={imgValenciaGroup} width={1000} alt="A group of people standing on a stage in front of the slide for a Valencia meetup on AI governance" style="object-position:50% 45%" /><span class="cap">Valencia meetup</span></div>)}
-            {rowIndex === 0 && index === 2 && (<div class="t"><Image src={imgLisbonPizza} width={1000} alt="People opening pizza boxes on a long table after the talks" /><span class="cap">Lisbon meetup</span></div>)}
-            {rowIndex === 1 && index === 1 && (<div class="t w"><Image src={imgLisbonAudience} width={1000} alt="People seated in rows listening to a talk" /><span class="cap">Lisbon meetup</span></div>)}
-            {rowIndex === 1 && index === 1 && (<div class="t w"><Image src={imgWorkshopFestTables} width={1000} alt="People working on laptops at shared tables" /><span class="cap">GenAI Workshop Fest</span></div>)}
-            {rowIndex === 1 && index === 2 && (<div class="t w"><Image src={imgLisbonTeam} width={1000} alt="Four people standing together next to the GenAI Community banner" style="object-position:50% 30%" /><span class="cap">Lisbon meetup</span></div>)}
-            {rowIndex === 1 && index === 3 && (<div class="t"><Image src={imgValenciaDinner} width={1000} alt="People around a long table raising their drinks, a GenAI cap on the table" style="object-position:50% 40%" /><span class="cap">Valencia</span></div>)}
-            {leads[index] && (
-              <div class="t"><Image src={leads[index].lead.photo} width={480} inferSize alt={leads[index].lead.name} style={`object-position:${leads[index].lead.photoPosition}`} /><span class="cap">{leads[index].lead.shortName || leads[index].lead.name.split(' ')[0]} · {leads[index].city}</span></div>
-            )}
-          </>
+        {row.map((tile) => 'lead' in tile ? (
+          <div class="t"><Image src={tile.lead.photo} width={480} inferSize alt={tile.lead.name} style={`object-position:${tile.lead.photoPosition}`} /><span class="cap">{tile.lead.shortName} · {tile.city}</span></div>
+        ) : (
+          <div class={tile.wide ? 't w' : 't'}><Image src={tile.src} width={1000} alt={tile.alt} style={tile.position ? `object-position:${tile.position}` : undefined} /><span class="cap">{tile.caption}</span></div>
         ))}
       </div>
     ))}
@@ -226,6 +242,7 @@ var CITIES=[{id:'valencia',lon:-.38,lat:39.47,on:1},{id:'lisbon',lon:-9.14,lat:3
 var LINKS=[[0,1,.22],[0,2,-.18],[1,2,.2],[3,0,.3]];
 var COL=['#cdeede','#e8e4f7','#fbe1ef','#fdf4d6','#d6ecf6'];
 var box=document.getElementById('map'),cv=document.getElementById('mapc'),ctx=cv.getContext('2d');
+CITIES[3].on=box.querySelector('[data-city="madrid"] .avs')?1:0;
 var W=0,H=0,u=1,dots=[],t0=performance.now(),comets=[],ripples=[],nextSpawn=2.4,ptr=null,visible=true,raf=0;
 function px(c){return{x:(c.lon-LON0)*KX*u,y:(LATT-c.lat)*u};}
 function layout(){
