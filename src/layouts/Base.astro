@@ -4,7 +4,7 @@ import Logo from '../components/Logo.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import Analytics from '@vercel/analytics/astro';
 const SITE_NAME = 'GenAI Community EU';
-const SITE_DESCRIPTION = 'The European community of generative AI builders and practitioners. Chapters across Europe, expert blog, newsletter, and one annual summit in Valencia.';
+const SITE_DESCRIPTION = "The European community of generative AI builders and practitioners. Connect, learn and build with the people shipping AI in production across Europe.";
 
 const {
   title = 'GenAI Community EU',
@@ -107,7 +107,7 @@ const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '6Lfjpl4
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;700&family=Spline+Sans+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
 
@@ -200,8 +200,7 @@ const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '6Lfjpl4
           <a href="/blog">Blog</a>
           <a href="/chapters">Chapters</a>
           <a href="/#summit">Summit</a>
-          <a href="/join">Join</a>
-          <a href="/#newsletter" class="nav-cta">Newsletter</a>
+          <a href="/join" class="nav-cta">Join</a>
         </nav>
       </div>
     </header>
@@ -222,7 +221,6 @@ const RECAPTCHA_SITE_KEY = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '6Lfjpl4
           <a href="/blog">Blog</a>
           <a href="/chapters">Chapters</a>
           <a href="https://genaisummit.eu" rel="noopener">GenAI Summit EU</a>
-          <a href="/#newsletter">Newsletter</a>
           <a href="/contact">Contact</a>
           <a href="/privacy">Privacy</a>
           <a href="/code-of-conduct">Code of Conduct</a>

@@ -1,18 +1,18 @@
 # GenAI Community EU
 
-> Where Europe's GenAI builders actually meet — the European community of generative AI builders and practitioners, with local chapters across Europe, an expert blog, a newsletter, and one annual summit in Valencia.
+> The European community of generative AI builders and practitioners. Connect, learn and build with the people shipping AI in production across Europe. Members meet in a Slack workspace, in local chapters that run AI meetups, and at one annual summit in Valencia.
 
-GenAI Community EU connects practitioners working with generative AI across Europe through local chapters (city meetups and hands-on workshops), an expert-written blog, a newsletter, and one annual in-person gathering — GenAI Summit EU in Valencia, Spain. The focus is real production work: agentic architectures, evaluations, infrastructure, and deployment, not hype. The site is operated by My Tech Plan, S.L. The blog is published on Beehiiv (https://genaicommunity.beehiiv.com/).
+GenAI Community EU connects practitioners working with generative AI across Europe through a members' Slack, local chapters (city meetups and hands-on workshops), member discounts at community events, a newsletter, and one annual in-person gathering — GenAI Summit EU in Valencia, Spain. The focus is real production work: agentic architectures, evaluations, infrastructure, and deployment, not hype. The site is operated by My Tech Plan, S.L. The blog is coming soon.
 
 ## Pages
 
 - [Home](https://www.genaicommunity.eu/): Overview of the community — what it is, the local chapters, the blog, and the annual GenAI Summit EU.
-- [Join](https://www.genaicommunity.eu/join): Membership application — a short guided form (professional profile, motivation, newsletter opt-in, and agreement to the Code of Conduct). On completion, applicants are invited into the community Slack.
+- [Join](https://www.genaicommunity.eu/join): Joining is done with a GenAI-ID account (the same one used for GenAI Summit and GenAI Workshop Fest). /join redirects to the community signup at id.genaicommunity.eu, which asks a few questions and ends with the Slack invite.
 - [Chapters](https://www.genaicommunity.eu/chapters): Local groups across European cities (e.g. Valencia, Lisbon, London) running meetups and workshops; includes how to apply to lead an official chapter and what Chapter Leads receive.
 - [Valencia chapter](https://www.genaicommunity.eu/chapters/valencia): The Valencia, Spain chapter, in the city that hosts the annual GenAI Summit EU — its two chapter leads (Julieta Zalduendo, Founder & CEO at My Tech Plan; Jean-François Gutierrez, CTO at My Tech Plan and Head of AI & Technology at GenAI Summit EU) with full bios, the chapter's upcoming and recent events, and a contact form for speaking, venues, partnerships and press.
 - [London chapter](https://www.genaicommunity.eu/chapters/london): The London, United Kingdom chapter — its two chapter leads (Kelly Cuesta, Founder of BRAVA; Glauce Gomes de Lima, Founder of Digital Cocreation) with full bios, the chapter's events as they are announced, and a contact form for speaking, venues, partnerships and press.
 - [Lisbon chapter](https://www.genaicommunity.eu/chapters/lisbon): The Lisbon, Portugal chapter — its two chapter leads (Liliana Catarina Freire Pereira, Software Engineer at Coverflex; Julia Mariá Pereira, Product Owner at Portobello America) with full bios, where the chapter's meetups and workshops are announced, and a contact form for speaking, venues, partnerships and press.
-- [Blog](https://www.genaicommunity.eu/blog): Landing for the GenAI Community blog — expert posts on building with generative AI in production (agents, evals, infra), published on Beehiiv (https://genaicommunity.beehiiv.com/). Community experts can apply to write via the form linked on the page.
+- [Blog](https://www.genaicommunity.eu/blog): Landing for the GenAI Community blog (coming soon) — expert posts on building with generative AI in production (agents, evals, infra). Community experts can apply to write via the form linked on the page.
 - [Sponsor](https://www.genaicommunity.eu/sponsor): Partnership and sponsorship options — host a chapter in your city, or sponsor events such as GenAI Summit EU and GenAI Workshop Fest.
 - [Contact](https://www.genaicommunity.eu/contact): General contact form for questions about chapters, speaking, writing for the blog, press, and more.
 
@@ -22,8 +22,8 @@ GenAI Community EU connects practitioners working with generative AI across Euro
 
 ## Community
 
-- [Community Slack](https://www.genaicommunity.eu/join): Access to the community Slack is granted after completing the membership application at /join.
-- [Newsletter](https://www.genaicommunity.eu/#newsletter): Subscribe to the newsletter.
+- [Community Slack](https://www.genaicommunity.eu/join): Access to the community Slack is granted at the end of the community signup in GenAI-ID.
+- [Join the community](https://www.genaicommunity.eu/join): Create a GenAI-ID account to join the community and its Slack.
 - [Write for the blog](https://docs.google.com/forms/d/e/1FAIpQLScjPwZeHfBJEtiYv3nDJd6emPq6e8gh2rtjBft5ElBTxHaV4Q/viewform): Community experts can apply to write for the blog.
 
 ## Optional
