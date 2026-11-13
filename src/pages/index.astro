@@ -15,7 +15,8 @@ import imgSummit2027Poster from '../assets/home/summit-2027-poster.jpg';
 import imgValenciaDinner from '../assets/home/valencia-dinner.jpg';
 import imgValenciaGroup from '../assets/home/valencia-group.jpg';
 
-const madridIsForming = !chapters.some((chapter) => chapter.slug === 'madrid');
+const madrid = chapters.find((chapter) => chapter.slug === 'madrid');
+const madridIsForming = !madrid || madrid.status === 'Forming';
 
 // Keep the map's existing placement and animation order.
 const mapCities = [
@@ -77,7 +78,7 @@ ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
         <div class="map" id="map">
           <canvas id="mapc" role="img" aria-label={madridIsForming ? 'Map of western Europe with the chapters in Valencia, Lisbon and London, and Madrid forming. Lines of light travel between the chapters.' : 'Map of western Europe with the chapters in Valencia, Lisbon, London and Madrid. Lines of light travel between the chapters.'}></canvas>
           {mapCities.map(({ slug, pos, chapter }, index) => slug === 'madrid' && madridIsForming ? (
-            <a class="city" data-city="madrid" data-pos="t" style="--i:1" href="/chapters">Madrid <small>forming</small></a>
+            <a class="city" data-city="madrid" data-pos="t" style="--i:1" href={chapter ? '/chapters/madrid' : '/chapters'}>Madrid <small>forming</small></a>
           ) : chapter && (
             <a class="city" data-city={slug} data-pos={pos} style={`--i:${index}`} href={`/chapters/${slug}`}>{chapter.city} <span class="avs">{chapter.leads.map((lead) => <Image src={lead.photo} width={480} inferSize alt="" style={`object-position:${lead.photoPosition}`} />)}</span></a>
           ))}
@@ -152,7 +153,7 @@ ribbonRows[1].push(...chapters.flatMap((chapter) => chapter.leads
       {chapters.map((chapter, index) => (
         <a class="card ch" data-r style={`--i:${index}`} href={`/chapters/${chapter.slug}`}><div class="ph2">{chapter.leads.map((lead) => <Image src={lead.photo} width={480} inferSize alt={lead.name} style={`object-position:${lead.photoPosition}`} />)}</div><div class="tx"><span class={chapter.status === 'Forming' ? 'status f' : 'status'}><i></i>{chapter.status}</span><h3 class="h3">{chapter.city}</h3><p class="dim" style="font-size:15px">{chapter.country}</p></div></a>
       ))}
-      {madridIsForming && (
+      {!madrid && (
         <a class="card ch" data-r style={`--i:${chapters.length}`} href="/chapters"><div class="forming" aria-hidden="true"><i></i><i></i><i></i><b></b><span>40.42° N · 3.70° W</span></div><div class="tx"><span class="status f"><i></i>Forming</span><h3 class="h3">Madrid</h3><p class="dim" style="font-size:15px">Spain</p></div></a>
       )}
     </div>

@@ -6,9 +6,7 @@
 // pages render. The site is English-only, so it reads the `en` texts.
 
 import snapshot from './chapters.snapshot.json';
-
-// ID's chapter states. Recruiting and backlog chapters have no page or card yet.
-const STATUS = { active: 'Active', onboarding: 'Forming' };
+import { chapterStatus, chapterOmissionReason, leadOmissionReason } from './chapter-visibility.js';
 
 const countryName = new Intl.DisplayNames(['en'], { type: 'region' });
 
@@ -65,7 +63,7 @@ function toChapter(c) {
     country,
     localName: c.localName || `${c.city}, ${country}`,
     eventCities: c.eventCities?.length ? c.eventCities : [c.city],
-    status: STATUS[c.status],
+    status: chapterStatus(c),
     note: c.note.en,
     established: c.established || null,
     headline: c.headline.en,
@@ -78,17 +76,15 @@ function toChapter(c) {
       coords: `${coord(c.lat, 'N', 'S')} · ${coord(c.lon, 'E', 'W')}`,
       query: `${c.city}, ${country}`,
     },
-    leads: [...c.leads].sort((a, b) => a.position - b.position).map((lead) => toLead(lead, usedIds)),
+    leads: c.leads.filter((lead) => !leadOmissionReason(lead))
+      .sort((a, b) => a.position - b.position).map((lead) => toLead(lead, usedIds)),
   };
 }
 
-// A chapter is shown once it has its page content: a headline, a lede and at least one lead.
-const hasPage = (c) =>
-  STATUS[c.status] && c.headline.en.every(Boolean) && c.lede.en && c.leads.length > 0;
-
+// A public page needs content, map coordinates and at least one lead with an allowed photo.
 export const chapters = [...snapshot.chapters]
   .sort((a, b) => a.position - b.position)
-  .filter(hasPage)
+  .filter((chapter) => !chapterOmissionReason(chapter))
   .map(toChapter);
 
 export function getChapterPages() {
