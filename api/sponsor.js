@@ -10,6 +10,7 @@ const MAX_LENGTHS = {
   email: 254,
   phone: 30,
   interest: 80,
+  city: 100,
   message: 5000,
 };
 
@@ -24,6 +25,7 @@ export default function handler(req, res) {
       email: { defaultValue: undefined },
       phone: { defaultValue: undefined },
       interest: { defaultValue: 'Something else' },
+      city: { defaultValue: undefined },
       message: { defaultValue: undefined },
     },
     maxLengths: MAX_LENGTHS,
@@ -62,6 +64,10 @@ export default function handler(req, res) {
             <tr>
               <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Interested in:</td>
               <td style="padding: 10px; border-bottom: 1px solid #eee;">${data.interest}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">City:</td>
+              <td style="padding: 10px; border-bottom: 1px solid #eee;">${data.city || 'N/A'}</td>
             </tr>
             <tr>
               <td style="padding: 10px; font-weight: bold; vertical-align: top;">Message:</td>
