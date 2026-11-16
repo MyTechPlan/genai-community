@@ -89,6 +89,16 @@
       "statusCode": 302
     },
     {
+      "source": "/london-launch",
+      "destination": "https://genai-community-london-launch.lovable.app/",
+      "statusCode": 302
+    },
+    {
+      "source": "/london-launch/",
+      "destination": "https://genai-community-london-launch.lovable.app/",
+      "statusCode": 302
+    },
+    {
       "source": "/rgpd",
       "destination": "/privacy",
       "statusCode": 301
