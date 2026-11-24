@@ -35,9 +35,12 @@ export default async function handler(req, res) {
 
   const { slug, location } = resolveGoLink(firstValue(req.query?.slug));
 
-  if (slug) {
+  if (slug && req.method === 'GET') {
+    // Only a GET is a scan; HEAD (link checkers, previews) is logged apart so it never inflates the count.
     console.log(`[go] ${slug}`);
-    if (req.method === 'GET') await trackScan(slug, req.headers);
+    await trackScan(slug, req.headers);
+  } else if (slug) {
+    console.log(`[go-head] ${slug}`);
   } else {
     console.log('[go] unknown');
   }
