@@ -109,6 +109,10 @@
       "statusCode": 301
     }
   ],
+  "rewrites": [
+    { "source": "/go/:slug", "destination": "/api/go?slug=:slug" },
+    { "source": "/go/:slug/", "destination": "/api/go?slug=:slug" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
